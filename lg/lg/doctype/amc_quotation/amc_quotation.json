@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-27 14:06:32.093473",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_name",
+  "zone",
+  "project_type",
+  "horse_power",
+  "quoted_price",
+  "required_approval",
+  "workflow_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Select",
+   "label": "Zone",
+   "options": "Green\nYellow\nOrange\nRed"
+  },
+  {
+   "fieldname": "project_type",
+   "fieldtype": "Link",
+   "label": "Project Type",
+   "options": "Vertical Master"
+  },
+  {
+   "fieldname": "horse_power",
+   "fieldtype": "Data",
+   "label": "Horse Power"
+  },
+  {
+   "fieldname": "quoted_price",
+   "fieldtype": "Currency",
+   "label": "Quoted Price\t"
+  },
+  {
+   "fieldname": "required_approval",
+   "fieldtype": "Select",
+   "label": "Required Approval\t",
+   "options": "None, Area Head, HO 1st Approval, HO 2nd Approval)"
+  },
+  {
+   "fieldname": "workflow_status",
+   "fieldtype": "Select",
+   "label": "Workflow Status"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-03 18:56:48.260529",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "AMC Quotation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

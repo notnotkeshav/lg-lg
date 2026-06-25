@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-22 13:12:48.753992",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "consider_tax_or_charge_for",
+  "add_or_deduct",
+  "type",
+  "column_break_fygf",
+  "account_head",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "consider_tax_or_charge_for",
+   "fieldtype": "Select",
+   "label": "Consider Tax or Charge for"
+  },
+  {
+   "fieldname": "add_or_deduct",
+   "fieldtype": "Select",
+   "label": "Add or Deduct"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "\nActual\nOn Net Total\nOn Previous Row Amount\nOn Previous Row Total\nOn Item Quantity"
+  },
+  {
+   "fieldname": "column_break_fygf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "account_head",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Account Head",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Description",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-22 13:30:36.873070",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Purchase Taxes and Charges",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

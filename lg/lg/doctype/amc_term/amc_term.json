@@ -1,0 +1,112 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-16 11:43:20.973852",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "billing_schedule_section",
+  "start_date",
+  "payment_frequency",
+  "reference_contract",
+  "column_break_pnva",
+  "end_date",
+  "billing_terms",
+  "column_break_cdha",
+  "amount",
+  "payment_term",
+  "section_break_xfvu",
+  "billing_schedule"
+ ],
+ "fields": [
+  {
+   "fieldname": "payment_frequency",
+   "fieldtype": "Select",
+   "label": "Billing Terms",
+   "options": "\nMonthly\nQuarterly\nSemi-Annually\nAnnually\n100% for Partial Contract"
+  },
+  {
+   "fieldname": "column_break_pnva",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "billing_terms",
+   "fieldtype": "Select",
+   "label": "Payment Frequency",
+   "options": "\nAdvance\nPost"
+  },
+  {
+   "fieldname": "column_break_cdha",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_term",
+   "fieldtype": "Link",
+   "label": "Payment Term",
+   "options": "Pay Term"
+  },
+  {
+   "fieldname": "section_break_xfvu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "billing_schedule",
+   "fieldtype": "Table",
+   "label": "Billing Schedule",
+   "options": "Contract Billing Schedule"
+  },
+  {
+   "fieldname": "billing_schedule_section",
+   "fieldtype": "Section Break",
+   "label": "Billing Schedule"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "reference_contract",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "referenec Contract",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-19 14:36:24.548797",
+ "modified_by": "khushi.rai@lgepartner.com",
+ "module": "Lg",
+ "name": "AMC Term",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

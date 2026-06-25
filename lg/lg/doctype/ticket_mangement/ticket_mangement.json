@@ -1,0 +1,498 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-04 16:48:37.088894",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "call_information_tab",
+  "ticket_management_information_section",
+  "ticket_owner",
+  "caller_type",
+  "type_of_call",
+  "column_break_lono",
+  "status",
+  "re_allocation",
+  "number_of_re_allocation_copy",
+  "ticket_stage",
+  "customer_information_tab",
+  "information_section",
+  "customer_name",
+  "pincode",
+  "state",
+  "date_of_birth",
+  "contact_person_at_site",
+  "address",
+  "column_break_kmxb",
+  "customer_id",
+  "phone",
+  "country",
+  "customer_type",
+  "dealer_information_tab",
+  "dealer_information_section",
+  "assigned_dealer",
+  "dealer_type",
+  "dealer_zone",
+  "column_break_iwus",
+  "dealer_id",
+  "dealer_phone",
+  "product_information_tab",
+  "model_number",
+  "warranty_status",
+  "product_group",
+  "column_break_dqtr",
+  "date_of_purchase",
+  "warranty__expiry",
+  "nps_feedback_information_tab",
+  "overall_rating",
+  "service_rating",
+  "communication_rating",
+  "column_break_hare",
+  "feedback_datetime",
+  "approve_by_dealer",
+  "repair_information_tab",
+  "defect_code",
+  "repair_end_date_time",
+  "column_break_nwkq",
+  "defect_category",
+  "defect_sub_category",
+  "escalation_information_tab",
+  "escalation__source",
+  "escalation_type",
+  "number_of_parts",
+  "column_break_icbo",
+  "escalation_reason",
+  "approved_by_dealer",
+  "approved__by_technician",
+  "part__information_tab",
+  "part_information_section",
+  "part_code",
+  "part_category",
+  "column_break_ismn",
+  "part_name",
+  "consumed_quality",
+  "defect_information_tab",
+  "item_code",
+  "item_category",
+  "column_break_axop",
+  "item_name",
+  "voc"
+ ],
+ "fields": [
+  {
+   "fieldname": "caller_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Caller Type",
+   "options": "Customer\nDealer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ticket_management_information_section",
+   "fieldtype": "Section Break",
+   "label": "Ticket Management Information"
+  },
+  {
+   "fieldname": "column_break_lono",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "type_of_call",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type Of Call",
+   "options": "Repair\nInstallation\nAmc visit",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nClosed\nPending\nEscalation"
+  },
+  {
+   "fieldname": "ticket_stage",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Ticket Stage ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ticket_owner",
+   "fieldtype": "Data",
+   "label": "Ticket Owner"
+  },
+  {
+   "fieldname": "customer_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Customer Information "
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Link",
+   "label": "Customer Name ",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "information_section",
+   "fieldtype": "Section Break",
+   "label": "Information"
+  },
+  {
+   "fieldname": "column_break_kmxb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_id",
+   "fieldtype": "Link",
+   "label": "Customer ID",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Link",
+   "label": "Pincode ",
+   "options": "Pincode Master",
+   "reqd": 1
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Link",
+   "label": "State",
+   "options": "Pincode Master"
+  },
+  {
+   "fieldname": "customer_type",
+   "fieldtype": "Link",
+   "label": "Customer Type",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date Of Birth"
+  },
+  {
+   "fieldname": "dealer_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Dealer Information"
+  },
+  {
+   "fieldname": "assigned_dealer",
+   "fieldtype": "Link",
+   "label": "Assigned Dealer ",
+   "options": "Dealer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_iwus",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dealer_id",
+   "fieldtype": "Link",
+   "label": "Dealer ID",
+   "options": "Dealer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dealer_type",
+   "fieldtype": "Select",
+   "label": "Dealer Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dealer_phone",
+   "fieldtype": "Phone",
+   "label": "Dealer Phone"
+  },
+  {
+   "fieldname": "dealer_zone",
+   "fieldtype": "Select",
+   "label": "Dealer Zone",
+   "options": "North\nSouth\nEast\nWest"
+  },
+  {
+   "fieldname": "re_allocation",
+   "fieldtype": "Datetime",
+   "label": "Re allocation"
+  },
+  {
+   "fieldname": "dealer_information_section",
+   "fieldtype": "Section Break",
+   "label": "Dealer Information"
+  },
+  {
+   "fieldname": "product_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Product Information"
+  },
+  {
+   "fieldname": "model_number",
+   "fieldtype": "Data",
+   "label": "Model Number"
+  },
+  {
+   "fieldname": "column_break_dqtr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date_of_purchase",
+   "fieldtype": "Date",
+   "label": "Date Of Purchase "
+  },
+  {
+   "fieldname": "warranty_status",
+   "fieldtype": "Select",
+   "label": "Warranty Status"
+  },
+  {
+   "fieldname": "warranty__expiry",
+   "fieldtype": "Date",
+   "label": "Warranty  Expiry"
+  },
+  {
+   "fieldname": "nps_feedback_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "NPS Feedback Information ",
+   "options": "\nLikert Scale\n"
+  },
+  {
+   "fieldname": "overall_rating",
+   "fieldtype": "Select",
+   "label": "Overall Rating ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "service_rating",
+   "fieldtype": "Select",
+   "label": "Service Rating",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_hare",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "communication_rating",
+   "fieldtype": "Select",
+   "label": "Communication Rating ",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "feedback_datetime",
+   "fieldtype": "Check",
+   "label": "Feedback Datetime"
+  },
+  {
+   "default": "0",
+   "fieldname": "approve_by_dealer",
+   "fieldtype": "Check",
+   "label": "Approve By Dealer"
+  },
+  {
+   "fieldname": "repair_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Repair Information"
+  },
+  {
+   "fieldname": "defect_code",
+   "fieldtype": "Int",
+   "label": "Defect Code"
+  },
+  {
+   "fieldname": "column_break_nwkq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "defect_category",
+   "fieldtype": "Select",
+   "label": "Defect Category"
+  },
+  {
+   "fieldname": "defect_sub_category",
+   "fieldtype": "Select",
+   "label": "Defect sub category"
+  },
+  {
+   "fieldname": "repair_end_date_time",
+   "fieldtype": "Datetime",
+   "label": "Repair End date /time"
+  },
+  {
+   "fieldname": "escalation_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Escalation Information"
+  },
+  {
+   "fieldname": "escalation__source",
+   "fieldtype": "Select",
+   "label": "Escalation  Source"
+  },
+  {
+   "fieldname": "column_break_icbo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "escalation_reason",
+   "fieldtype": "Select",
+   "label": "Escalation Reason"
+  },
+  {
+   "fieldname": "escalation_type",
+   "fieldtype": "Select",
+   "label": "Escalation Type"
+  },
+  {
+   "default": "0",
+   "fieldname": "approved_by_dealer",
+   "fieldtype": "Check",
+   "label": "Approved By Dealer"
+  },
+  {
+   "default": "0",
+   "fieldname": "approved__by_technician",
+   "fieldtype": "Check",
+   "label": "Approved  By Technician"
+  },
+  {
+   "fieldname": "number_of_parts",
+   "fieldtype": "Int",
+   "label": "Number of Parts"
+  },
+  {
+   "fieldname": "part__information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Part  Information"
+  },
+  {
+   "fieldname": "part_code",
+   "fieldtype": "Link",
+   "label": "Part Code ",
+   "options": "Part"
+  },
+  {
+   "fieldname": "column_break_ismn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "part_name",
+   "fieldtype": "Link",
+   "label": "Part Name ",
+   "options": "Part"
+  },
+  {
+   "fieldname": "part_category",
+   "fieldtype": "Link",
+   "label": "Part Category",
+   "options": "Part"
+  },
+  {
+   "fieldname": "part_information_section",
+   "fieldtype": "Section Break",
+   "label": "Part Information"
+  },
+  {
+   "fieldname": "consumed_quality",
+   "fieldtype": "Int",
+   "label": "Consumed Quality"
+  },
+  {
+   "fieldname": "call_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Call Information"
+  },
+  {
+   "fieldname": "defect_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Defect Information"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_axop",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Link",
+   "label": "Item Name ",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_category",
+   "fieldtype": "Int",
+   "label": "Item Category"
+  },
+  {
+   "fieldname": "voc",
+   "fieldtype": "Long Text",
+   "label": "VOC"
+  },
+  {
+   "fieldname": "contact_person_at_site",
+   "fieldtype": "Data",
+   "label": "Contact Person at Site"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "number_of_re_allocation_copy",
+   "fieldtype": "Int",
+   "label": "Number Of Re allocation Copy"
+  },
+  {
+   "fieldname": "product_group",
+   "fieldtype": "Data",
+   "label": "Product Group"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-04 15:59:38.913320",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Ticket Mangement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

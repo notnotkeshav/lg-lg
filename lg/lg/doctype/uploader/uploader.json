@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-17 15:10:34.409101",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "upload",
+  "invoice_uploader",
+  "payment_uploader"
+ ],
+ "fields": [
+  {
+   "fieldname": "upload",
+   "fieldtype": "Select",
+   "label": "Upload",
+   "options": "\nInvoice\nPayment"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "depends_on": "eval:doc.upload==\"Invoice\"",
+   "fieldname": "invoice_uploader",
+   "fieldtype": "Table",
+   "label": "Invoice Uploader",
+   "options": "Invoice Uploader"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "depends_on": "eval:doc.upload==\"Payment\"",
+   "fieldname": "payment_uploader",
+   "fieldtype": "Table",
+   "label": "Payment Uploader",
+   "options": "Payment Uploader"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-17 15:39:35.767482",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Uploader",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

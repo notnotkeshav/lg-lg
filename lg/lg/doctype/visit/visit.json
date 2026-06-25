@@ -1,0 +1,65 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-03 16:46:43.021252",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "visit_information_section",
+  "first_visit",
+  "number_of_chatsvisit",
+  "days_visited",
+  "column_break_juov",
+  "most_recent_visit",
+  "average_time_spent"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_juov",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "visit_information_section",
+   "fieldtype": "Section Break",
+   "label": "Visit Information"
+  },
+  {
+   "fieldname": "first_visit",
+   "fieldtype": "Datetime",
+   "label": "First Visit"
+  },
+  {
+   "fieldname": "most_recent_visit",
+   "fieldtype": "Datetime",
+   "label": "Most Recent Visit "
+  },
+  {
+   "fieldname": "number_of_chatsvisit",
+   "fieldtype": "Int",
+   "label": "Number of Chats/Visit "
+  },
+  {
+   "fieldname": "average_time_spent",
+   "fieldtype": "Int",
+   "label": "Average Time Spent "
+  },
+  {
+   "fieldname": "days_visited",
+   "fieldtype": "Int",
+   "label": "Days Visited "
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-03 16:58:28.953433",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Visit",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

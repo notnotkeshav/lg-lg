@@ -1,0 +1,147 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"7NIeNbdsHt\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"iuBTa9rMne\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Global Shortcuts</b></span>\",\"col\":12}},{\"id\":\"H6-pv4SvUK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Projects\",\"col\":4}},{\"id\":\"5O0-Khq9FB\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer List\",\"col\":4}},{\"id\":\"Ft5Yt7kRc9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Opportunities\",\"col\":4}},{\"id\":\"TgYSB1iOC2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Quotations\",\"col\":4}},{\"id\":\"K3quB13WIa\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AMC Contract\",\"col\":4}},{\"id\":\"Kj8euBY1p-\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dealers\",\"col\":4}},{\"id\":\"NioUjzXb-a\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Other Visits\",\"col\":4}},{\"id\":\"tDiA0XF33I\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"tW0ECtvbmw\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Opportunities</b></span>\",\"col\":4}},{\"id\":\"suqf8dQG1E\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>AMC Contracts</b></span>\",\"col\":4}},{\"id\":\"Pqja3Pjyc-\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quotations</b></span>\",\"col\":4}},{\"id\":\"4J4sJiKV5p\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Opportunity Created - Today\",\"col\":4}},{\"id\":\"mEw6Kg9swM\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"AMC Contracts Created - Today\",\"col\":4}},{\"id\":\"w0ZUJFXFgH\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Quotaion Created - Today\",\"col\":4}},{\"id\":\"ElEM72H-jR\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Opportunity Created - This Month\",\"col\":4}},{\"id\":\"cgBYUOFxoE\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"AMC Contracts Created - This Month\",\"col\":4}},{\"id\":\"6EpJZnqm4_\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Quotation Created - This Month\",\"col\":4}},{\"id\":\"wlhjqvAay3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Open Opportunities\",\"col\":4}},{\"id\":\"JOTGL_2Sz5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"AMC Contract Expiring - This Month\",\"col\":4}},{\"id\":\"M3miK3F-KC\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Approval Pending - Quotations\",\"col\":4}},{\"id\":\"cIOywlx0zp\",\"type\":\"paragraph\",\"data\":{\"text\":\"Reports\",\"col\":12}},{\"id\":\"IyM7UpdH66\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer Visit Details\",\"col\":4}},{\"id\":\"Y2mp0_g50O\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Dealer Visit Details\",\"col\":4}},{\"id\":\"lpk1wy1Xki\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Other Visit Details\",\"col\":4}}]",
+ "creation": "2024-12-30 11:48:18.811776",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "color-review-points",
+ "idx": 0,
+ "indicator_color": "pink",
+ "is_hidden": 0,
+ "label": "Home",
+ "links": [],
+ "modified": "2026-03-06 14:09:30.839552",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Home",
+ "number_cards": [
+  {
+   "label": "AMC Contracts Created - This Month",
+   "number_card_name": "Contracts Created - This Month"
+  },
+  {
+   "label": "AMC Contracts Created - Today",
+   "number_card_name": "AMC Contracts Created - Today"
+  },
+  {
+   "label": "Opportunity Created - Today",
+   "number_card_name": "Opportunity Created - Today"
+  },
+  {
+   "label": "Open Opportunities",
+   "number_card_name": "Open Opportunities"
+  },
+  {
+   "label": "AMC Contract Expiring - This Month",
+   "number_card_name": "AMC Contract Expiring - This Month"
+  },
+  {
+   "label": "Quotation Created - This Month",
+   "number_card_name": "Quotation Created - This Month"
+  },
+  {
+   "label": "Opportunity Created - This Month",
+   "number_card_name": "Opportunity Created - This Month"
+  },
+  {
+   "label": "Approval Pending - Quotations",
+   "number_card_name": "Approval Pending - Quotations"
+  },
+  {
+   "label": "Quotaion Created - Today",
+   "number_card_name": "Quotaion Created - Today"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Projects",
+   "link_to": "Project",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Dealer Visit Details",
+   "link_to": "Dealer Visits Report",
+   "report_ref_doctype": "Dealer",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Other Visit Details",
+   "link_to": "Other Visits Report",
+   "report_ref_doctype": "Dealer",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Opportunities",
+   "link_to": "CRM Deal",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Dealers",
+   "link_to": "Dealer",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Customer Visit Details",
+   "link_to": "Customer Visit Deatails",
+   "report_ref_doctype": "CRM Organization",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Customer List",
+   "link_to": "CRM Organization",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "AMC Contract",
+   "link_to": "CRM Contract",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Quotations",
+   "link_to": "CRM Quotation",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Other Visits",
+   "link_to": "Other Visit",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Home"
+}

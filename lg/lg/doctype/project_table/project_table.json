@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-06-20 11:02:59.408383",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "project",
+  "status",
+  "expiry_date",
+  "bill_to",
+  "ship_to"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "columns": 3,
+   "fetch_from": "project.status",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Status"
+  },
+  {
+   "columns": 3,
+   "fetch_from": "project.expiry_date",
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Expiry Date"
+  },
+  {
+   "fetch_from": "project.customer_address",
+   "fieldname": "bill_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Bill To",
+   "options": "Address",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "project.shipping_address",
+   "fieldname": "ship_to",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "label": "Ship To",
+   "options": "Address",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-06-20 17:00:20.125499",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Project Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

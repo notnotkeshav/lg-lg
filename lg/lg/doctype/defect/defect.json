@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-04 15:14:54.523606",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "item_code",
+  "item_name",
+  "item_category",
+  "attach",
+  "column_break_piyj",
+  "defect_code",
+  "voc"
+ ],
+ "fields": [
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Link",
+   "label": "Item Name",
+   "options": "Item"
+  },
+  {
+   "fieldname": "item_category",
+   "fieldtype": "Int",
+   "label": "Item Category"
+  },
+  {
+   "fieldname": "attach",
+   "fieldtype": "Attach",
+   "label": "Attach"
+  },
+  {
+   "fieldname": "column_break_piyj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "defect_code",
+   "fieldtype": "Select",
+   "label": "Defect Code",
+   "options": "\nA\nB\nC"
+  },
+  {
+   "fieldname": "voc",
+   "fieldtype": "Text Editor",
+   "label": "VOC"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-04 15:20:30.489676",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Defect",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

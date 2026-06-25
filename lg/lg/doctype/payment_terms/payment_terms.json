@@ -1,0 +1,108 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-22 10:52:47.271218",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "payment_term_name",
+  "invoice_portion_",
+  "mode_of_payment",
+  "column_break_ylhj",
+  "due_date_based_on",
+  "credit_days",
+  "credit_months",
+  "discount_settings_section",
+  "discount_type",
+  "discount",
+  "section_break_ygex",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "payment_term_name",
+   "fieldtype": "Data",
+   "label": "Payment Term Name"
+  },
+  {
+   "fieldname": "invoice_portion_",
+   "fieldtype": "Data",
+   "label": "Invoice Portion (%)"
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Data",
+   "label": "Mode of Payment"
+  },
+  {
+   "fieldname": "column_break_ylhj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "due_date_based_on",
+   "fieldtype": "Date",
+   "label": "Due Date Based On"
+  },
+  {
+   "fieldname": "credit_days",
+   "fieldtype": "Int",
+   "label": "Credit Days"
+  },
+  {
+   "fieldname": "credit_months",
+   "fieldtype": "Int",
+   "label": "Credit Months"
+  },
+  {
+   "fieldname": "discount_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Discount Settings"
+  },
+  {
+   "fieldname": "discount_type",
+   "fieldtype": "Select",
+   "label": "Discount Type",
+   "options": "Percentage"
+  },
+  {
+   "fieldname": "discount",
+   "fieldtype": "Float",
+   "label": "Discount"
+  },
+  {
+   "fieldname": "section_break_ygex",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-16 19:07:09.209914",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Payment Terms",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

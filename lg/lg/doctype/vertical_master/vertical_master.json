@@ -1,0 +1,66 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:name1",
+ "creation": "2025-06-09 10:58:17.991131",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "name1",
+  "parent_vertical",
+  "hp_and_zone_details",
+  "customer"
+ ],
+ "fields": [
+  {
+   "fieldname": "name1",
+   "fieldtype": "Link",
+   "label": "Vertical",
+   "options": "CRM Industry",
+   "unique": 1
+  },
+  {
+   "fieldname": "hp_and_zone_details",
+   "fieldtype": "Table",
+   "label": "HP and Zone Details",
+   "options": "HP And Zone Details"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "CRM Organization"
+  },
+  {
+   "fieldname": "parent_vertical",
+   "fieldtype": "Select",
+   "label": "Parent Vertical",
+   "options": "Hospital / IT\nResidence\nEducation\nOffice\nHotel/Factory"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-08-21 13:43:54.584325",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Vertical Master",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

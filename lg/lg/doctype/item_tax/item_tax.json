@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-09 18:46:53.470977",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "item_tax_information_section",
+  "valid_from",
+  "company",
+  "column_break_ukqq",
+  "disabled",
+  "minimum_net_rate",
+  "maximum_net_rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "label": "Valid From"
+  },
+  {
+   "fieldname": "column_break_ukqq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "minimum_net_rate",
+   "fieldtype": "Float",
+   "label": "Minimum Net Rate "
+  },
+  {
+   "fieldname": "item_tax_information_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "maximum_net_rate",
+   "fieldtype": "Float",
+   "label": "Maximum Net Rate "
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "label": "Company "
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-10-11 14:57:25.898012",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Item Tax",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

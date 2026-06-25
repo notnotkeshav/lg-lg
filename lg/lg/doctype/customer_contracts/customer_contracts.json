@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-30 11:24:57.741085",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "contract_id",
+  "start_date",
+  "expiry_date",
+  "status"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "contract_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Contract ID",
+   "options": "CRM Contract",
+   "unique": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "contract_id.start_date",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Start Date"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "contract_id.expiry_date",
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Expiry Date"
+  },
+  {
+   "columns": 2,
+   "fetch_from": "contract_id.custom_contract_status",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nActive\nExpired"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-05-22 13:42:27.796888",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Customer Contracts",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

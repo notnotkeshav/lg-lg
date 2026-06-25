@@ -1,0 +1,110 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-24 16:31:37.877029",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "billing_term",
+  "billing_date",
+  "billed_date",
+  "invoice_link",
+  "column_break_sjxt",
+  "status",
+  "amount",
+  "invoice_id",
+  "section_break_iuwy",
+  "invoice_information"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "billing_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Billing Date",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Pending",
+   "depends_on": "eval:doc.parenttype==\"CRM Contract\"",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nInvoice Raised\nPartially Paid\nPaid",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "billing_term",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Billing Term",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.parenttype==\"CRM Contract\"",
+   "fieldname": "invoice_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Invoice Number"
+  },
+  {
+   "allow_on_submit": 1,
+   "columns": 1,
+   "depends_on": "eval:doc.parenttype==\"CRM Contract\"",
+   "fieldname": "billed_date",
+   "fieldtype": "Date",
+   "label": "Billed Date"
+  },
+  {
+   "fieldname": "column_break_sjxt",
+   "fieldtype": "Column Break",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.parenttype==\"CRM Contract\"",
+   "fieldname": "invoice_link",
+   "fieldtype": "Link",
+   "label": "Invoice Link",
+   "options": "Invoice"
+  },
+  {
+   "fieldname": "section_break_iuwy",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "depends_on": "eval:doc.parenttype==\"CRM Contract\"",
+   "fieldname": "invoice_information",
+   "fieldtype": "HTML",
+   "label": "Invoice Information"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-07 11:46:01.725133",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Contract Billing Schedule",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:product_group_name",
+ "creation": "2024-12-18 12:42:54.379638",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "general_information_section",
+  "product_group_name",
+  "parent_product_name",
+  "product_level",
+  "is_group",
+  "image"
+ ],
+ "fields": [
+  {
+   "fieldname": "general_information_section",
+   "fieldtype": "Section Break",
+   "label": "General Information"
+  },
+  {
+   "bold": 1,
+   "fieldname": "product_group_name",
+   "fieldtype": "Data",
+   "label": "Product Group Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "parent_product_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Parent Product Name",
+   "options": "CRM Product Group"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "product_level",
+   "fieldtype": "Select",
+   "label": "Product Level",
+   "options": "Level 1\nLevel 2\nLevel 3"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-22 12:36:54.432335",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "CRM Product Group",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

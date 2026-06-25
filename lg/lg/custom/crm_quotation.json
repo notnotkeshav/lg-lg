@@ -1,0 +1,32 @@
+{
+ "custom_fields": [],
+ "custom_perms": [],
+ "doctype": "CRM Quotation",
+ "links": [],
+ "property_setters": [
+  {
+   "_assign": null,
+   "_comments": null,
+   "_liked_by": null,
+   "_user_tags": null,
+   "creation": "2024-11-21 18:42:19.772565",
+   "default_value": null,
+   "doc_type": "CRM Quotation",
+   "docstatus": 0,
+   "doctype_or_field": "DocField",
+   "field_name": "table_xwez",
+   "idx": 0,
+   "is_system_generated": 0,
+   "modified": "2024-11-21 18:42:19.772565",
+   "modified_by": "Administrator",
+   "module": null,
+   "name": "Quotation-table_xwez-label",
+   "owner": "Administrator",
+   "property": "label",
+   "property_type": "Data",
+   "row_name": null,
+   "value": "Sales Taxes and Charges"
+  }
+ ],
+ "sync_on_migrate": 1
+}

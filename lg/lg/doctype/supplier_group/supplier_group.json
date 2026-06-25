@@ -1,0 +1,30 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-22 13:01:52.918337",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "supplier_group_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "supplier_group_name",
+   "fieldtype": "Data",
+   "label": "Supplier Group Name"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-22 13:05:16.065753",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Supplier Group",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

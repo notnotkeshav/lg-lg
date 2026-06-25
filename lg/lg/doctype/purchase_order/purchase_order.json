@@ -1,0 +1,388 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-21 18:23:03.138444",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_k8i8",
+  "amended_from",
+  "series",
+  "supplier",
+  "column_break_afkg",
+  "date",
+  "required_by",
+  "scheduled_time",
+  "column_break_rbhr",
+  "apply_tax_withholding_amount",
+  "is_reverse_charge",
+  "is_subcontracted",
+  "currency_and_price_list_section",
+  "currency",
+  "column_break_hbcy",
+  "price_list",
+  "product_details_section",
+  "table_duwi",
+  "section_break_vpfp",
+  "total_qty",
+  "column_break_nsdf",
+  "total_inr",
+  "taxes_and_charges_section",
+  "tax_category",
+  "sales_taxes_and_charges_template",
+  "sales_taxes_and_charges",
+  "section_break_zruu",
+  "column_break_vmzi",
+  "column_break_avah",
+  "total_taxes_and_charges_inr",
+  "totals_section",
+  "column_break_hxjt",
+  "column_break_xdqb",
+  "grand_total_inr",
+  "rounding_adjustment_inr",
+  "rounded_total_inr",
+  "address__and_contact_tab",
+  "supplier_address",
+  "supplier_address_details",
+  "column_break_egmv",
+  "supplier_contact",
+  "contact_name",
+  "contact_mobile_no",
+  "contact_email",
+  "shipping_address_section",
+  "shipping_address",
+  "column_break_qzoq",
+  "shipping_address_details",
+  "company_billing_address_section",
+  "company_billing_address",
+  "column_break_dpdw",
+  "billing_address_details",
+  "terms_tab",
+  "payment_terms_section",
+  "payment_terms_template",
+  "section_break_osmm",
+  "payment_schedule"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_k8i8",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Purchase Order",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Supplier",
+   "options": "Supplier",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_afkg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "required_by",
+   "fieldtype": "Date",
+   "label": "Required By"
+  },
+  {
+   "fieldname": "scheduled_time",
+   "fieldtype": "Date",
+   "label": "Scheduled TIme"
+  },
+  {
+   "fieldname": "column_break_rbhr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "apply_tax_withholding_amount",
+   "fieldtype": "Check",
+   "label": "Apply Tax Withholding Amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_reverse_charge",
+   "fieldtype": "Check",
+   "label": "Is Reverse Charge"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_subcontracted",
+   "fieldtype": "Check",
+   "label": "Is Subcontracted"
+  },
+  {
+   "fieldname": "currency_and_price_list_section",
+   "fieldtype": "Section Break",
+   "label": "Currency and Price List"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "column_break_hbcy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price_list",
+   "fieldtype": "Link",
+   "label": "Price List",
+   "options": "AMC Price List"
+  },
+  {
+   "fieldname": "product_details_section",
+   "fieldtype": "Section Break",
+   "label": "Item Details"
+  },
+  {
+   "fieldname": "section_break_vpfp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_qty",
+   "fieldtype": "Float",
+   "label": "Total Qty"
+  },
+  {
+   "fieldname": "column_break_nsdf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_inr",
+   "fieldtype": "Float",
+   "label": "Total (INR)"
+  },
+  {
+   "fieldname": "taxes_and_charges_section",
+   "fieldtype": "Section Break",
+   "label": "Taxes and charges"
+  },
+  {
+   "fieldname": "tax_category",
+   "fieldtype": "Link",
+   "label": "Tax Category",
+   "options": "Tax Category"
+  },
+  {
+   "fieldname": "sales_taxes_and_charges_template",
+   "fieldtype": "Link",
+   "label": "Purchase Taxes and Charges Template",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "sales_taxes_and_charges",
+   "fieldtype": "Table",
+   "label": "Purchase Taxes and Charges",
+   "options": "Purchase Taxes and Charges"
+  },
+  {
+   "fieldname": "section_break_zruu",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_vmzi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_avah",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_taxes_and_charges_inr",
+   "fieldtype": "Float",
+   "label": "Total Taxes and Charges (INR)"
+  },
+  {
+   "fieldname": "totals_section",
+   "fieldtype": "Section Break",
+   "label": "Totals"
+  },
+  {
+   "fieldname": "column_break_hxjt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xdqb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "grand_total_inr",
+   "fieldtype": "Float",
+   "label": "Grand Total (INR)"
+  },
+  {
+   "fieldname": "rounding_adjustment_inr",
+   "fieldtype": "Float",
+   "label": "Rounding Adjustment (INR)"
+  },
+  {
+   "fieldname": "rounded_total_inr",
+   "fieldtype": "Float",
+   "label": "Rounded Total (INR)"
+  },
+  {
+   "fieldname": "address__and_contact_tab",
+   "fieldtype": "Tab Break",
+   "label": "Address  and Contact"
+  },
+  {
+   "fieldname": "supplier_address",
+   "fieldtype": "Link",
+   "label": "Supplier Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "supplier_address_details",
+   "fieldtype": "Small Text",
+   "label": "Supplier Address Details"
+  },
+  {
+   "fieldname": "column_break_egmv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "supplier_contact",
+   "fieldtype": "Link",
+   "label": "Supplier Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "contact_name",
+   "fieldtype": "Small Text",
+   "label": "Contact Name"
+  },
+  {
+   "fieldname": "contact_mobile_no",
+   "fieldtype": "Small Text",
+   "label": "Contact Mobile No"
+  },
+  {
+   "fieldname": "contact_email",
+   "fieldtype": "Small Text",
+   "label": "Contact Email"
+  },
+  {
+   "fieldname": "shipping_address_section",
+   "fieldtype": "Section Break",
+   "label": "Shipping Address"
+  },
+  {
+   "fieldname": "shipping_address",
+   "fieldtype": "Link",
+   "label": "Shipping Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "column_break_qzoq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shipping_address_details",
+   "fieldtype": "Small Text",
+   "label": "Shipping Address Details"
+  },
+  {
+   "fieldname": "company_billing_address_section",
+   "fieldtype": "Section Break",
+   "label": "Company Billing Address"
+  },
+  {
+   "fieldname": "company_billing_address",
+   "fieldtype": "Link",
+   "label": "Company Billing Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "column_break_dpdw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "billing_address_details",
+   "fieldtype": "Small Text",
+   "label": "Billing Address Details"
+  },
+  {
+   "fieldname": "terms_tab",
+   "fieldtype": "Tab Break",
+   "label": "Terms"
+  },
+  {
+   "fieldname": "payment_terms_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Terms"
+  },
+  {
+   "fieldname": "payment_terms_template",
+   "fieldtype": "Link",
+   "label": "Payment Terms Template",
+   "options": "Payment Terms Template"
+  },
+  {
+   "fieldname": "section_break_osmm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "payment_schedule",
+   "fieldtype": "Table",
+   "label": "Payment Schedule",
+   "options": "Payment Schedule"
+  },
+  {
+   "fieldname": "series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "\nPUR-ORD-.YYYY.-"
+  },
+  {
+   "fieldname": "table_duwi",
+   "fieldtype": "Table",
+   "options": "Purchase Order Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-12-24 18:07:44.396886",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Purchase Order",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

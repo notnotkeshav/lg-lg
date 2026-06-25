@@ -1,0 +1,104 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:model_no",
+ "creation": "2025-07-10 14:19:55.989123",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "model_no",
+  "model_prefix",
+  "model_categories",
+  "column_break_jvzh",
+  "indoor_outdoor",
+  "category_of_model",
+  "tonnes",
+  "hp"
+ ],
+ "fields": [
+  {
+   "fieldname": "model_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Model",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "model_prefix",
+   "fieldtype": "Data",
+   "label": "Model Prefix"
+  },
+  {
+   "fieldname": "model_categories",
+   "fieldtype": "Data",
+   "label": "Model Category"
+  },
+  {
+   "default": "Outdoor",
+   "fieldname": "indoor_outdoor",
+   "fieldtype": "Select",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "I/O",
+   "options": "Indoor\nOutdoor\nOthers"
+  },
+  {
+   "default": "CAC",
+   "fieldname": "category_of_model",
+   "fieldtype": "Select",
+   "label": "Category of Model",
+   "options": "Multi-V\nCAC\nOthers"
+  },
+  {
+   "fieldname": "tonnes",
+   "fieldtype": "Float",
+   "label": "Tonnes"
+  },
+  {
+   "fieldname": "hp",
+   "fieldtype": "Float",
+   "label": "HP"
+  },
+  {
+   "fieldname": "column_break_jvzh",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "group": "Products",
+   "link_doctype": "CRM Product",
+   "link_fieldname": "model_no"
+  }
+ ],
+ "modified": "2025-11-07 16:12:57.871419",
+ "modified_by": "admin@himindia.com",
+ "module": "Lg",
+ "name": "Model No",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

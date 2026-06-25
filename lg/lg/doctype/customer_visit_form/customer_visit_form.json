@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-02-07 11:29:44.138439",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_visit_date",
+  "purpose_of_visit",
+  "other_purpose_of_visit",
+  "description",
+  "visited_by",
+  "accompanied_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_visit_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Customer Visit Date"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "accompanied_by",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Accompained By",
+   "options": "User",
+   "placeholder": " If any other employee visited along with you"
+  },
+  {
+   "fieldname": "purpose_of_visit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Purpose of Visit",
+   "options": "CRM Deal Type"
+  },
+  {
+   "depends_on": "eval:doc.purpose_of_visit == \"Other\"",
+   "fieldname": "other_purpose_of_visit",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Other Purpose of Visit"
+  },
+  {
+   "fieldname": "visited_by",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Visited By"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-03-02 13:48:52.309820",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Customer Visit Form",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

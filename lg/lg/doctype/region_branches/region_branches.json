@@ -1,0 +1,102 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:branch_id",
+ "creation": "2024-12-17 12:11:06.486173",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "branch_code",
+  "branch_name",
+  "branch_head",
+  "branch_head_name",
+  "branch_id",
+  "region",
+  "branch_address",
+  "gstin"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "branch_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Name",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "branch_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Code"
+  },
+  {
+   "fieldname": "branch_head",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Branch Head",
+   "options": "User"
+  },
+  {
+   "fetch_from": "branch_head.full_name",
+   "fetch_if_empty": 1,
+   "fieldname": "branch_head_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Head Name"
+  },
+  {
+   "columns": 2,
+   "fieldname": "branch_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch ID",
+   "options": "eval:doc.branch_name",
+   "unique": 1
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Region",
+   "options": "Region Master"
+  },
+  {
+   "fieldname": "branch_address",
+   "fieldtype": "Small Text",
+   "label": "Branch Address"
+  },
+  {
+   "fieldname": "gstin",
+   "fieldtype": "Data",
+   "label": "GSTIN"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-05 11:24:55.113518",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Region Branches",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

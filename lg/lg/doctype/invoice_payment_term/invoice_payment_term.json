@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-11-03 12:03:47.643891",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "portion",
+  "portion_amount",
+  "due_date",
+  "outstanding_as_per_portion",
+  "column_break_qwgo",
+  "amount_received",
+  "amount_received_date",
+  "payment_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "portion",
+   "fieldtype": "Percent",
+   "in_list_view": 1,
+   "label": "Portion",
+   "precision": "2"
+  },
+  {
+   "fieldname": "portion_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Portion Amount",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "amount_received_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Amount Received Date"
+  },
+  {
+   "description": "Difference between the Portion Amount and the Received Amount",
+   "fieldname": "outstanding_as_per_portion",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Outstanding as per portion",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_qwgo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "amount_received",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Received Amount ",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "payment_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Payment ID"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-07 16:44:46.966136",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Invoice Payment Term",
+ "owner": "admin@himindia.com",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

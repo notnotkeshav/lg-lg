@@ -1,0 +1,32 @@
+{
+ "custom_fields": [],
+ "custom_perms": [],
+ "doctype": "CRM Organization",
+ "links": [],
+ "property_setters": [
+  {
+   "_assign": null,
+   "_comments": null,
+   "_liked_by": null,
+   "_user_tags": null,
+   "creation": "2024-12-24 13:50:54.212760",
+   "default_value": null,
+   "doc_type": "CRM Organization",
+   "docstatus": 0,
+   "doctype_or_field": "DocField",
+   "field_name": "phone",
+   "idx": 0,
+   "is_system_generated": 0,
+   "modified": "2024-12-24 13:50:54.212760",
+   "modified_by": "Administrator",
+   "module": null,
+   "name": "CRM Organization-phone-default",
+   "owner": "Administrator",
+   "property": "default",
+   "property_type": "Text",
+   "row_name": null,
+   "value": ""
+  }
+ ],
+ "sync_on_migrate": 1
+}

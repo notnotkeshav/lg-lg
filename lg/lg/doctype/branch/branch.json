@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-15 13:13:21.713468",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "branch_id",
+  "branch_name",
+  "branch_code",
+  "branch_head",
+  "email"
+ ],
+ "fields": [
+  {
+   "fieldname": "branch_id",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Branch ID",
+   "options": "Region Branches",
+   "width": "1"
+  },
+  {
+   "fetch_from": "branch_id.branch_name",
+   "fieldname": "branch_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Name",
+   "width": "2"
+  },
+  {
+   "fetch_from": "branch_id.branch_code",
+   "fieldname": "branch_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Code"
+  },
+  {
+   "fetch_from": "branch_id.branch_head_name",
+   "fieldname": "branch_head",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Head"
+  },
+  {
+   "fetch_from": "branch_id.branch_head",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-03-05 11:26:03.802724",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Branch",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-21 17:49:02.652321",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "payment_term",
+  "section_break_zmee",
+  "description",
+  "section_break_gsgt",
+  "due_date",
+  "mode_of_payment",
+  "column_break_wkkc",
+  "invoice_portion",
+  "section_break_dsqo",
+  "discount_type",
+  "discount_date",
+  "column_break_chpc",
+  "discount",
+  "section_break_uszr",
+  "payment_amount",
+  "outstanding",
+  "paid_amount",
+  "discounted_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "payment_term",
+   "fieldtype": "Link",
+   "label": "Payment Term",
+   "options": "Payment Terms"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_zmee",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "section_break_gsgt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment",
+   "options": "Mode Of Payment"
+  },
+  {
+   "fieldname": "column_break_wkkc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_portion",
+   "fieldtype": "Percent",
+   "label": "Invoice Portion"
+  },
+  {
+   "fieldname": "section_break_dsqo",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "discount_type",
+   "fieldtype": "Select",
+   "label": "Discount Type",
+   "options": "\nPercentage\nAmount"
+  },
+  {
+   "fieldname": "discount_date",
+   "fieldtype": "Date",
+   "label": "Discount Date"
+  },
+  {
+   "fieldname": "column_break_chpc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "discount",
+   "fieldtype": "Float",
+   "label": "Discount"
+  },
+  {
+   "fieldname": "section_break_uszr",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "payment_amount",
+   "fieldtype": "Currency",
+   "label": "Payment Amount"
+  },
+  {
+   "fieldname": "outstanding",
+   "fieldtype": "Currency",
+   "label": "Outstanding"
+  },
+  {
+   "fieldname": "paid_amount",
+   "fieldtype": "Currency",
+   "label": "Paid Amount"
+  },
+  {
+   "fieldname": "discounted_amount",
+   "fieldtype": "Currency",
+   "label": "Discounted Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-22 15:10:58.430715",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Payment Schedule",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

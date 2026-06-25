@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-03 16:55:39.393376",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "purchase_information_section",
+  "invoice_no",
+  "item_quantity",
+  "item_name",
+  "column_break_kbbu",
+  "invoice_date",
+  "if_warranty",
+  "item_code"
+ ],
+ "fields": [
+  {
+   "fieldname": "invoice_no",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Invoice No",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_kbbu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Invoice Date ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Item Quantity ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "if_warranty",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "If Warranty ",
+   "options": "Yes\nNo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purchase_information_section",
+   "fieldtype": "Section Break",
+   "label": "Purchase Information"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name "
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Code "
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-10-03 17:01:22.060994",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Purchase",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

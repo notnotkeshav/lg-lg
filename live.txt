@@ -1,0 +1,1120 @@
+.
+├── dashboard
+│   ├── components.json
+│   ├── env.example
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── jsconfig.json
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── proxyOptions.js
+│   ├── README.md
+│   ├── src
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── components
+│   │   │   ├── charts
+│   │   │   │   ├── AreaChart.jsx
+│   │   │   │   ├── DonutChart.jsx
+│   │   │   │   ├── PieChart.jsx
+│   │   │   │   ├── RoundedBarChart.jsx
+│   │   │   │   ├── SmoothLineChart.jsx
+│   │   │   │   └── StackedBarChart.jsx
+│   │   │   ├── common
+│   │   │   │   ├── BreadCrumb.jsx
+│   │   │   │   ├── DataTable.jsx
+│   │   │   │   ├── DateRangeInput.jsx
+│   │   │   │   ├── DetailModal.jsx
+│   │   │   │   ├── FilterPanel.jsx
+│   │   │   │   └── KPICard.jsx
+│   │   │   ├── ui
+│   │   │   │   ├── button.tsx
+│   │   │   │   └── card.tsx
+│   │   │   └── UI
+│   │   │       ├── Footer.jsx
+│   │   │       └── Header.jsx
+│   │   ├── constants
+│   │   │   └── theme.js
+│   │   ├── contexts
+│   │   │   └── FilterContext.jsx
+│   │   ├── hooks
+│   │   │   ├── useFilterOptions.js
+│   │   │   └── useFrappeData.js
+│   │   ├── index.css
+│   │   ├── lib
+│   │   │   └── utils.ts
+│   │   ├── main.jsx
+│   │   ├── pages
+│   │   │   ├── Branch.jsx
+│   │   │   ├── Homepage.jsx
+│   │   │   ├── Manager.jsx
+│   │   │   └── Region.jsx
+│   │   └── utils
+│   │       ├── api.js
+│   │       └── dataHelpers.js
+│   ├── vite.config.js
+│   └── yarn.lock
+├── lg
+│   ├── api
+│   │   ├── api_document.md
+│   │   ├── contact.py
+│   │   ├── contract.py
+│   │   ├── dashboard.py
+│   │   ├── download_deal.py
+│   │   ├── list.py
+│   │   ├── master_api.py
+│   │   ├── __pycache__
+│   │   │   ├── download_deal.cpython-310.pyc
+│   │   │   ├── master_api.cpython-310.pyc
+│   │   │   ├── my_custom_api.cpython-310.pyc
+│   │   │   └── update_all_deal_status.cpython-310.pyc
+│   │   └── update_all_deal_status.py
+│   ├── bell_notification
+│   ├── config
+│   │   └── __init__.py
+│   ├── fixtures
+│   │   ├── client_script.json
+│   │   ├── custom_field.json
+│   │   └── property_setter.json
+│   ├── hooks.py
+│   ├── __init__.py
+│   ├── lg
+│   │   ├── custom
+│   │   │   ├── crm_contract.json
+│   │   │   ├── crm_organization.json
+│   │   │   └── crm_quotation.json
+│   │   ├── dashboard_chart
+│   │   │   └── il_wise_hp_(percentage)
+│   │   │       └── il_wise_hp_(percentage).json
+│   │   ├── doctype
+│   │   │   ├── amc
+│   │   │   │   ├── amc.js
+│   │   │   │   ├── amc.json
+│   │   │   │   ├── amc.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── amc.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_amc.py
+│   │   │   ├── amc_price_list
+│   │   │   │   ├── amc_price_list.js
+│   │   │   │   ├── amc_price_list.json
+│   │   │   │   ├── amc_price_list.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── amc_price_list.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_amc_price_list.py
+│   │   │   ├── amc_price_policy
+│   │   │   │   ├── amc_price_policy.js
+│   │   │   │   ├── amc_price_policy.json
+│   │   │   │   ├── amc_price_policy.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── amc_price_policy.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_amc_price_policy.py
+│   │   │   ├── amc_quotation
+│   │   │   │   ├── amc_quotation.js
+│   │   │   │   ├── amc_quotation.json
+│   │   │   │   ├── amc_quotation.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── amc_quotation.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_amc_quotation.py
+│   │   │   ├── amc_status
+│   │   │   │   ├── amc_status.js
+│   │   │   │   ├── amc_status.json
+│   │   │   │   ├── amc_status.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── amc_status.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_amc_status.py
+│   │   │   ├── branch
+│   │   │   │   ├── branch.json
+│   │   │   │   ├── branch.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── branch.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── brand
+│   │   │   │   ├── brand.js
+│   │   │   │   ├── brand.json
+│   │   │   │   ├── brand.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── brand.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_brand.py
+│   │   │   ├── company
+│   │   │   │   ├── company.js
+│   │   │   │   ├── company.json
+│   │   │   │   ├── company.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── company.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_company.py
+│   │   │   ├── contract_billing_schedule
+│   │   │   │   ├── contract_billing_schedule.json
+│   │   │   │   ├── contract_billing_schedule.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── contract_billing_schedule.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── cost_center
+│   │   │   │   ├── cost_center.js
+│   │   │   │   ├── cost_center.json
+│   │   │   │   ├── cost_center.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── cost_center.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_cost_center.py
+│   │   │   ├── crm_address
+│   │   │   │   ├── crm_address.js
+│   │   │   │   ├── crm_address.json
+│   │   │   │   ├── crm_address.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── crm_address.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_crm_address.py
+│   │   │   ├── crm_contract
+│   │   │   │   ├── api.py
+│   │   │   │   ├── crm_contract.js
+│   │   │   │   ├── crm_contract.json
+│   │   │   │   ├── crm_contract.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── crm_contract.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_crm_contract.py
+│   │   │   ├── crm_contract_item
+│   │   │   │   ├── crm_contract_item.json
+│   │   │   │   ├── crm_contract_item.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── crm_contract_item.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── crm_deal
+│   │   │   │   ├── crm_deal.py
+│   │   │   │   └── __pycache__
+│   │   │   │       └── crm_deal.cpython-310.pyc
+│   │   │   ├── crm_deal_type
+│   │   │   │   ├── crm_deal_type.js
+│   │   │   │   ├── crm_deal_type.json
+│   │   │   │   ├── crm_deal_type.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── crm_deal_type.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_crm_deal_type.py
+│   │   │   ├── crm_product
+│   │   │   │   ├── crm_product.js
+│   │   │   │   ├── crm_product.json
+│   │   │   │   ├── crm_product.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── crm_product.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_crm_product.py
+│   │   │   ├── crm_product_group
+│   │   │   │   ├── crm_product_group.js
+│   │   │   │   ├── crm_product_group.json
+│   │   │   │   ├── crm_product_group.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── crm_product_group.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_crm_product_group.py
+│   │   │   ├── crm_quotation
+│   │   │   │   ├── api.py
+│   │   │   │   ├── crm_quotation.js
+│   │   │   │   ├── crm_quotation.json
+│   │   │   │   ├── crm_quotation.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── crm_quotation.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_crm_quotation.py
+│   │   │   ├── crm_quotation_status
+│   │   │   │   ├── crm_quotation_status.js
+│   │   │   │   ├── crm_quotation_status.json
+│   │   │   │   ├── crm_quotation_status.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── crm_quotation_status.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_crm_quotation_status.py
+│   │   │   ├── crm_task
+│   │   │   │   ├── crm_task.js
+│   │   │   │   ├── crm_task.json
+│   │   │   │   ├── crm_task.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── crm_task.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_crm_task.py
+│   │   │   ├── currency_exchange
+│   │   │   │   ├── currency_exchange.js
+│   │   │   │   ├── currency_exchange.json
+│   │   │   │   ├── currency_exchange.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── currency_exchange.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_currency_exchange.py
+│   │   │   ├── currency_exchange_settings
+│   │   │   │   ├── currency_exchange_settings.js
+│   │   │   │   ├── currency_exchange_settings.json
+│   │   │   │   ├── currency_exchange_settings.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── currency_exchange_settings.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_currency_exchange_settings.py
+│   │   │   ├── currency_exchange_settings_details
+│   │   │   │   ├── currency_exchange_settings_details.json
+│   │   │   │   ├── currency_exchange_settings_details.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── currency_exchange_settings_details.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── currency_exchange_settings_result
+│   │   │   │   ├── currency_exchange_settings_result.json
+│   │   │   │   ├── currency_exchange_settings_result.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── currency_exchange_settings_result.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── customer_contracts
+│   │   │   │   ├── customer_contracts.json
+│   │   │   │   ├── customer_contracts.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── customer_contracts.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── customer_visit_form
+│   │   │   │   ├── customer_visit_form.json
+│   │   │   │   ├── customer_visit_form.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── customer_visit_form.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── dealer
+│   │   │   │   ├── dealer.js
+│   │   │   │   ├── dealer.json
+│   │   │   │   ├── dealer.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── dealer.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_dealer.py
+│   │   │   ├── dealer_team
+│   │   │   │   ├── dealer_team.json
+│   │   │   │   ├── dealer_team.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── dealer_team.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── defect
+│   │   │   │   ├── defect.js
+│   │   │   │   ├── defect.json
+│   │   │   │   ├── defect.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── defect.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_defect.py
+│   │   │   ├── escalation
+│   │   │   │   ├── escalation.js
+│   │   │   │   ├── escalation.json
+│   │   │   │   ├── escalation.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── escalation.cpython-310.pyc
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   └── test_escalation.py
+│   │   │   ├── hp_and_zone_details
+│   │   │   │   ├── hp_and_zone_details.json
+│   │   │   │   ├── hp_and_zone_details.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── hp_and_zone_details.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── __init__.py
+│   │   │   ├── invoice
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── invoice.js
+│   │   │   │   ├── invoice.json
+│   │   │   │   ├── invoice.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── invoice.cpython-310.pyc
+│   │   │   │   └── test_invoice.py
+│   │   │   ├── invoice_payment_term
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── invoice_payment_term.json
+│   │   │   │   ├── invoice_payment_term.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── invoice_payment_term.cpython-310.pyc
+│   │   │   ├── invoice_uploader
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── invoice_uploader.json
+│   │   │   │   ├── invoice_uploader.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── invoice_uploader.cpython-310.pyc
+│   │   │   ├── item
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── item.js
+│   │   │   │   ├── item.json
+│   │   │   │   ├── item.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── item.cpython-310.pyc
+│   │   │   │   └── test_item.py
+│   │   │   ├── item_group
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── item_group.js
+│   │   │   │   ├── item_group.json
+│   │   │   │   ├── item_group.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── item_group.cpython-310.pyc
+│   │   │   │   └── test_item_group.py
+│   │   │   ├── item_price_list
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── item_price_list.js
+│   │   │   │   ├── item_price_list.json
+│   │   │   │   ├── item_price_list.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── item_price_list.cpython-310.pyc
+│   │   │   │   └── test_item_price_list.py
+│   │   │   ├── item_tax
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── item_tax.js
+│   │   │   │   ├── item_tax.json
+│   │   │   │   ├── item_tax.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── item_tax.cpython-310.pyc
+│   │   │   │   └── test_item_tax.py
+│   │   │   ├── item_tax_template
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── item_tax_template.js
+│   │   │   │   ├── item_tax_template.json
+│   │   │   │   ├── item_tax_template.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── item_tax_template.cpython-310.pyc
+│   │   │   │   └── test_item_tax_template.py
+│   │   │   ├── model_no
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── model_no.js
+│   │   │   │   ├── model_no.json
+│   │   │   │   ├── model_no.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── model_no.cpython-310.pyc
+│   │   │   │   └── test_model_no.py
+│   │   │   ├── mode_of_payment
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── mode_of_payment.json
+│   │   │   │   ├── mode_of_payment.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── mode_of_payment.cpython-310.pyc
+│   │   │   ├── opportunity
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── opportunity.js
+│   │   │   │   ├── opportunity.json
+│   │   │   │   ├── opportunity.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── opportunity.cpython-310.pyc
+│   │   │   │   └── test_opportunity.py
+│   │   │   ├── opportunity_item
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── opportunity_item.json
+│   │   │   │   ├── opportunity_item.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── opportunity_item.cpython-310.pyc
+│   │   │   ├── part
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── part.js
+│   │   │   │   ├── part.json
+│   │   │   │   ├── part.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── part.cpython-310.pyc
+│   │   │   │   └── test_part.py
+│   │   │   ├── payment_frequency
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── payment_frequency.js
+│   │   │   │   ├── payment_frequency.json
+│   │   │   │   ├── payment_frequency.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── payment_frequency.cpython-310.pyc
+│   │   │   │   └── test_payment_frequency.py
+│   │   │   ├── payment_schedule
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── payment_schedule.js
+│   │   │   │   ├── payment_schedule.json
+│   │   │   │   ├── payment_schedule.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── payment_schedule.cpython-310.pyc
+│   │   │   │   └── test_payment_schedule.py
+│   │   │   ├── payment_terms
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── payment_terms.js
+│   │   │   │   ├── payment_terms.json
+│   │   │   │   ├── payment_terms.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── payment_terms.cpython-310.pyc
+│   │   │   │   └── test_payment_terms.py
+│   │   │   ├── payment_terms_template
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── payment_terms_template.js
+│   │   │   │   ├── payment_terms_template.json
+│   │   │   │   ├── payment_terms_template.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── payment_terms_template.cpython-310.pyc
+│   │   │   │   └── test_payment_terms_template.py
+│   │   │   ├── payment_uploader
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── payment_uploader.json
+│   │   │   │   ├── payment_uploader.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── payment_uploader.cpython-310.pyc
+│   │   │   ├── pay_term
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pay_term.js
+│   │   │   │   ├── pay_term.json
+│   │   │   │   ├── pay_term.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── pay_term.cpython-310.pyc
+│   │   │   │   └── test_pay_term.py
+│   │   │   ├── pay_term_list
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pay_term_list.json
+│   │   │   │   ├── pay_term_list.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── pay_term_list.cpython-310.pyc
+│   │   │   ├── pincode_master
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pincode_master.js
+│   │   │   │   ├── pincode_master.json
+│   │   │   │   ├── pincode_master.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── pincode_master.cpython-310.pyc
+│   │   │   │   └── test_pincode_master.py
+│   │   │   ├── product
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── product.json
+│   │   │   │   ├── product.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── product.cpython-310.pyc
+│   │   │   ├── product_bundle
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── product_bundle.js
+│   │   │   │   ├── product_bundle.json
+│   │   │   │   ├── product_bundle.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── product_bundle.cpython-310.pyc
+│   │   │   │   └── test_product_bundle.py
+│   │   │   ├── product_details
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── product_details.json
+│   │   │   │   ├── product_details.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── product_details.cpython-310.pyc
+│   │   │   ├── project
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── project.js
+│   │   │   │   ├── project.json
+│   │   │   │   ├── project.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── project.cpython-310.pyc
+│   │   │   │   └── test_project.py
+│   │   │   ├── project_table
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── project_table.json
+│   │   │   │   ├── project_table.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── project_table.cpython-310.pyc
+│   │   │   ├── purchase
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── purchase.json
+│   │   │   │   ├── purchase.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── purchase.cpython-310.pyc
+│   │   │   ├── purchase_order
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── purchase_order.js
+│   │   │   │   ├── purchase_order.json
+│   │   │   │   ├── purchase_order.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── purchase_order.cpython-310.pyc
+│   │   │   │   └── test_purchase_order.py
+│   │   │   ├── purchase_order_item
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── purchase_order_item.json
+│   │   │   │   ├── purchase_order_item.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── purchase_order_item.cpython-310.pyc
+│   │   │   ├── purchase_taxes_and_charges
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── purchase_taxes_and_charges.json
+│   │   │   │   ├── purchase_taxes_and_charges.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── purchase_taxes_and_charges.cpython-310.pyc
+│   │   │   ├── purchase_taxes_and_charges_template
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── purchase_taxes_and_charges_template.js
+│   │   │   │   ├── purchase_taxes_and_charges_template.json
+│   │   │   │   ├── purchase_taxes_and_charges_template.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── purchase_taxes_and_charges_template.cpython-310.pyc
+│   │   │   │   └── test_purchase_taxes_and_charges_template.py
+│   │   │   ├── __pycache__
+│   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   ├── quotation_item
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── quotation_item.cpython-310.pyc
+│   │   │   │   ├── quotation_item.json
+│   │   │   │   └── quotation_item.py
+│   │   │   ├── region_branches
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── region_branches.cpython-310.pyc
+│   │   │   │   ├── region_branches.js
+│   │   │   │   ├── region_branches.json
+│   │   │   │   ├── region_branches.py
+│   │   │   │   └── test_region_branches.py
+│   │   │   ├── region_master
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── region_master.cpython-310.pyc
+│   │   │   │   ├── region_master.js
+│   │   │   │   ├── region_master.json
+│   │   │   │   ├── region_master.py
+│   │   │   │   └── test_region_master.py
+│   │   │   ├── repair
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── repair.cpython-310.pyc
+│   │   │   │   ├── repair.js
+│   │   │   │   ├── repair.json
+│   │   │   │   ├── repair.py
+│   │   │   │   └── test_repair.py
+│   │   │   ├── sales_taxes_and_charges
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── sales_taxes_and_charges.cpython-310.pyc
+│   │   │   │   ├── sales_taxes_and_charges.js
+│   │   │   │   ├── sales_taxes_and_charges.json
+│   │   │   │   ├── sales_taxes_and_charges.py
+│   │   │   │   └── test_sales_taxes_and_charges.py
+│   │   │   ├── sales_taxes_and_charges_template
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── sales_taxes_and_charges_template.cpython-310.pyc
+│   │   │   │   ├── sales_taxes_and_charges_template.js
+│   │   │   │   ├── sales_taxes_and_charges_template.json
+│   │   │   │   ├── sales_taxes_and_charges_template.py
+│   │   │   │   └── test_sales_taxes_and_charges_template.py
+│   │   │   ├── serial_no
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── serial_no.cpython-310.pyc
+│   │   │   │   ├── serial_no.js
+│   │   │   │   ├── serial_no.json
+│   │   │   │   ├── serial_no.py
+│   │   │   │   └── test_serial_no.py
+│   │   │   ├── supplier
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── supplier.cpython-310.pyc
+│   │   │   │   ├── supplier.js
+│   │   │   │   ├── supplier.json
+│   │   │   │   ├── supplier.py
+│   │   │   │   └── test_supplier.py
+│   │   │   ├── supplier_group
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── supplier_group.cpython-310.pyc
+│   │   │   │   ├── supplier_group.json
+│   │   │   │   └── supplier_group.py
+│   │   │   ├── tax_category
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── tax_category.cpython-310.pyc
+│   │   │   │   ├── tax_category.js
+│   │   │   │   ├── tax_category.json
+│   │   │   │   ├── tax_category.py
+│   │   │   │   └── test_tax_category.py
+│   │   │   ├── technician
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── technician.cpython-310.pyc
+│   │   │   │   ├── technician.js
+│   │   │   │   ├── technician.json
+│   │   │   │   ├── technician.py
+│   │   │   │   └── test_technician.py
+│   │   │   ├── terms_and_conditions
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── terms_and_conditions.cpython-310.pyc
+│   │   │   │   ├── terms_and_conditions.js
+│   │   │   │   ├── terms_and_conditions.json
+│   │   │   │   ├── terms_and_conditions.py
+│   │   │   │   └── test_terms_and_conditions.py
+│   │   │   ├── ticket_mangement
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── ticket_mangement.cpython-310.pyc
+│   │   │   │   ├── test_ticket_mangement.py
+│   │   │   │   ├── ticket_mangement.js
+│   │   │   │   ├── ticket_mangement.json
+│   │   │   │   └── ticket_mangement.py
+│   │   │   ├── uom
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── uom.cpython-310.pyc
+│   │   │   │   ├── test_uom.py
+│   │   │   │   ├── uom.js
+│   │   │   │   ├── uom.json
+│   │   │   │   └── uom.py
+│   │   │   ├── uploader
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── uploader.cpython-310.pyc
+│   │   │   │   ├── test_uploader.py
+│   │   │   │   ├── uploader.js
+│   │   │   │   ├── uploader.json
+│   │   │   │   └── uploader.py
+│   │   │   ├── vertical_master
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── vertical_master.cpython-310.pyc
+│   │   │   │   ├── test_vertical_master.py
+│   │   │   │   ├── vertical_master.js
+│   │   │   │   ├── vertical_master.json
+│   │   │   │   └── vertical_master.py
+│   │   │   ├── visit
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── visit.cpython-310.pyc
+│   │   │   │   ├── visit.json
+│   │   │   │   └── visit.py
+│   │   │   ├── warranty
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── warranty.cpython-310.pyc
+│   │   │   │   ├── test_warranty.py
+│   │   │   │   ├── warranty.js
+│   │   │   │   ├── warranty.json
+│   │   │   │   └── warranty.py
+│   │   │   ├── warranty_contact
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   └── warranty_contact.cpython-310.pyc
+│   │   │   │   ├── warranty_contact.json
+│   │   │   │   └── warranty_contact.py
+│   │   │   ├── warranty_item
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── warranty_item.cpython-310.pyc
+│   │   │   │   ├── warranty_item.json
+│   │   │   │   └── warranty_item.py
+│   │   │   └── warranty_status
+│   │   │       ├── __init__.py
+│   │   │       ├── __pycache__
+│   │   │       │   ├── __init__.cpython-310.pyc
+│   │   │       │   └── warranty_status.cpython-310.pyc
+│   │   │       ├── test_warranty_status.py
+│   │   │       ├── warranty_status.js
+│   │   │       ├── warranty_status.json
+│   │   │       └── warranty_status.py
+│   │   ├── __init__.py
+│   │   ├── notification.py
+│   │   ├── print_format
+│   │   │   ├── amc
+│   │   │   │   ├── amc.json
+│   │   │   │   └── __init__.py
+│   │   │   ├── amc_format
+│   │   │   │   ├── amc_format.json
+│   │   │   │   └── __init__.py
+│   │   │   ├── amc_offer
+│   │   │   │   ├── amc_offer.json
+│   │   │   │   └── __init__.py
+│   │   │   ├── amc_offer_quote
+│   │   │   │   ├── amc_offer_quote.json
+│   │   │   │   └── __init__.py
+│   │   │   ├── contract
+│   │   │   │   ├── contract.json
+│   │   │   │   └── __init__.py
+│   │   │   ├── __init__.py
+│   │   │   ├── quote_print_format
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── quote_print_format.json
+│   │   │   ├── ssd_wo
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── ssd_wo.json
+│   │   │   └── ssd_wo_quote
+│   │   │       ├── __init__.py
+│   │   │       └── ssd_wo_quote.json
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-310.pyc
+│   │   │   └── notification.cpython-310.pyc
+│   │   ├── report
+│   │   │   ├── ageing_report
+│   │   │   │   ├── ageing_report.js
+│   │   │   │   ├── ageing_report.json
+│   │   │   │   ├── ageing_report.py
+│   │   │   │   └── __init__.py
+│   │   │   ├── amc_pipeline_report
+│   │   │   │   ├── amc_pipeline_report.js
+│   │   │   │   ├── amc_pipeline_report.json
+│   │   │   │   ├── amc_pipeline_report.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── amc_pipeline_report.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── amc_pipeline_report_usd
+│   │   │   │   ├── amc_pipeline_report_usd.js
+│   │   │   │   ├── amc_pipeline_report_usd.json
+│   │   │   │   ├── amc_pipeline_report_usd.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── amc_pipeline_report_usd.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── amc_pipeline_report_usd_1
+│   │   │   │   ├── amc_pipeline_report_usd_1.js
+│   │   │   │   ├── amc_pipeline_report_usd_1.json
+│   │   │   │   ├── amc_pipeline_report_usd_1.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── amc_pipeline_report_usd_1.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── ar_ageing_report
+│   │   │   │   ├── ar_ageing_report.js
+│   │   │   │   ├── ar_ageing_report.json
+│   │   │   │   ├── ar_ageing_report.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── ar_ageing_report.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── branch_wise_opporunity_(sales)
+│   │   │   │   ├── branch_wise_opporunity_(sales).js
+│   │   │   │   ├── branch_wise_opporunity_(sales).json
+│   │   │   │   ├── branch_wise_opporunity_(sales).py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── branch_wise_opporunity_(sales).cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── contract_expiry_report
+│   │   │   │   ├── contract_expiry_report.js
+│   │   │   │   ├── contract_expiry_report.json
+│   │   │   │   ├── contract_expiry_report.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── contract_expiry_report.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── contracts_by_type
+│   │   │   │   ├── contracts_by_type.json
+│   │   │   │   └── __init__.py
+│   │   │   ├── customer_contracts
+│   │   │   │   ├── customer_contracts.json
+│   │   │   │   └── __init__.py
+│   │   │   ├── customer_overview
+│   │   │   │   ├── customer_overview.js
+│   │   │   │   ├── customer_overview.json
+│   │   │   │   ├── customer_overview.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── customer_overview.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── customer_wise_project
+│   │   │   │   ├── customer_wise_project.js
+│   │   │   │   ├── customer_wise_project.json
+│   │   │   │   ├── customer_wise_project.py
+│   │   │   │   ├── __init__.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── customer_wise_project.cpython-310.pyc
+│   │   │   │       └── __init__.cpython-310.pyc
+│   │   │   ├── __init__.py
+│   │   │   ├── net_billing_report
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── net_billing_report.js
+│   │   │   │   ├── net_billing_report.json
+│   │   │   │   ├── net_billing_report.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── net_billing_report.cpython-310.pyc
+│   │   │   ├── opportunity_hp_summary
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── opportunity_hp_summary.js
+│   │   │   │   ├── opportunity_hp_summary.json
+│   │   │   │   ├── opportunity_hp_summary.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── opportunity_hp_summary.cpython-310.pyc
+│   │   │   ├── opportunity_hp_summary_2
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── opportunity_hp_summary_2.js
+│   │   │   │   ├── opportunity_hp_summary_2.json
+│   │   │   │   ├── opportunity_hp_summary_2.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── opportunity_hp_summary_2.cpython-310.pyc
+│   │   │   ├── opportunity_hp_summary_3
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── opportunity_hp_summary_3.js
+│   │   │   │   ├── opportunity_hp_summary_3.json
+│   │   │   │   ├── opportunity_hp_summary_3.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── opportunity_hp_summary_3.cpython-310.pyc
+│   │   │   ├── opportunity_hp_tonnes_summery
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── opportunity_hp_tonnes_summery.js
+│   │   │   │   ├── opportunity_hp_tonnes_summery.json
+│   │   │   │   ├── opportunity_hp_tonnes_summery.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── opportunity_hp_tonnes_summery.cpython-310.pyc
+│   │   │   ├── overdue_billing_report
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── overdue_billing_report.js
+│   │   │   │   ├── overdue_billing_report.json
+│   │   │   │   ├── overdue_billing_report.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── overdue_billing_report.cpython-310.pyc
+│   │   │   ├── pipeline_report
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pipeline_report.js
+│   │   │   │   ├── pipeline_report.json
+│   │   │   │   ├── pipeline_report.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── pipeline_report.cpython-310.pyc
+│   │   │   ├── pipeline_report_1
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pipeline_report_1.js
+│   │   │   │   ├── pipeline_report_1.json
+│   │   │   │   └── pipeline_report_1.py
+│   │   │   ├── pipeline_report_2
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pipeline_report_2.html
+│   │   │   │   ├── pipeline_report_2.js
+│   │   │   │   ├── pipeline_report_2.json
+│   │   │   │   └── pipeline_report_2.py
+│   │   │   ├── pipeline_report_3
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pipeline_report_3.js
+│   │   │   │   ├── pipeline_report_3.json
+│   │   │   │   └── pipeline_report_3.py
+│   │   │   ├── pipeline_report_4
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── pipeline_report_4.js
+│   │   │   │   ├── pipeline_report_4.json
+│   │   │   │   ├── pipeline_report_4.py
+│   │   │   │   └── __pycache__
+│   │   │   │       ├── __init__.cpython-310.pyc
+│   │   │   │       └── pipeline_report_4.cpython-310.pyc
+│   │   │   ├── __pycache__
+│   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   ├── region_wise_sales_opportunity_report
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── region_wise_sales_opportunity_report.js
+│   │   │   │   ├── region_wise_sales_opportunity_report.json
+│   │   │   │   └── region_wise_sales_opportunity_report.py
+│   │   │   ├── sales_opportunity_report
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   ├── __init__.cpython-310.pyc
+│   │   │   │   │   └── sales_opportunity_report.cpython-310.pyc
+│   │   │   │   ├── sales_opportunity_report.js
+│   │   │   │   ├── sales_opportunity_report.json
+│   │   │   │   └── sales_opportunity_report.py
+│   │   │   ├── to_be_expired_contracts
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __pycache__
+│   │   │   │   │   └── __init__.cpython-310.pyc
+│   │   │   │   ├── to_be_expired_contracts.js
+│   │   │   │   ├── to_be_expired_contracts.json
+│   │   │   │   └── to_be_expired_contracts.py
+│   │   │   └── work_order_end_date_wise
+│   │   │       ├── __init__.py
+│   │   │       ├── __pycache__
+│   │   │       │   ├── __init__.cpython-310.pyc
+│   │   │       │   └── work_order_end_date_wise.cpython-310.pyc
+│   │   │       ├── work_order_end_date_wise.js
+│   │   │       ├── work_order_end_date_wise.json
+│   │   │       └── work_order_end_date_wise.py
+│   │   └── workspace
+│   │       └── home
+│   │           └── home.json
+│   ├── modules.txt
+│   ├── patches.txt
+│   ├── public
+│   │   ├── assets
+│   │   │   └── lgcrm
+│   │   │       ├── index-BwXyUcFj.js
+│   │   │       ├── index.html
+│   │   │       ├── index--Q8jyJbB.css
+│   │   │       └── vite.svg
+│   │   ├── dashboard
+│   │   │   ├── assets
+│   │   │   │   ├── index-BTdHqaTF.js
+│   │   │   │   └── index-C2Y-8BcE.css
+│   │   │   └── index.html
+│   │   ├── dashboard_new
+│   │   │   ├── assets
+│   │   │   │   ├── index-C2Y-8BcE.css
+│   │   │   │   └── index-DUotsHRa.js
+│   │   │   └── index.html
+│   │   ├── dist
+│   │   │   ├── css
+│   │   │   │   ├── lg.bundle.SDSEIGP5.css
+│   │   │   │   └── lg.bundle.SDSEIGP5.css.map
+│   │   │   ├── css-rtl
+│   │   │   │   ├── lg.bundle.RJBRZG7R.css
+│   │   │   │   └── lg.bundle.RJBRZG7R.css.map
+│   │   │   └── js
+│   │   │       ├── notification.bundle.EEHAFTDI.js
+│   │   │       └── notification.bundle.EEHAFTDI.js.map
+│   │   ├── frontend
+│   │   │   ├── assets
+│   │   │   │   ├── Checkbox.vue_vue_type_script_setup_true_lang-mt6HOk5q.js
+│   │   │   │   ├── CustomerForm-DYSVIR09.js
+│   │   │   │   ├── CustomerList-CZDoq-jM.js
+│   │   │   │   ├── Home-8CXuTq06.js
+│   │   │   │   ├── index-BY6y342p.js
+│   │   │   │   ├── index-Tnr-6XWs.css
+│   │   │   │   ├── Inter-Black-9EvaAvES.woff2
+│   │   │   │   ├── Inter-Black-CAR6omXH.woff
+│   │   │   │   ├── Inter-Black-CC-lMqXu.woff2
+│   │   │   │   ├── Inter-BlackItalic-Bghfc0zS.woff2
+│   │   │   │   ├── Inter-BlackItalic-I0v0TUo2.woff2
+│   │   │   │   ├── Inter-BlackItalic-u5Veia5m.woff
+│   │   │   │   ├── Inter-Bold-BprB58aN.woff
+│   │   │   │   ├── Inter-BoldItalic-BdQXFVxU.woff2
+│   │   │   │   ├── Inter-BoldItalic-D0-5Ex_3.woff2
+│   │   │   │   ├── Inter-BoldItalic-DC0sx_97.woff
+│   │   │   │   ├── Inter-Bold-qmp61_03.woff2
+│   │   │   │   ├── Inter-Bold-R0zHozHF.woff2
+│   │   │   │   ├── Inter-DisplayBlackItalic-DFEmIFsd.woff2
+│   │   │   │   ├── Inter-DisplayBlack-WeYNDCAX.woff2
+│   │   │   │   ├── Inter-DisplayBold-C-1EDGRh.woff2
+│   │   │   │   ├── Inter-DisplayBoldItalic-CISmTavk.woff2
+│   │   │   │   ├── Inter-DisplayExtraBold-BXf2GJrG.woff2
+│   │   │   │   ├── Inter-DisplayExtraBoldItalic-Czv3KFD8.woff2
+│   │   │   │   ├── Inter-DisplayExtraLight-D2Ja0abb.woff2
+│   │   │   │   ├── Inter-DisplayExtraLightItalic-DRwiM9T2.woff2
+│   │   │   │   ├── Inter-DisplayItalic-JNEE2o-3.woff2
+│   │   │   │   ├── Inter-DisplayLightItalic-DBve3eI1.woff2
+│   │   │   │   ├── Inter-DisplayLight-w8lPQKnS.woff2
+│   │   │   │   ├── Inter-DisplayMedium-DcjtbkcA.woff2
+│   │   │   │   ├── Inter-DisplayMediumItalic-BBCoS5uP.woff2
+│   │   │   │   ├── Inter-DisplaySemiBold-BBWLY5vL.woff2
+│   │   │   │   ├── Inter-DisplaySemiBoldItalic-CNvBGF7e.woff2
+│   │   │   │   ├── Inter-DisplayThin-ChL4oFCg.woff2
+│   │   │   │   ├── Inter-DisplayThinItalic-Cxxw6hRb.woff2
+│   │   │   │   ├── Inter-ExtraBold-By5SPTh4.woff2
+│   │   │   │   ├── Inter-ExtraBold-Ce88byQn.woff2
+│   │   │   │   ├── Inter-ExtraBold-DbQLrjwD.woff
+│   │   │   │   ├── Inter-ExtraBoldItalic-C93tVDTw.woff
+│   │   │   │   ├── Inter-ExtraBoldItalic-Cgmm6Ie2.woff2
+│   │   │   │   ├── Inter-ExtraBoldItalic-D3vRRq6U.woff2
+│   │   │   │   ├── Inter-ExtraLight-CCj5KODw.woff2
+│   │   │   │   ├── Inter-ExtraLight-CN5g7V_4.woff
+│   │   │   │   ├── Inter-ExtraLight-CVHKq-2y.woff2
+│   │   │   │   ├── Inter-ExtraLightItalic-BXS8QPqu.woff2
+│   │   │   │   ├── Inter-ExtraLightItalic-BY4I5DaH.woff
+│   │   │   │   ├── Inter-ExtraLightItalic-P0LgEjH5.woff2
+│   │   │   │   ├── Inter-Italic-ClOttZep.woff2
+│   │   │   │   ├── Inter-Italic-D2BIdfLa.woff
+│   │   │   │   ├── Inter-Italic-hKgVlhAp.woff2
+│   │   │   │   ├── Inter-Italic.var-BGHziHgI.woff2
+│   │   │   │   ├── Inter-Light-dIA14uc3.woff2
+│   │   │   │   ├── Inter-Light-Dn4ZRdE7.woff
+│   │   │   ├── favicon.png
+│   │   │   └── index.html
+│   │   ├── js
+│   │   │   ├── change_labels.js
+│   │   │   └── notification.bundle.js
+│   │   ├── lgcrm
+│   │   │   ├── index-B1FTmQoQ.js
+│   │   │   ├── index.html
+│   │   │   ├── index--Q8jyJbB.css
+│   │   │   └── vite.svg
+│   │   └── scss
+│   │       └── lg.bundle.scss
+│   ├── __pycache__
+│   │   ├── hooks.cpython-310.pyc
+│   │   └── __init__.cpython-310.pyc
+│   ├── templates
+│   │   ├── __init__.py
+│   │   └── pages
+│   │       └── __init__.py
+│   └── www
+│       ├── dashboard.html
+│       ├── dashboard_new.html
+│       ├── dashboard_new.py
+│       ├── lgcrm.html
+│       └── __pycache__
+│           └── dashboard.cpython-310.pyc
+├── license.txt
+├── live.txt
+├── package.json
+├── pyproject.toml
+├── README.md
+└── yarn.lock
+│ 

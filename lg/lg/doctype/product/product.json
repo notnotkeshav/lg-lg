@@ -1,0 +1,202 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-04 15:25:19.481637",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "product_information_section",
+  "model_number",
+  "valid_till",
+  "column_break_bmpm",
+  "model_name",
+  "quantity",
+  "item_information_section",
+  "item_code",
+  "item_name",
+  "collection_name",
+  "item_description",
+  "column_break_pyiq",
+  "hsnsac",
+  "default_unit_of_measure",
+  "category",
+  "item_price_informaton_section",
+  "price_list",
+  "currency",
+  "rate",
+  "column_break_zuwg",
+  "valid_from",
+  "valid_upto",
+  "warranty_information_section",
+  "warranty_period",
+  "batch_nos",
+  "variant_information_section",
+  "variant_code",
+  "variant_of",
+  "variant_based_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "product_information_section",
+   "fieldtype": "Section Break",
+   "label": "Product Information"
+  },
+  {
+   "fieldname": "model_number",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Model Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_bmpm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "model_name",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Model Name ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "label": "Quantity "
+  },
+  {
+   "fieldname": "valid_till",
+   "fieldtype": "Date",
+   "label": "Valid till"
+  },
+  {
+   "fieldname": "item_information_section",
+   "fieldtype": "Section Break",
+   "label": "Item Information"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Code"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Select",
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "collection_name",
+   "fieldtype": "Select",
+   "label": "Collection Name"
+  },
+  {
+   "fieldname": "item_description",
+   "fieldtype": "Text Editor",
+   "label": "Item Description"
+  },
+  {
+   "fieldname": "column_break_pyiq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hsnsac",
+   "fieldtype": "Data",
+   "label": "HSN/SAC"
+  },
+  {
+   "fieldname": "default_unit_of_measure",
+   "fieldtype": "Select",
+   "label": "Default Unit of Measure",
+   "options": "\nNos\nUnits\nBox\nKg\ncm\nmm"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "options": "\nA\nB\nC\nD"
+  },
+  {
+   "fieldname": "item_price_informaton_section",
+   "fieldtype": "Section Break",
+   "label": "Item Price Informaton"
+  },
+  {
+   "fieldname": "price_list",
+   "fieldtype": "Select",
+   "label": "Price List"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Select",
+   "label": "Currency"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "column_break_zuwg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "label": "Valid From"
+  },
+  {
+   "fieldname": "valid_upto",
+   "fieldtype": "Date",
+   "label": "Valid Upto"
+  },
+  {
+   "fieldname": "warranty_information_section",
+   "fieldtype": "Section Break",
+   "label": "Warranty Information"
+  },
+  {
+   "fieldname": "warranty_period",
+   "fieldtype": "Select",
+   "label": "Warranty Period",
+   "options": "\n6 months\n12 months\n24 months"
+  },
+  {
+   "fieldname": "batch_nos",
+   "fieldtype": "Select",
+   "label": "Batch Nos"
+  },
+  {
+   "fieldname": "variant_information_section",
+   "fieldtype": "Section Break",
+   "label": "Variant Information"
+  },
+  {
+   "fieldname": "variant_code",
+   "fieldtype": "Select",
+   "label": "Variant Code"
+  },
+  {
+   "fieldname": "variant_of",
+   "fieldtype": "Select",
+   "label": "Variant of"
+  },
+  {
+   "fieldname": "variant_based_on",
+   "fieldtype": "Data",
+   "label": "Variant Based on"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-11-04 17:21:08.846471",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Product",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

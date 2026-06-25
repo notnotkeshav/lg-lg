@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-04 15:21:40.801925",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "escalation_source",
+  "escalation_reason",
+  "escalation_type",
+  "escalation_remarks",
+  "column_break_iiij",
+  "approve_by_asm",
+  "approve_by_dealer",
+  "approve_by_technician",
+  "no_of_parts_added"
+ ],
+ "fields": [
+  {
+   "fieldname": "escalation_source",
+   "fieldtype": "Select",
+   "label": "Escalation Source"
+  },
+  {
+   "fieldname": "escalation_reason",
+   "fieldtype": "Select",
+   "label": "Escalation Reason"
+  },
+  {
+   "fieldname": "escalation_type",
+   "fieldtype": "Select",
+   "label": "Escalation Type"
+  },
+  {
+   "fieldname": "escalation_remarks",
+   "fieldtype": "Text Editor",
+   "label": "Escalation Remarks"
+  },
+  {
+   "fieldname": "column_break_iiij",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "approve_by_asm",
+   "fieldtype": "Check",
+   "label": "Approve by ASM"
+  },
+  {
+   "default": "0",
+   "fieldname": "approve_by_dealer",
+   "fieldtype": "Check",
+   "label": "Approve by Dealer"
+  },
+  {
+   "default": "0",
+   "fieldname": "approve_by_technician",
+   "fieldtype": "Check",
+   "label": "Approve by Technician"
+  },
+  {
+   "fieldname": "no_of_parts_added",
+   "fieldtype": "Int",
+   "label": "No. of Parts Added"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-04 15:26:03.248064",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Escalation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

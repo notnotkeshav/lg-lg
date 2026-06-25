@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-11-04 15:10:09.806563",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "defecode",
+  "defect_category",
+  "defect_sub_category",
+  "column_break_udka",
+  "symptom_code",
+  "repair_end_datetime",
+  "defectrepair_remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "defecode",
+   "fieldtype": "Autocomplete",
+   "label": "Defecode"
+  },
+  {
+   "fieldname": "defect_category",
+   "fieldtype": "Select",
+   "label": "Defect Category"
+  },
+  {
+   "fieldname": "defect_sub_category",
+   "fieldtype": "Select",
+   "label": "Defect Sub Category"
+  },
+  {
+   "fieldname": "column_break_udka",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "symptom_code",
+   "fieldtype": "Select",
+   "label": "Symptom Code"
+  },
+  {
+   "fieldname": "repair_end_datetime",
+   "fieldtype": "Datetime",
+   "label": "Repair End Date/Time"
+  },
+  {
+   "fieldname": "defectrepair_remarks",
+   "fieldtype": "Text Editor",
+   "label": "Defect/Repair Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-04 15:13:19.572585",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Repair",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,568 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:series",
+ "creation": "2024-12-18 18:49:55.825308",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "tab_2_tab",
+  "section_break_hcqt",
+  "title",
+  "naming_series",
+  "company",
+  "customer",
+  "customer_name",
+  "region",
+  "branch",
+  "bill_ship_code",
+  "ssd_name_dealer",
+  "ssd_category",
+  "ssd_bill_to_code",
+  "column_break_pdbk",
+  "date",
+  "customer_hc",
+  "project",
+  "industry",
+  "parent_vertical",
+  "is_govt",
+  "customer_po_id",
+  "customer_po_date",
+  "work_order_issue_date",
+  "work_order_no",
+  "user",
+  "asm_name",
+  "billing_progress_status",
+  "discontinue_details_section",
+  "discontinue_date",
+  "contract_details_section",
+  "contract_from",
+  "deal_type",
+  "start_date",
+  "expiry_date",
+  "column_break_pvzt",
+  "from_deal",
+  "from_quote",
+  "amc_year",
+  "amc_type",
+  "with_tms",
+  "product_details_section",
+  "product_details",
+  "total_hp",
+  "custom_contract_status",
+  "amc_details_section",
+  "price_rate",
+  "price_list_currency",
+  "amount",
+  "total_usd",
+  "column_break_ipun",
+  "currency",
+  "conversion_rate",
+  "payment_term",
+  "advance_payment_section",
+  "advance_amount",
+  "advance_start_date",
+  "advance_end_date",
+  "billing_schedule_section",
+  "payment_frequency",
+  "column_break_hzmz",
+  "billing_terms",
+  "column_break_ewls",
+  "section_break_ihzb",
+  "billing_schedule",
+  "address_contacts",
+  "customer_address",
+  "address_html",
+  "column_break_bzjv",
+  "shipping_address",
+  "shipping_address_html",
+  "dealer_tab",
+  "dealer",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "tab_2_tab",
+   "fieldtype": "Tab Break",
+   "label": "Contract Details"
+  },
+  {
+   "default": "{customer_name}",
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Title"
+  },
+  {
+   "bold": 1,
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "CRM Organization",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_pdbk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date",
+   "reqd": 1,
+   "search_index": 1,
+   "width": "160px"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fetch_from": "customer.customer_hc",
+   "fieldname": "customer_hc",
+   "fieldtype": "Data",
+   "label": "Customer HC"
+  },
+  {
+   "fieldname": "contract_details_section",
+   "fieldtype": "Section Break",
+   "label": "Contract Details"
+  },
+  {
+   "fieldname": "from_deal",
+   "fieldtype": "Link",
+   "label": "From Opportunity",
+   "options": "CRM Deal"
+  },
+  {
+   "fieldname": "from_quote",
+   "fieldtype": "Link",
+   "label": "From Quotation",
+   "options": "CRM Quotation"
+  },
+  {
+   "fieldname": "contract_from",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Contract From",
+   "options": "\nCRM Quotation"
+  },
+  {
+   "fieldname": "column_break_pvzt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Expiry Date",
+   "reqd": 1
+  },
+  {
+   "default": "CNT-.YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "CNT-.YYYY.-"
+  },
+  {
+   "fieldname": "billing_schedule_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Billing Schedule"
+  },
+  {
+   "fieldname": "payment_frequency",
+   "fieldtype": "Select",
+   "label": "Billing Terms",
+   "options": "\nMonthly\nQuarterly\nSemi-Annually\nAnnually"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "billing_schedule",
+   "fieldtype": "Table",
+   "label": "Billing Schedule",
+   "options": "Contract Billing Schedule"
+  },
+  {
+   "fieldname": "amc_details_section",
+   "fieldtype": "Section Break",
+   "label": "AMC Details"
+  },
+  {
+   "fieldname": "column_break_ipun",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "amc.base_price",
+   "fieldname": "amount",
+   "fieldtype": "Float",
+   "label": "Amount",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "from_quote.deal_type",
+   "fieldname": "deal_type",
+   "fieldtype": "Select",
+   "label": "Contract Type",
+   "options": "\nAMC Renewal\nWarranty AMC Conversion\nLost AMC Conversion\nLost Warranty Conversion",
+   "reqd": 1
+  },
+  {
+   "fieldname": "address_contacts",
+   "fieldtype": "Tab Break",
+   "label": "Address & Contacts"
+  },
+  {
+   "fieldname": "customer_address",
+   "fieldtype": "Link",
+   "label": "Customer Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "column_break_bzjv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shipping_address",
+   "fieldtype": "Link",
+   "label": "Shipping Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "dealer_tab",
+   "fieldtype": "Tab Break",
+   "label": "Dealer"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "CRM Contract",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "description": "Rate at which INR Value is converted to USD",
+   "fieldname": "conversion_rate",
+   "fieldtype": "Float",
+   "label": "Exchange Rate",
+   "precision": "9"
+  },
+  {
+   "fieldname": "price_list_currency",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Price List Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "address_html",
+   "fieldtype": "HTML",
+   "label": "Address HTML"
+  },
+  {
+   "fieldname": "shipping_address_html",
+   "fieldtype": "HTML",
+   "label": "Shipping Address HTML"
+  },
+  {
+   "fieldname": "product_details_section",
+   "fieldtype": "Section Break",
+   "label": "Product Details"
+  },
+  {
+   "fieldname": "product_details",
+   "fieldtype": "Table",
+   "label": "Product Details",
+   "options": "Product Details"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Data",
+   "label": "Project ID ( IL )"
+  },
+  {
+   "fieldname": "price_rate",
+   "fieldtype": "Float",
+   "label": "Price Rate"
+  },
+  {
+   "default": "INR",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency"
+  },
+  {
+   "fetch_from": "amc.base_price",
+   "fieldname": "total_usd",
+   "fieldtype": "Float",
+   "label": "Amount (USD)"
+  },
+  {
+   "fieldname": "total_hp",
+   "fieldtype": "Int",
+   "label": "Total HP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "industry",
+   "fieldtype": "Link",
+   "label": "Vertical",
+   "options": "CRM Industry"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "customer.organization_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name",
+   "read_only": 1,
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_hcqt",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "discontinue_details_section",
+   "fieldtype": "Section Break",
+   "label": "Discontinue Details"
+  },
+  {
+   "fieldname": "discontinue_date",
+   "fieldtype": "Data",
+   "label": "Discontinue Date"
+  },
+  {
+   "fetch_from": "customer.region",
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "options": "Region Master",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "customer.branch",
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Region Branches",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "amc_year",
+   "fieldtype": "Data",
+   "label": "AMC Term (in Years)",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_govt",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Govt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "advance_payment_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Advance Payment"
+  },
+  {
+   "fieldname": "advance_amount",
+   "fieldtype": "Currency",
+   "label": "Advance Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "advance_start_date",
+   "fieldtype": "Date",
+   "label": "Advance From Date"
+  },
+  {
+   "fieldname": "advance_end_date",
+   "fieldtype": "Date",
+   "label": "Advance Till Date"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "dealer",
+   "fieldtype": "Table",
+   "label": "Dealer",
+   "options": "Dealer Team"
+  },
+  {
+   "fetch_from": "industry.parent_vertical",
+   "fieldname": "parent_vertical",
+   "fieldtype": "Data",
+   "label": "Parent Vertical",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_hzmz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "billing_terms",
+   "fieldtype": "Select",
+   "label": "Payment Frequency",
+   "options": "\nAdvance\nPost"
+  },
+  {
+   "fieldname": "column_break_ewls",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_ihzb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "customer_po_id",
+   "fieldtype": "Data",
+   "label": "Customer PO ID "
+  },
+  {
+   "fieldname": "payment_term",
+   "fieldtype": "Link",
+   "label": "Payment Term",
+   "options": "Pay Term"
+  },
+  {
+   "fieldname": "bill_ship_code",
+   "fieldtype": "Data",
+   "label": "Bill To Code"
+  },
+  {
+   "fieldname": "ssd_name_dealer",
+   "fieldtype": "Data",
+   "label": "SSD Name (Dealer)"
+  },
+  {
+   "fieldname": "customer_po_date",
+   "fieldtype": "Date",
+   "label": "Customer PO Date"
+  },
+  {
+   "fieldname": "work_order_issue_date",
+   "fieldtype": "Date",
+   "label": "Work order issue date"
+  },
+  {
+   "allow_on_submit": 1,
+   "fetch_from": "user.full_name",
+   "fetch_if_empty": 1,
+   "fieldname": "asm_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "ASM Name"
+  },
+  {
+   "fieldname": "billing_progress_status",
+   "fieldtype": "Data",
+   "label": "Billing Progress Status"
+  },
+  {
+   "fieldname": "ssd_category",
+   "fieldtype": "Data",
+   "label": "SSD Category"
+  },
+  {
+   "fieldname": "ssd_bill_to_code",
+   "fieldtype": "Data",
+   "label": "SSD Bill to code"
+  },
+  {
+   "fieldname": "work_order_no",
+   "fieldtype": "Data",
+   "label": "Work Order No."
+  },
+  {
+   "fieldname": "amc_type",
+   "fieldtype": "Link",
+   "label": "AMC Type",
+   "options": "AMC Type"
+  },
+  {
+   "default": "0",
+   "description": "Please check TMS, If applicable",
+   "fieldname": "with_tms",
+   "fieldtype": "Check",
+   "label": "With TMS"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "custom_contract_status",
+   "fieldtype": "Select",
+   "label": "Contract Status",
+   "options": "Active\nExpired\nDiscontinue\nAccepted\nRejected"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-05 13:50:00.056146",
+ "modified_by": "khushi.rai@lgepartner.com",
+ "module": "Lg",
+ "name": "CRM Contract",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "customer,customer_hc,company ",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer",
+ "track_changes": 1,
+ "track_views": 1
+}

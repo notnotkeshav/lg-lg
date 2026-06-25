@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:invoice",
+ "creation": "2025-11-03 12:04:22.202494",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "invoice",
+  "amount_invoiced",
+  "posting_date",
+  "total_paid",
+  "total_outstanding",
+  "column_break_oprs",
+  "amc_contract_id",
+  "amc_start_date",
+  "amc_end_date",
+  "status",
+  "pay_term",
+  "section_break_ftqp",
+  "invoice_payment_term"
+ ],
+ "fields": [
+  {
+   "fieldname": "invoice",
+   "fieldtype": "Data",
+   "label": "Invoice",
+   "unique": 1
+  },
+  {
+   "fieldname": "amount_invoiced",
+   "fieldtype": "Currency",
+   "label": "Amount Invoiced",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "default": "Invoice Raised",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Invoice Raised\nPartially Paid\nPaid"
+  },
+  {
+   "fieldname": "total_paid",
+   "fieldtype": "Currency",
+   "label": "Total Paid",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "total_outstanding",
+   "fieldtype": "Currency",
+   "label": "Total Outstanding",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "column_break_oprs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amc_contract_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "AMC Contract ID",
+   "options": "CRM Contract"
+  },
+  {
+   "fieldname": "amc_start_date",
+   "fieldtype": "Date",
+   "label": "AMC Start Date"
+  },
+  {
+   "fieldname": "amc_end_date",
+   "fieldtype": "Date",
+   "label": "AMC End Date"
+  },
+  {
+   "fieldname": "pay_term",
+   "fieldtype": "Link",
+   "label": "Pay Term",
+   "options": "Pay Term"
+  },
+  {
+   "fieldname": "section_break_ftqp",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "invoice_payment_term",
+   "fieldtype": "Table",
+   "label": "Invoice Payment Term",
+   "options": "Invoice Payment Term"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-11-07 16:43:51.526938",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Invoice",
+ "naming_rule": "By fieldname",
+ "owner": "admin@himindia.com",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

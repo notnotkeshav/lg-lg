@@ -1,0 +1,169 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:serial_no",
+ "creation": "2024-12-17 16:45:08.988387",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "serial_no",
+  "product_code",
+  "product_group",
+  "column_break_ponp",
+  "status",
+  "model_no",
+  "category_of_model",
+  "io",
+  "hp",
+  "tonnes",
+  "warranty__amc_section",
+  "type",
+  "start_date",
+  "column_break_yzeq",
+  "maintainence_status",
+  "warranty_period_in_days",
+  "expiry_date",
+  "days_left"
+ ],
+ "fields": [
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Serial No",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fetch_from": "product_code.product_group_3",
+   "fieldname": "product_group",
+   "fieldtype": "Data",
+   "label": "Product Group"
+  },
+  {
+   "fieldname": "column_break_ponp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "label": "Status"
+  },
+  {
+   "fieldname": "warranty__amc_section",
+   "fieldtype": "Section Break",
+   "label": "Warranty / AMC"
+  },
+  {
+   "default": "N/A",
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "N/A\nAMC\nWarranty"
+  },
+  {
+   "fieldname": "column_break_yzeq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "warranty_period_in_days",
+   "fieldtype": "Int",
+   "in_standard_filter": 1,
+   "label": "Period (in days)",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.type == 'AMC' ||doc.type == 'Warranty'\r\n",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "depends_on": "eval:doc.type == 'AMC' ||doc.type == 'Warranty'\r\n",
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "days_left",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Days Left to expire",
+   "read_only": 1
+  },
+  {
+   "fieldname": "product_code",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Product Code",
+   "options": "CRM Product",
+   "reqd": 1
+  },
+  {
+   "fieldname": "maintainence_status",
+   "fieldtype": "Select",
+   "label": "Maintainence Status",
+   "options": "\nUnder Warranty\nOut of Warranty\nUnder AMC\nOut of AMC"
+  },
+  {
+   "fetch_from": "product_code.model_no",
+   "fieldname": "model_no",
+   "fieldtype": "Link",
+   "label": "Model No",
+   "options": "Model No"
+  },
+  {
+   "fetch_from": "model_no.hp",
+   "fieldname": "hp",
+   "fieldtype": "Float",
+   "label": "HP"
+  },
+  {
+   "fetch_from": "model_no.tonnes",
+   "fieldname": "tonnes",
+   "fieldtype": "Float",
+   "label": "Tonnes"
+  },
+  {
+   "fetch_from": "model_no.category_of_model",
+   "fieldname": "category_of_model",
+   "fieldtype": "Data",
+   "label": "Category of Model"
+  },
+  {
+   "fetch_from": "model_no.indoor_outdoor",
+   "fieldname": "io",
+   "fieldtype": "Data",
+   "label": "I/O"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-10-07 13:28:43.300074",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Serial No",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

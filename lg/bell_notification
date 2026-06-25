@@ -1,0 +1,24 @@
+frappe.ready(() => {
+    // Call API to fetch unread notifications
+    frappe.call({
+        method: "frappe.desk.doctype.notification_log.notification_log.get_notification_logs",
+        args: {
+            limit: 5 // jitne chahiye utne fetch kar lo
+        },
+        callback: function (r) {
+            if (r.message && r.message.length > 0) {
+                r.message.forEach(n => {
+                    frappe.msgprint({
+                        title: "🔔 Notification",
+                        message: `
+                            <b>${n.subject || "New Notification"}</b><br>
+                            ${n.email_content || ""}
+                            <br><a href="/app/${n.document_type}/${n.document_name}" target="_blank">Open Document</a>
+                        `,
+                        indicator: "blue"
+                    });
+                });
+            }
+        }
+    });
+});

@@ -1,0 +1,120 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:region_name",
+ "creation": "2024-12-17 12:15:15.051131",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "region_name",
+  "region_head",
+  "region_head_name",
+  "branches",
+  "lft",
+  "rgt",
+  "is_group",
+  "is_sub_region",
+  "old_parent",
+  "parent_region_master"
+ ],
+ "fields": [
+  {
+   "fieldname": "region_name",
+   "fieldtype": "Data",
+   "label": "Region Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "label": "Old Parent",
+   "options": "Region Master"
+  },
+  {
+   "fieldname": "parent_region_master",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Parent Region Master",
+   "options": "Region Master"
+  },
+  {
+   "fieldname": "region_head",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Region Head",
+   "options": "User"
+  },
+  {
+   "fetch_from": "region_head.full_name",
+   "fieldname": "region_head_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Region Head Name"
+  },
+  {
+   "fieldname": "branches",
+   "fieldtype": "Table",
+   "ignore_user_permissions": 1,
+   "label": "Branches",
+   "options": "Branch"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_sub_region",
+   "fieldtype": "Check",
+   "label": "Is Sub Region"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_tree": 1,
+ "links": [],
+ "modified": "2026-03-05 11:16:46.925473",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Region Master",
+ "naming_rule": "By fieldname",
+ "nsm_parent_field": "parent_region_master",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

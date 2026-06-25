@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:product_code",
+ "creation": "2024-12-18 12:40:09.917163",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "product_code",
+  "product_name",
+  "product_group_3",
+  "product_group_2",
+  "product_group_1",
+  "column_break_jguv",
+  "disabled",
+  "image",
+  "rate",
+  "model_no",
+  "category_of_model",
+  "io",
+  "hp",
+  "tonnes",
+  "description_section",
+  "description",
+  "tab_2_tab",
+  "serial_nos_and_batches_section",
+  "has_batch_no",
+  "automatically_create_new_batch",
+  "batch_number_series",
+  "column_break_dnzu",
+  "has_serial_no",
+  "serial_number_series"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "product_code",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Product Code",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Product Name"
+  },
+  {
+   "fieldname": "column_break_jguv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "in_preview": 1,
+   "label": "Description"
+  },
+  {
+   "fieldname": "tab_2_tab",
+   "fieldtype": "Tab Break",
+   "hidden": 1,
+   "label": "Inventory"
+  },
+  {
+   "fieldname": "serial_nos_and_batches_section",
+   "fieldtype": "Section Break",
+   "label": "Serial Nos And Batches"
+  },
+  {
+   "default": "0",
+   "fieldname": "has_batch_no",
+   "fieldtype": "Check",
+   "label": "Has Batch No"
+  },
+  {
+   "default": "0",
+   "depends_on": "has_batch_no",
+   "fieldname": "automatically_create_new_batch",
+   "fieldtype": "Check",
+   "label": "Automatically Create New Batch"
+  },
+  {
+   "depends_on": "eval:doc.has_batch_no==1 && doc.automatically_create_new_batch==1",
+   "fieldname": "batch_number_series",
+   "fieldtype": "Data",
+   "label": "Batch Number Series",
+   "translatable": 1
+  },
+  {
+   "fieldname": "column_break_dnzu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "has_serial_no",
+   "fieldtype": "Check",
+   "label": "Has Serial No"
+  },
+  {
+   "depends_on": "has_serial_no",
+   "description": "Example: ABCD.#####\nIf series is set and Serial No is not mentioned in transactions, then automatic serial number will be created based on this series. If you always want to explicitly mention Serial Nos for this item. leave this blank.",
+   "fieldname": "serial_number_series",
+   "fieldtype": "Data",
+   "label": "Serial Number Series"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "label": "Rate (INR)",
+   "precision": "2"
+  },
+  {
+   "description": "Product Level 3",
+   "fieldname": "product_group_3",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Product Group 3",
+   "options": "CRM Product Group"
+  },
+  {
+   "description": "Product Level 1",
+   "fieldname": "product_group_1",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Product Group 1",
+   "link_filters": "{\r\n  \"product_level\": \"Level 1\"\r\n}\r\n",
+   "options": "CRM Product Group"
+  },
+  {
+   "description": "Product Level 2",
+   "fieldname": "product_group_2",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Product Group 2",
+   "link_filters": "{\r\n  \"product_level\": \"Level 2\"\r\n}\r\n",
+   "options": "CRM Product Group"
+  },
+  {
+   "fieldname": "model_no",
+   "fieldtype": "Link",
+   "label": "Model No",
+   "options": "Model No"
+  },
+  {
+   "fetch_from": "model_no.category_of_model",
+   "fieldname": "category_of_model",
+   "fieldtype": "Data",
+   "label": "Category of Model",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "model_no.indoor_outdoor",
+   "fieldname": "io",
+   "fieldtype": "Data",
+   "label": "I/O",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "model_no.hp",
+   "fieldname": "hp",
+   "fieldtype": "Float",
+   "label": "HP",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "model_no.tonnes",
+   "fieldname": "tonnes",
+   "fieldtype": "Float",
+   "label": "Tonnes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-10-07 13:27:37.786027",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "CRM Product",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,335 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2024-09-27 10:57:05.887328",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "amc_information_section",
+  "amc_name",
+  "amc_owner",
+  "created_by",
+  "amc_status",
+  "column_break_nmjx",
+  "amc_activation_date",
+  "organization",
+  "amc_end_date",
+  "contacts_tab",
+  "contact",
+  "package_information_tab",
+  "package_information_section",
+  "amc_package",
+  "total_price",
+  "column_break_aaob",
+  "installation_type",
+  "package_base_price",
+  "requestertechnician_information_tab",
+  "information_section",
+  "technician_name",
+  "technician_owner",
+  "column_break_ucxe",
+  "technician_type",
+  "technician_zone",
+  "requester_dealer_information_tab",
+  "dealer_name",
+  "dealer_incentive",
+  "column_break_ylox",
+  "dealer_type",
+  "dealer_phone",
+  "customer_information_tab",
+  "customer_information_section",
+  "phone",
+  "email",
+  "street",
+  "tower_no",
+  "column_break_neuz",
+  "city",
+  "state",
+  "pin_code",
+  "amc_source",
+  "amc_package_name",
+  "file1",
+  "file2"
+ ],
+ "fields": [
+  {
+   "fieldname": "amc_name",
+   "fieldtype": "Autocomplete",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "AMC Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_nmjx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amc_owner",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "AMC Owner",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "created_by",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Created By",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amc_activation_date",
+   "fieldtype": "Date",
+   "label": "AMC Activation Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amc_information_section",
+   "fieldtype": "Section Break",
+   "label": "AMC Information"
+  },
+  {
+   "fieldname": "amc_status",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "AMC Status",
+   "options": "AMC Status",
+   "reqd": 1
+  },
+  {
+   "fieldname": "package_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Package Information"
+  },
+  {
+   "fieldname": "amc_package",
+   "fieldtype": "Data",
+   "label": "AMC Package "
+  },
+  {
+   "fieldname": "column_break_aaob",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "installation_type",
+   "fieldtype": "Select",
+   "label": "Installation Type"
+  },
+  {
+   "fieldname": "package_base_price",
+   "fieldtype": "Currency",
+   "label": "Package Base Price"
+  },
+  {
+   "fieldname": "package_information_section",
+   "fieldtype": "Section Break",
+   "label": "Package Information"
+  },
+  {
+   "fieldname": "total_price",
+   "fieldtype": "Currency",
+   "label": "Total Price"
+  },
+  {
+   "fieldname": "requestertechnician_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Requester(Technician) Information"
+  },
+  {
+   "fieldname": "information_section",
+   "fieldtype": "Section Break",
+   "label": "Information"
+  },
+  {
+   "fieldname": "technician_name",
+   "fieldtype": "Link",
+   "label": "Technician Name ",
+   "options": "Technician",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ucxe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "technician_type",
+   "fieldtype": "Select",
+   "label": "Technician Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "technician_owner",
+   "fieldtype": "Link",
+   "label": "Technician Owner ",
+   "options": "Technician",
+   "reqd": 1
+  },
+  {
+   "fieldname": "technician_zone",
+   "fieldtype": "Data",
+   "label": "Technician Zone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "requester_dealer_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Requester (Dealer) Information"
+  },
+  {
+   "fieldname": "dealer_name",
+   "fieldtype": "Link",
+   "label": "Dealer Name ",
+   "options": "Dealer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_ylox",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dealer_type",
+   "fieldtype": "Select",
+   "label": "Dealer Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dealer_incentive",
+   "fieldtype": "Link",
+   "label": "Dealer Incentive ",
+   "options": "Dealer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dealer_phone",
+   "fieldtype": "Phone",
+   "label": "Dealer Phone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amc_end_date",
+   "fieldtype": "Date",
+   "label": "AMC End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Customer Information"
+  },
+  {
+   "fieldname": "customer_information_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Information"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "label": "Phone"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "street",
+   "fieldtype": "Small Text",
+   "label": "Street"
+  },
+  {
+   "fieldname": "tower_no",
+   "fieldtype": "Small Text",
+   "label": "Tower No."
+  },
+  {
+   "fieldname": "column_break_neuz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
+  },
+  {
+   "fieldname": "pin_code",
+   "fieldtype": "Select",
+   "label": "Pin Code"
+  },
+  {
+   "fieldname": "amc_source",
+   "fieldtype": "Select",
+   "label": "AMC Source"
+  },
+  {
+   "fieldname": "amc_package_name",
+   "fieldtype": "Select",
+   "label": "AMC Package Name"
+  },
+  {
+   "fieldname": "file1",
+   "fieldtype": "Attach",
+   "label": "File1"
+  },
+  {
+   "fieldname": "file2",
+   "fieldtype": "Attach",
+   "label": "File2"
+  },
+  {
+   "fieldname": "organization",
+   "fieldtype": "Link",
+   "label": "Organization",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "contacts_tab",
+   "fieldtype": "Tab Break",
+   "label": "Contacts"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Table",
+   "label": "Contact",
+   "options": "CRM Contacts"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-02 15:14:05.758309",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "AMC",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "amc_name",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

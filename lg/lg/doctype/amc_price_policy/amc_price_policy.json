@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-05-27 13:34:13.328224",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "zone",
+  "hp_range",
+  "project_type",
+  "minimum_rate",
+  "maximum_rate",
+  "approval_level"
+ ],
+ "fields": [
+  {
+   "fieldname": "zone",
+   "fieldtype": "Select",
+   "label": "Zone",
+   "options": "Green\nYellow\nOrange\nRed"
+  },
+  {
+   "fieldname": "hp_range",
+   "fieldtype": "Select",
+   "label": "HP Range",
+   "options": "10 HP\n1050 HP"
+  },
+  {
+   "fieldname": "project_type",
+   "fieldtype": "Select",
+   "label": "Project Type",
+   "options": "Residence\nEducation\nHotel/Factory\nOffice,\nHospital/IT"
+  },
+  {
+   "fieldname": "minimum_rate",
+   "fieldtype": "Currency",
+   "label": "Minimum Rate"
+  },
+  {
+   "fieldname": "maximum_rate",
+   "fieldtype": "Currency",
+   "label": "Maximum Rate"
+  },
+  {
+   "fieldname": "approval_level",
+   "fieldtype": "Select",
+   "label": "Approval Level",
+   "options": "None\nArea Head\nHO 1st Approval\nHO 2nd Approval"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-05-27 14:05:32.967819",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "AMC Price Policy",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

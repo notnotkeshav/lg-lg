@@ -1,0 +1,123 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format: CUST-####",
+ "creation": "2024-10-04 16:38:33.078419",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "opportunity_information_section",
+  "customer_name",
+  "stage",
+  "owner_se_name",
+  "new_amc_under_name_of_hi_m",
+  "opportunity_status",
+  "expected_value",
+  "column_break_tkee",
+  "customer_id",
+  "opportunity_type",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_tkee",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_id",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer ID"
+  },
+  {
+   "fieldname": "opportunity_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Opportunity Type",
+   "options": "Warranty\nAMC renewal",
+   "reqd": 1
+  },
+  {
+   "fieldname": "stage",
+   "fieldtype": "Select",
+   "label": "Stage",
+   "options": "\nQualified\nRequirement Gathering\nProposal Creation\nProposal Sent\nNegotiation/Review\nDocument Sign\nDeal Lost\nDeal Won"
+  },
+  {
+   "fieldname": "opportunity_information_section",
+   "fieldtype": "Section Break",
+   "label": "Opportunity Information"
+  },
+  {
+   "fieldname": "expected_value",
+   "fieldtype": "Data",
+   "label": "Expected Value"
+  },
+  {
+   "fieldname": "opportunity_status",
+   "fieldtype": "Select",
+   "label": "Opportunity Status",
+   "options": "\nRenewal\nWarranty Conversion\nLost Conversion\nChiller\nAMC+TMS"
+  },
+  {
+   "fieldname": "owner_se_name",
+   "fieldtype": "Data",
+   "label": "Owner (SE Name)"
+  },
+  {
+   "fieldname": "new_amc_under_name_of_hi_m",
+   "fieldtype": "Data",
+   "label": "NEW AMC Under Name of HI M"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Opportunity",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-11-27 11:11:53.533698",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Opportunity",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer_name",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

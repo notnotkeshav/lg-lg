@@ -1,0 +1,871 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2024-11-21 16:07:09.916023",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_oaum",
+  "quote_message",
+  "details_section",
+  "naming_series",
+  "customer",
+  "customer_name",
+  "customer_hc",
+  "is_govt",
+  "industry",
+  "parent_vertical",
+  "deal_type",
+  "project",
+  "region",
+  "branch",
+  "amc_type",
+  "column_break_jqcz",
+  "date",
+  "spec_in_date",
+  "award_date",
+  "valid_till",
+  "status",
+  "approved_by",
+  "company",
+  "deal",
+  "rate_details_table",
+  "customer_po_id",
+  "customer_po_date",
+  "section_break_meuk",
+  "product_details",
+  "zone_rates",
+  "section_break_jxp6",
+  "total_hp",
+  "total_tonne",
+  "zone",
+  "required_approval",
+  "column_break_ifbd",
+  "start_date",
+  "end_date",
+  "amc_year",
+  "amc_term",
+  "section_break_irst",
+  "price_rate",
+  "price_rate_as_per_ton",
+  "price_rate_usd",
+  "column_break_enph",
+  "conversion_rate",
+  "price_list_currency",
+  "price_rate_as_tonusd",
+  "section_break_cpfv",
+  "total_usd",
+  "total_as_ton_inr",
+  "total_qty",
+  "column_break_sxka",
+  "amount",
+  "total_as_ton_usd_",
+  "taxes_and_charges_section",
+  "tax_category",
+  "sales_taxes_and_charges_template",
+  "table_xwez",
+  "section_break_ccdg",
+  "column_break_kfjd",
+  "column_break_hixy",
+  "total_taxes_and_charges_inr",
+  "totals_section",
+  "column_break_zpjk",
+  "column_break_sffb",
+  "grand_total_inr",
+  "rounding_adjustment_inr",
+  "rounded_total_inr",
+  "additional_discount_section",
+  "apply_additional_discount_on",
+  "column_break_xmqv",
+  "additional_discount_percentage",
+  "additional_discount_amount_inr",
+  "remarks_tab",
+  "remarks_section",
+  "remarks",
+  "orange_zone_approve_rejection_remarks",
+  "column_break_jlkj",
+  "yellow_zone_approve_rejection_remarks",
+  "red_zone_approve_rejection_remarks",
+  "tab_break_wrgg",
+  "billing_address_section",
+  "customer_address",
+  "address_html",
+  "billing_address_gstin",
+  "gst_category",
+  "column_break_kbad",
+  "shipping_address",
+  "shipping_address_html",
+  "place_of_supply",
+  "shipping_address_section",
+  "mobile_no",
+  "column_break_hgju",
+  "contact_email",
+  "company_address_section",
+  "company_address_name",
+  "company_gstin",
+  "terms_tab",
+  "advance_payment_section",
+  "advance_amount",
+  "advance_start_date",
+  "advance_end_date",
+  "billing_schedule_section",
+  "payment_frequency",
+  "start_date_as_per_po",
+  "column_break_cztk",
+  "billing_terms",
+  "end_date_as_per_po",
+  "column_break_ctbw",
+  "payment_term",
+  "section_break_ysbl",
+  "billing_schedule",
+  "terms_and_conditions_section",
+  "terms",
+  "section_break_ubdh",
+  "term_details",
+  "more_info_tab",
+  "amended_from",
+  "attachments_tab",
+  "attachments",
+  "uploaded"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "CRM Organization",
+   "print_hide": 1
+  },
+  {
+   "fieldname": "column_break_jqcz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "valid_till",
+   "fieldtype": "Date",
+   "label": "Valid Till"
+  },
+  {
+   "fieldname": "section_break_irst",
+   "fieldtype": "Section Break",
+   "label": "AMC & Price"
+  },
+  {
+   "fieldname": "column_break_enph",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_jxp6",
+   "fieldtype": "Section Break",
+   "label": "Pricing"
+  },
+  {
+   "fieldname": "total_qty",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Total Qty"
+  },
+  {
+   "fieldname": "section_break_cpfv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_sxka",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "taxes_and_charges_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Taxes and charges"
+  },
+  {
+   "fieldname": "tax_category",
+   "fieldtype": "Link",
+   "label": "Tax Category",
+   "options": "Tax Category"
+  },
+  {
+   "fieldname": "sales_taxes_and_charges_template",
+   "fieldtype": "Link",
+   "label": "Sales Taxes and Charges Template",
+   "options": "Sales Taxes and Charges Template"
+  },
+  {
+   "fieldname": "table_xwez",
+   "fieldtype": "Table",
+   "label": "Sales Taxes and Charges",
+   "options": "Sales Taxes and Charges"
+  },
+  {
+   "fieldname": "section_break_ccdg",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "total_taxes_and_charges_inr",
+   "fieldtype": "Float",
+   "label": "Total Taxes and Charges (INR)"
+  },
+  {
+   "fieldname": "column_break_kfjd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hixy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "totals_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Totals"
+  },
+  {
+   "fieldname": "column_break_zpjk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_sffb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "grand_total_inr",
+   "fieldtype": "Float",
+   "label": "Grand Total (INR)"
+  },
+  {
+   "fieldname": "rounding_adjustment_inr",
+   "fieldtype": "Float",
+   "label": "Rounding Adjustment (INR)"
+  },
+  {
+   "fieldname": "rounded_total_inr",
+   "fieldtype": "Float",
+   "label": "Rounded Total (INR)"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "additional_discount_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Additional Discount"
+  },
+  {
+   "fieldname": "apply_additional_discount_on",
+   "fieldtype": "Data",
+   "label": "Apply Additional Discount On"
+  },
+  {
+   "fieldname": "column_break_xmqv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "additional_discount_percentage",
+   "fieldtype": "Float",
+   "label": "Additional Discount Percentage"
+  },
+  {
+   "fieldname": "additional_discount_amount_inr",
+   "fieldtype": "Float",
+   "label": "Additional Discount Amount (INR)"
+  },
+  {
+   "fieldname": "tab_break_wrgg",
+   "fieldtype": "Tab Break",
+   "label": "Address & Contact"
+  },
+  {
+   "fieldname": "billing_address_section",
+   "fieldtype": "Section Break",
+   "label": "Billing Address"
+  },
+  {
+   "fieldname": "customer_address",
+   "fieldtype": "Link",
+   "label": "Customer Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "column_break_kbad",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "place_of_supply",
+   "fieldtype": "Autocomplete",
+   "label": "Place of Supply"
+  },
+  {
+   "fieldname": "shipping_address_section",
+   "fieldtype": "Section Break",
+   "label": "Shipping Address"
+  },
+  {
+   "fieldname": "shipping_address",
+   "fieldtype": "Link",
+   "label": "Shipping Address",
+   "options": "Address"
+  },
+  {
+   "fetch_from": "customer.email",
+   "fetch_if_empty": 1,
+   "fieldname": "contact_email",
+   "fieldtype": "Data",
+   "label": "Contact Email"
+  },
+  {
+   "fieldname": "column_break_hgju",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "billing_address_gstin",
+   "fieldtype": "Data",
+   "label": "Billing Address GSTIN"
+  },
+  {
+   "fieldname": "gst_category",
+   "fieldtype": "Data",
+   "label": "GST Category"
+  },
+  {
+   "fieldname": "terms_tab",
+   "fieldtype": "Tab Break",
+   "label": "Terms"
+  },
+  {
+   "fetch_from": "customer.phone",
+   "fetch_if_empty": 1,
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
+  },
+  {
+   "fieldname": "company_address_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Company Address"
+  },
+  {
+   "fieldname": "company_address_name",
+   "fieldtype": "Link",
+   "label": "Company Address Name",
+   "options": "Address"
+  },
+  {
+   "fieldname": "company_gstin",
+   "fieldtype": "Data",
+   "label": "Company GSTIN"
+  },
+  {
+   "fieldname": "terms_and_conditions_section",
+   "fieldtype": "Section Break",
+   "label": "Terms and Conditions"
+  },
+  {
+   "fieldname": "terms",
+   "fieldtype": "Link",
+   "label": "Terms",
+   "options": "Terms and Conditions"
+  },
+  {
+   "fieldname": "section_break_ubdh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "term_details",
+   "fieldtype": "Text Editor",
+   "label": "Term Details"
+  },
+  {
+   "fieldname": "more_info_tab",
+   "fieldtype": "Tab Break",
+   "label": "More Info"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "CRM Quotation",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Open",
+   "fieldname": "status",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status`",
+   "options": "CRM Quotation Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ifbd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_frequency",
+   "fieldtype": "Select",
+   "label": "Billing Terms",
+   "mandatory_depends_on": "eval: doc.status==\"PO Pending\" || doc.status==\"PO Received\" || doc.status==\"Quote Won\"",
+   "options": "\nMonthly\nQuarterly\nSemi-Annually\nAnnually\n100% for Partial Contract"
+  },
+  {
+   "fieldname": "deal_type",
+   "fieldtype": "Link",
+   "label": "Opportunity Type",
+   "options": "CRM Deal Type"
+  },
+  {
+   "fetch_from": "customer.customer_hc",
+   "fieldname": "customer_hc",
+   "fieldtype": "Data",
+   "label": "Customer HC"
+  },
+  {
+   "fetch_from": "amc.base_price",
+   "fieldname": "amount",
+   "fieldtype": "Float",
+   "label": "Total as per HP (INR)"
+  },
+  {
+   "default": "LGSAN",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "description": "Rate at which INR Value is converted to USD",
+   "fieldname": "conversion_rate",
+   "fieldtype": "Float",
+   "label": "Exchange Rate",
+   "precision": "9"
+  },
+  {
+   "fieldname": "price_list_currency",
+   "fieldtype": "Link",
+   "label": "Price List Currency",
+   "options": "Currency",
+   "read_only": 1
+  },
+  {
+   "default": "QT.-YYYY.-",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "QT.-YYYY.-"
+  },
+  {
+   "fetch_from": "customer.industry",
+   "fieldname": "industry",
+   "fieldtype": "Link",
+   "label": "Vertical",
+   "options": "Vertical Master"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Select",
+   "label": "Zone",
+   "options": "Green\nYellow\nOrange\nRed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "required_approval",
+   "fieldtype": "Select",
+   "label": "Required Approval",
+   "options": "AM\nAM + RSM\nAM + RSM + Mr Alok\nAM + RSM + Mr Alok + MD",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "amc_year",
+   "fieldtype": "Int",
+   "label": "AMC Term (in Years)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amc_term",
+   "fieldtype": "Int",
+   "label": "AMC Term (in Months)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "price_rate",
+   "fieldtype": "Currency",
+   "label": "Price Rate as per HP",
+   "options": "AMC Price List"
+  },
+  {
+   "fieldname": "section_break_meuk",
+   "fieldtype": "Section Break"
+  },
+  {
+   "columns": 5,
+   "fieldname": "product_details",
+   "fieldtype": "Table",
+   "label": "Product Details",
+   "options": "Product Details",
+   "reqd": 1
+  },
+  {
+   "fieldname": "address_html",
+   "fieldtype": "HTML",
+   "label": "Address HTML"
+  },
+  {
+   "fieldname": "shipping_address_html",
+   "fieldtype": "HTML",
+   "label": "Shipping Address HTML"
+  },
+  {
+   "fieldname": "section_break_oaum",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "quote_message",
+   "fieldtype": "HTML",
+   "read_only": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Data",
+   "label": "Project"
+  },
+  {
+   "bold": 1,
+   "fieldname": "spec_in_date",
+   "fieldtype": "Datetime",
+   "label": "Spec In Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "award_date",
+   "fieldtype": "Datetime",
+   "label": "Award Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Approved By"
+  },
+  {
+   "fieldname": "deal",
+   "fieldtype": "Link",
+   "label": "Opportunity",
+   "options": "CRM Deal"
+  },
+  {
+   "fieldname": "rate_details_table",
+   "fieldtype": "HTML",
+   "label": "Rate Details Table"
+  },
+  {
+   "fieldname": "zone_rates",
+   "fieldtype": "HTML",
+   "label": "HP Rates Details"
+  },
+  {
+   "fieldname": "price_rate_usd",
+   "fieldtype": "Currency",
+   "label": "Price Rate as HP(USD)"
+  },
+  {
+   "fetch_from": "amc.base_price",
+   "fieldname": "total_usd",
+   "fieldtype": "Float",
+   "label": "Total as per HP (USD)"
+  },
+  {
+   "fieldname": "billing_schedule_section",
+   "fieldtype": "Section Break",
+   "label": "Billing Schedule"
+  },
+  {
+   "fieldname": "billing_schedule",
+   "fieldtype": "Table",
+   "label": "Billing Schedule",
+   "mandatory_depends_on": "eval: doc.status==\"PO Pending\" || doc.status==\"PO Received\" || doc.status==\"Quote Won\"",
+   "options": "Contract Billing Schedule"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state=='PO Pending' || doc.workflow_state=='PO Received'|| doc.workflow_state=='Quote Won'",
+   "fieldname": "attachments_tab",
+   "fieldtype": "Tab Break",
+   "label": "Attachments",
+   "mandatory_depends_on": "eval:doc.workflow_state=='PO Pending' || doc.workflow_state=='PO Received'|| doc.workflow_state=='Quote Won'"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "HTML",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "total_hp",
+   "fieldtype": "Data",
+   "label": "Total HP",
+   "read_only": 1
+  },
+  {
+   "fieldname": "advance_amount",
+   "fieldtype": "Currency",
+   "label": "Advance Amount",
+   "precision": "2"
+  },
+  {
+   "fieldname": "advance_start_date",
+   "fieldtype": "Date",
+   "label": "Advance From Date"
+  },
+  {
+   "fieldname": "advance_end_date",
+   "fieldtype": "Date",
+   "label": "Advance Till Date"
+  },
+  {
+   "fetch_from": "customer.organization_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name",
+   "options": "CRM Organization",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "uploaded",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Uploaded"
+  },
+  {
+   "fieldname": "advance_payment_section",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Advance Payment"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_govt",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Is Govt",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "customer.region",
+   "fetch_if_empty": 1,
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "options": "Region Master"
+  },
+  {
+   "fetch_from": "customer.branch_name",
+   "fetch_if_empty": 1,
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Region Branches"
+  },
+  {
+   "fetch_from": "customer.parent_vertical",
+   "fieldname": "parent_vertical",
+   "fieldtype": "Data",
+   "label": "Parent Vertical",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_cztk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "billing_terms",
+   "fieldtype": "Select",
+   "label": "Payment Frequency",
+   "options": "\nAdvance\nPost"
+  },
+  {
+   "fieldname": "column_break_ctbw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_ysbl",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state==\"Approval Pending\"|| doc.workflow_state==\"Approved\" || doc.workflow_state==\"PO Pending\" || doc.workflow_state==\"Rejected\" || doc.workflow_state==\"PO Received\" || doc.workflow_state==\"Customer Approval Pending\"",
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state==\"Orange Zone Approval Pending\"|| doc.workflow_state==\"Approved\" || doc.workflow_state==\"Customer Approval Pending\" || doc.workflow_state==\"PO Pending\"|| doc.workflow_state==\"Rejected\" || doc.workflow_state==\"PO Received\"",
+   "fieldname": "orange_zone_approve_rejection_remarks",
+   "fieldtype": "Small Text",
+   "label": "Orange Zone Approve/Rejection Remarks"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state==\"Yellow Zone Approval Pending\"|| doc.workflow_state==\"Approved\" || doc.workflow_state==\"PO Pending\"|| doc.workflow_state==\"PO Received\"|| doc.workflow_state==\"Rejected\"",
+   "fieldname": "yellow_zone_approve_rejection_remarks",
+   "fieldtype": "Small Text",
+   "label": "Yellow Zone Approve/Rejection Remarks",
+   "read_only_depends_on": "eval: doc.workflow_state in [\"Approved\", \"Orange Zone Approval Pending\", \"Red Zone Approval Pending\", \"Customer Approval Pending\",\"Rejected\"]"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state==\"Red Zone Approval Pending\"|| doc.workflow_state==\"Approved\" || doc.workflow_state==\"Customer Approval Pending\" || doc.workflow_state==\"PO Pending\"|| doc.workflow_state==\"Rejected\" || doc.workflow_state==\"PO Received\"",
+   "fieldname": "red_zone_approve_rejection_remarks",
+   "fieldtype": "Small Text",
+   "label": "Red Zone Approve/Rejection Remarks"
+  },
+  {
+   "fieldname": "remarks_section",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state==\"Red Zone Approval Pending\"",
+   "fieldname": "column_break_jlkj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "remarks_tab",
+   "fieldtype": "Tab Break",
+   "label": "Remarks"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state ==\"PO Pending\" || doc.workflow_state ==\"Quote Won\"",
+   "fieldname": "customer_po_id",
+   "fieldtype": "Data",
+   "label": "Customer PO ID",
+   "mandatory_depends_on": "eval:doc.workflow_state==\"PO Received\" || doc.workflow_state==\"PO Pending\" || doc.workflow_state==\"Approved\" || doc.workflow_state==\"Quote Won\""
+  },
+  {
+   "fieldname": "payment_term",
+   "fieldtype": "Link",
+   "label": "Payment Term",
+   "options": "Pay Term"
+  },
+  {
+   "fieldname": "total_tonne",
+   "fieldtype": "Float",
+   "label": "Total Ton"
+  },
+  {
+   "depends_on": "eval:doc.workflow_state ==\"PO Pending\" || doc.workflow_state ==\"Quote Won\"",
+   "fieldname": "customer_po_date",
+   "fieldtype": "Date",
+   "label": "Customer PO Date",
+   "mandatory_depends_on": "eval:doc.workflow_state==\"PO Received\" || doc.workflow_state==\"PO Pending\" || doc.workflow_state==\"Approved\" || doc.workflow_state==\"Quote Won\""
+  },
+  {
+   "fieldname": "price_rate_as_per_ton",
+   "fieldtype": "Currency",
+   "label": "Price Rate as per ton"
+  },
+  {
+   "depends_on": "eval:doc.price_rate_as_per_ton",
+   "fieldname": "price_rate_as_tonusd",
+   "fieldtype": "Currency",
+   "label": "Price Rate as Ton(USD)"
+  },
+  {
+   "fieldname": "start_date_as_per_po",
+   "fieldtype": "Date",
+   "label": "Start Date as per PO"
+  },
+  {
+   "fieldname": "end_date_as_per_po",
+   "fieldtype": "Date",
+   "label": "End Date as per PO"
+  },
+  {
+   "fieldname": "total_as_ton_usd_",
+   "fieldtype": "Currency",
+   "label": "Total as per Ton (USD)"
+  },
+  {
+   "depends_on": "eval:doc.price_rate_as_per_ton",
+   "fieldname": "total_as_ton_inr",
+   "fieldtype": "Currency",
+   "label": "Total as per Ton (INR)"
+  },
+  {
+   "fieldname": "amc_type",
+   "fieldtype": "Link",
+   "label": "AMC Type",
+   "options": "AMC Type",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-25 10:33:03.190310",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "CRM Quotation",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

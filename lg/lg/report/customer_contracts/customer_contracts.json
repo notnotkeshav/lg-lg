@@ -1,0 +1,37 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2025-01-07 18:52:26.611192",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [
+  {
+   "fieldname": "name",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "mandatory": 0,
+   "options": "CRM Organization",
+   "wildcard_filter": 0
+  }
+ ],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letterhead": null,
+ "modified": "2025-02-14 01:19:46.854569",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Customer Contracts",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT \r\n    o.customer_hc, \r\n    o.name, \r\n    o.region, \r\n    o.branch, \r\n    o.branch_head,\r\n\r\n    COUNT(co.name) AS `Total Contracts`, \r\n    SUM(CASE WHEN co.custom_contract_status = \"Active\" THEN 1 ELSE 0 END) AS \"Active Contracts\",\r\n    SUM(CASE WHEN co.custom_contract_status = \"Expired\" THEN 1 ELSE 0 END) AS \"Expired Contracts\",\r\n    SUM(CASE \r\n        WHEN co.custom_contract_status = \"Active\" \r\n        AND co.expiry_date IS NOT NULL \r\n        AND co.expiry_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 6 MONTH) \r\n        THEN 1 ELSE 0 \r\n    END) AS \"Expiry in 6 Months\",\r\n\r\n    COUNT(d.name) AS `Total Deals`, \r\n    SUM(CASE WHEN d.status = \"Qualified\" THEN 1 ELSE 0 END) AS \"Qualified Deals\",\r\n    SUM(CASE WHEN d.status = \"Won/Award\" THEN 1 ELSE 0 END) AS \"Deals Won\",\r\n    SUM(CASE WHEN d.status = \"Lost\" THEN 1 ELSE 0 END) AS \"Deals Lost\",\r\n\r\n    COUNT(q.name) AS `Total Quotes`, \r\n    SUM(CASE WHEN q.status = \"Quote Sent to Customer\" THEN 1 ELSE 0 END) AS \"Spec-In\",\r\n    SUM(CASE WHEN q.status = \"Quote Approved\" THEN 1 ELSE 0 END) AS \"Quotes Approved\",\r\n    SUM(CASE WHEN q.status = \"Quote Won\" THEN 1 ELSE 0 END) AS \"Quotes Won\"\r\n\r\nFROM \r\n    `tabCRM Organization` AS o\r\nLEFT JOIN \r\n    `tabCRM Contract` AS co ON o.name = co.customer\r\nLEFT JOIN \r\n    `tabCRM Deal` AS d ON o.name = d.customer_name\r\nLEFT JOIN \r\n    `tabCRM Quotation` AS q ON o.name = q.customer\r\n\r\nGROUP BY \r\n    o.customer_hc, o.name, o.region, o.branch, o.branch_head;\r\n\r\n",
+ "ref_doctype": "CRM Contract",
+ "report_name": "Customer Contracts",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ],
+ "timeout": 0
+}

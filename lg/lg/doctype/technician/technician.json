@@ -1,0 +1,275 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TECH-#####",
+ "creation": "2024-09-25 18:35:39.124119",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "customer_information_section",
+  "naming_series",
+  "technician_name",
+  "email_id",
+  "dealerassigned_to",
+  "technician_category",
+  "column_break_iavv",
+  "customer_type",
+  "phone",
+  "gender",
+  "date_of_birth",
+  "address_and_contact",
+  "address_information_section",
+  "address_line_1",
+  "address_line_2",
+  "pincode",
+  "street",
+  "column_break_bxyc",
+  "city",
+  "country",
+  "territory",
+  "region",
+  "call_information_tab",
+  "call_information_section",
+  "less_than_6_hours",
+  "greater_than_24_hours",
+  "column_break_grei",
+  "less_than_24_hours",
+  "same_origin",
+  "tab_4_tab",
+  "kyc_information_section",
+  "pan_card",
+  "aadhaar_card",
+  "upi_id",
+  "tab_5_tab",
+  "dealer_id",
+  "dealer_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "customer_information_section",
+   "fieldtype": "Section Break",
+   "label": "Technician Information"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Data",
+   "label": "Technician ID",
+   "reqd": 1
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Data",
+   "label": "Email ID",
+   "options": "Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_iavv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_type",
+   "fieldtype": "Select",
+   "label": "Technician Type",
+   "options": "ASP\nFreelancer\nExpert",
+   "reqd": 1
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "label": "Phone",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "Male\nFemale",
+   "reqd": 1
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date Of Birth",
+   "reqd": 1
+  },
+  {
+   "fieldname": "address_and_contact",
+   "fieldtype": "Tab Break",
+   "label": "Address & Contact"
+  },
+  {
+   "fieldname": "address_information_section",
+   "fieldtype": "Section Break",
+   "label": "Address Information"
+  },
+  {
+   "default": "hello",
+   "fieldname": "address_line_1",
+   "fieldtype": "Data",
+   "label": "Address Line 1"
+  },
+  {
+   "fieldname": "address_line_2",
+   "fieldtype": "Data",
+   "label": "Address Line 2"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Data",
+   "label": "PIncode"
+  },
+  {
+   "fieldname": "column_break_bxyc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "territory",
+   "fieldtype": "Data",
+   "label": "Territory"
+  },
+  {
+   "fieldname": "dealerassigned_to",
+   "fieldtype": "Link",
+   "label": "Dealer(Assigned To)",
+   "options": "Dealer"
+  },
+  {
+   "fieldname": "technician_category",
+   "fieldtype": "Select",
+   "label": "Technician Category",
+   "options": "\nA\nB\nC\nD"
+  },
+  {
+   "fieldname": "call_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Service Rate Information"
+  },
+  {
+   "fieldname": "less_than_6_hours",
+   "fieldtype": "Currency",
+   "label": "Less Than 6 Hours"
+  },
+  {
+   "fieldname": "column_break_grei",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "less_than_24_hours",
+   "fieldtype": "Currency",
+   "label": "Less Than 24 Hours"
+  },
+  {
+   "fieldname": "greater_than_24_hours",
+   "fieldtype": "Currency",
+   "label": "Greater Than 24 Hours"
+  },
+  {
+   "fieldname": "same_origin",
+   "fieldtype": "Select",
+   "label": "Same Origin Rate "
+  },
+  {
+   "fieldname": "call_information_section",
+   "fieldtype": "Section Break",
+   "label": "Call Information"
+  },
+  {
+   "fieldname": "technician_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Technician Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tab_4_tab",
+   "fieldtype": "Tab Break",
+   "label": "KYC Information"
+  },
+  {
+   "fieldname": "kyc_information_section",
+   "fieldtype": "Section Break",
+   "label": "KYC Information"
+  },
+  {
+   "fieldname": "pan_card",
+   "fieldtype": "Data",
+   "label": "PAN card"
+  },
+  {
+   "fieldname": "aadhaar_card",
+   "fieldtype": "Int",
+   "label": "Aadhaar Card"
+  },
+  {
+   "fieldname": "upi_id",
+   "fieldtype": "Data",
+   "label": "UPI ID"
+  },
+  {
+   "fieldname": "tab_5_tab",
+   "fieldtype": "Tab Break",
+   "label": "Dealer Information"
+  },
+  {
+   "fieldname": "dealer_id",
+   "fieldtype": "Select",
+   "label": "Dealer ID"
+  },
+  {
+   "fieldname": "dealer_name",
+   "fieldtype": "Select",
+   "label": "Dealer Name"
+  },
+  {
+   "fieldname": "street",
+   "fieldtype": "Small Text",
+   "label": "Street"
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Select",
+   "label": "Region"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-11-04 17:18:51.551309",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Technician",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "technician_name",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

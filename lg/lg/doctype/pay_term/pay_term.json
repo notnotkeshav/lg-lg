@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:term_id",
+ "creation": "2025-09-22 12:30:42.557717",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "term_id",
+  "payment_frequency",
+  "column_break_zvnz",
+  "description",
+  "section_break_wkni",
+  "payment_term_portions"
+ ],
+ "fields": [
+  {
+   "fieldname": "term_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Term ID",
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_zvnz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description"
+  },
+  {
+   "default": "Post",
+   "fieldname": "payment_frequency",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Payment Frequency",
+   "options": "Advance\nPost"
+  },
+  {
+   "fieldname": "section_break_wkni",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "payment_term_portions",
+   "fieldtype": "Table",
+   "label": "Payment Term Portions",
+   "options": "Pay Term List"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-22 12:35:13.820524",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Pay Term",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

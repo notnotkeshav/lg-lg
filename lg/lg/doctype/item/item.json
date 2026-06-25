@@ -1,0 +1,235 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-10-04 17:17:19.944707",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "details_section",
+  "item_name_column",
+  "item_code",
+  "item_name",
+  "item_group",
+  "hsnsac",
+  "category",
+  "column_break_qbob",
+  "serial_no",
+  "collection_name",
+  "default_uom",
+  "brand",
+  "section_break_qnah",
+  "description",
+  "warranty_information_tab",
+  "warranty_period",
+  "column_break_eqzd",
+  "batch_nos",
+  "column_break_tafh",
+  "variant_information_tab",
+  "variant_code",
+  "variant_based_on",
+  "column_break_zkeu",
+  "variant_of",
+  "item_price_information_tab",
+  "price_list",
+  "currency",
+  "rate",
+  "column_break_qrho",
+  "valid_from",
+  "valid_upto"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "item_name_column",
+   "fieldtype": "Column Break",
+   "label": " "
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "collection_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Collection Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "hsnsac",
+   "fieldtype": "Data",
+   "label": "HSN/SAC"
+  },
+  {
+   "fieldname": "default_uom",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Default Unit Of Measure ",
+   "options": "\nNos\nUnits\nBox\nKg\ncm\nmm",
+   "reqd": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "label": "Category",
+   "options": "\nA\nB\nC\nD"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  },
+  {
+   "fieldname": "warranty_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Warranty Information",
+   "options": "Nos \nUnits\n Box\n Kg\n cm\n mm\n"
+  },
+  {
+   "fieldname": "warranty_period",
+   "fieldtype": "Select",
+   "label": "Warranty Period",
+   "options": "\n6 months\n12 months\n24 months",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_eqzd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "batch_nos",
+   "fieldtype": "Select",
+   "label": "Batch Nos",
+   "options": "test",
+   "reqd": 1
+  },
+  {
+   "fieldname": "variant_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Variant Information"
+  },
+  {
+   "fieldname": "variant_code",
+   "fieldtype": "Select",
+   "label": "Variant Code"
+  },
+  {
+   "fieldname": "column_break_zkeu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "variant_of",
+   "fieldtype": "Select",
+   "label": "Variant Of"
+  },
+  {
+   "fieldname": "variant_based_on",
+   "fieldtype": "Data",
+   "label": "Variant Based On"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Group",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Data",
+   "label": "Brand"
+  },
+  {
+   "fieldname": "serial_no",
+   "fieldtype": "Data",
+   "label": "Serial No."
+  },
+  {
+   "fieldname": "column_break_tafh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qbob",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_qnah",
+   "fieldtype": "Section Break",
+   "label": "Item Remarks"
+  },
+  {
+   "fieldname": "item_price_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Item Price Information"
+  },
+  {
+   "fieldname": "price_list",
+   "fieldtype": "Select",
+   "label": "Price List"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Select",
+   "label": "Currency"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "column_break_qrho",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "label": "Valid From"
+  },
+  {
+   "fieldname": "valid_upto",
+   "fieldtype": "Date",
+   "label": "Valid Upto"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-17 16:54:58.007347",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Item",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

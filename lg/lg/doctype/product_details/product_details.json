@@ -1,0 +1,190 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2025-05-22 15:56:52.637107",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "serial_no",
+  "product_name",
+  "product_group",
+  "dummy_serial_no",
+  "dummy_serial_number",
+  "column_break_ponp",
+  "status",
+  "model_no",
+  "category_of_model",
+  "io",
+  "hp",
+  "tonnes",
+  "warranty__amc_section",
+  "type",
+  "start_date",
+  "column_break_yzeq",
+  "maintainence_status",
+  "warranty_period_in_days",
+  "expiry_date",
+  "days_left"
+ ],
+ "fields": [
+  {
+   "depends_on": "eval:doc.dummy_serial_no ==0",
+   "fieldname": "serial_no",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Serial No",
+   "options": "Serial No"
+  },
+  {
+   "depends_on": "eval:doc.dummy_serial_no ==0",
+   "fetch_from": "serial_no.product_code",
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Product Name"
+  },
+  {
+   "depends_on": "eval:doc.dummy_serial_no ==0",
+   "fetch_from": "serial_no.product_group",
+   "fieldname": "product_group",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Product Group"
+  },
+  {
+   "fieldname": "column_break_ponp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status"
+  },
+  {
+   "fetch_from": "serial_no.model_no",
+   "fieldname": "model_no",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Model No",
+   "options": "Model No"
+  },
+  {
+   "fieldname": "warranty__amc_section",
+   "fieldtype": "Section Break",
+   "label": "Warranty / AMC"
+  },
+  {
+   "default": "N/A",
+   "fieldname": "type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "N/A\nAMC\nWarranty"
+  },
+  {
+   "depends_on": "eval:doc.type == 'AMC' ||doc.type == 'Warranty'\r\n",
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "column_break_yzeq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "maintainence_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Maintainence Status",
+   "options": "\nUnder Warranty\nOut of Warranty\nUnder AMC\nOut of AMC"
+  },
+  {
+   "fieldname": "warranty_period_in_days",
+   "fieldtype": "Int",
+   "in_standard_filter": 1,
+   "label": "Period (in days)",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.type == 'AMC' ||doc.type == 'Warranty'\r\n",
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "days_left",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Days Left to expire",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "model_no.hp",
+   "fieldname": "hp",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "HP"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "model_no.tonnes",
+   "fieldname": "tonnes",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Tons"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "model_no.category_of_model",
+   "fieldname": "category_of_model",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "Category of Model"
+  },
+  {
+   "columns": 1,
+   "fetch_from": "model_no.indoor_outdoor",
+   "fieldname": "io",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "label": "I/O"
+  },
+  {
+   "default": "0",
+   "fieldname": "dummy_serial_no",
+   "fieldtype": "Check",
+   "label": "Dummy Serial No."
+  },
+  {
+   "depends_on": "eval:doc.dummy_serial_no ==1",
+   "fieldname": "dummy_serial_number",
+   "fieldtype": "Data",
+   "label": "Dummy Serial Number"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-03-05 16:06:50.399035",
+ "modified_by": "Administrator",
+ "module": "Lg",
+ "name": "Product Details",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
