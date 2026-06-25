@@ -774,7 +774,7 @@
    "fieldname": "customer_po_id",
    "fieldtype": "Data",
    "label": "Customer PO ID",
-   "mandatory_depends_on": "eval:doc.workflow_state==\"PO Received\" || doc.workflow_state==\"PO Pending\" || doc.workflow_state==\"Approved\" || doc.workflow_state==\"Quote Won\""
+   "mandatory_depends_on": "eval:doc.workflow_state==\"PO Received\" || doc.workflow_state==\"PO Pending\" || doc.workflow_state==\"Quote Won\""
   },
   {
    "fieldname": "payment_term",
@@ -792,7 +792,7 @@
    "fieldname": "customer_po_date",
    "fieldtype": "Date",
    "label": "Customer PO Date",
-   "mandatory_depends_on": "eval:doc.workflow_state==\"PO Received\" || doc.workflow_state==\"PO Pending\" || doc.workflow_state==\"Approved\" || doc.workflow_state==\"Quote Won\""
+   "mandatory_depends_on": "eval:doc.workflow_state==\"PO Received\" || doc.workflow_state==\"PO Pending\" || doc.workflow_state==\"Quote Won\""
   },
   {
    "fieldname": "price_rate_as_per_ton",
@@ -837,7 +837,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-25 10:33:03.190310",
+ "modified": "2026-06-25 14:48:21.898045",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "CRM Quotation",
