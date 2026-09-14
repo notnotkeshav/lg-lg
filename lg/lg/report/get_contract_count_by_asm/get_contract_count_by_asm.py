@@ -258,11 +258,14 @@ def get_data(filters):
     contract_join = [
         "c.docstatus < 2",
 
-        # CRM Contract.asm_name contains ASM full name
+        # Customer PO Date is mandatory for this report
+        "c.customer_po_date IS NOT NULL",
+
+        # CRM Contract ASM matches User full name
         "c.asm_name = u.full_name",
 
-        # Selected year
-        "YEAR(c.creation) = %(year)s",
+        # Selected year is based on Customer PO Date
+        "YEAR(c.customer_po_date) = %(year)s",
     ]
 
     if filters.get("deal_type"):
@@ -279,20 +282,23 @@ def get_data(filters):
     if group_by == "Monthly":
 
         period_match = """
-            MONTH(c.creation) = periods.period_no
+            MONTH(c.customer_po_date) = periods.period_no
         """
 
     elif group_by == "Quarterly":
 
         period_match = """
-            QUARTER(c.creation) = periods.period_no
+            QUARTER(c.customer_po_date) = periods.period_no
+        """
+
+    elif group_by == "Annually":
+
+        period_match = """
+            YEAR(c.customer_po_date) = %(year)s
         """
 
     else:
-
-        period_match = """
-            YEAR(c.creation) = %(year)s
-        """
+        frappe.throw(_("Invalid Group By option"))
 
     # -------------------------------------------------------------
     # MAIN QUERY
