@@ -205,16 +205,67 @@ def get_data(filters):
         frappe.throw(_("Invalid Group By option"))
 
     # -------------------------------------------------------------
-    # USER / ASM CONDITIONS
+    # CONTRACT CONDITIONS
     #
-    # The ASM dimension is built from Users only - never from
-    # `tabRegion Branches`. A branch head heading more than one
-    # branch would otherwise repeat every one of their contracts
-    # once per branch.
+    # The ASM is the `user` link on the contract - never the
+    # `asm_name` text, which is only a fetched copy of the user's
+    # full name and does not always match a User record.
+    # -------------------------------------------------------------
+
+    def contract_conditions(alias):
+        conditions = [
+            f"{alias}.docstatus < 2",
+
+            # Customer PO Date is mandatory for this report
+            f"{alias}.customer_po_date IS NOT NULL",
+
+            # Selected year is based on Customer PO Date
+            f"YEAR({alias}.customer_po_date) = %(year)s",
+        ]
+
+        if filters.get("deal_type"):
+            conditions.append(
+                f"{alias}.deal_type = %(deal_type)s"
+            )
+
+        if filters.get("asm"):
+            conditions.append(
+                f"{alias}.user = %(asm)s"
+            )
+
+        if filters.get("region"):
+            conditions.append(
+                f"{alias}.region = %(region)s"
+            )
+
+        if filters.get("branch"):
+            conditions.append(
+                f"""
+                EXISTS (
+                    SELECT 1
+                    FROM `tabRegion Branches` fb
+                    WHERE fb.name = {alias}.branch
+                      AND (
+                            fb.name = %(branch)s
+                            OR fb.branch_code = %(branch)s
+                            OR fb.branch_name = %(branch)s
+                      )
+                )
+                """
+            )
+
+        return " AND ".join(conditions)
+
+    contract_where = contract_conditions("c")
+
+    # -------------------------------------------------------------
+    # USER / ASM CONDITIONS
     # -------------------------------------------------------------
 
     user_conditions = [
         "u.enabled = 1",
+
+        "u.name NOT IN ('Administrator', 'Guest')",
 
         """
         EXISTS (
@@ -234,134 +285,48 @@ def get_data(filters):
     user_where = " AND ".join(user_conditions)
 
     # -------------------------------------------------------------
-    # CONTRACT CONDITIONS
-    # -------------------------------------------------------------
-
-    contract_conditions = [
-        "c.docstatus < 2",
-
-        # Customer PO Date is mandatory for this report
-        "c.customer_po_date IS NOT NULL",
-
-        # Selected year is based on Customer PO Date
-        "YEAR(c.customer_po_date) = %(year)s",
-    ]
-
-    if filters.get("deal_type"):
-        contract_conditions.append(
-            "c.deal_type = %(deal_type)s"
-        )
-
-    contract_where = " AND ".join(contract_conditions)
-
-    # -------------------------------------------------------------
-    # ASM DIMENSION
+    # ASM / REGION / BRANCH DIMENSION
     #
-    # Area Managers, plus any ASM name found on a contract of the
-    # selected year that matches no Area Manager User - those
-    # contracts are reported under their own name instead of being
-    # dropped silently.
+    # Region and Branch are taken from the contract itself, so an
+    # ASM working across branches gets one row per branch and the
+    # columns are never empty for a row that has contracts.
+    #
+    # Area Managers without a single contract in the selected year
+    # are added with no Region / Branch so they still show up as
+    # zero rows - skipped when a Region / Branch filter is on,
+    # since they cannot satisfy it.
     # -------------------------------------------------------------
 
     asm_dimension_sql = f"""
-        SELECT u.full_name AS asm_name
-        FROM `tabUser` u
-        WHERE {user_where}
-          AND IFNULL(u.full_name, '') <> ''
+        SELECT
+            c.user AS asm_user,
+            c.region AS region,
+            c.branch AS branch
+        FROM `tabCRM Contract` c
+        WHERE {contract_where}
+        GROUP BY
+            c.user,
+            c.region,
+            c.branch
     """
 
-    if not filters.get("asm"):
+    if not (filters.get("region") or filters.get("branch")):
         asm_dimension_sql += f"""
             UNION
 
-            SELECT DISTINCT c.asm_name
-            FROM `tabCRM Contract` c
-            WHERE {contract_where}
-              AND IFNULL(c.asm_name, '') <> ''
+            SELECT
+                u.name,
+                NULL,
+                NULL
+            FROM `tabUser` u
+            WHERE {user_where}
               AND NOT EXISTS (
                     SELECT 1
-                    FROM `tabUser` u2
-                    WHERE u2.full_name = c.asm_name
-                      AND u2.enabled = 1
-                      AND EXISTS (
-                            SELECT 1
-                            FROM `tabHas Role` hr2
-                            WHERE hr2.parent = u2.name
-                              AND hr2.role = 'Area Manager'
-                      )
+                    FROM `tabCRM Contract` c2
+                    WHERE c2.user = u.name
+                      AND {contract_conditions("c2")}
               )
         """
-
-    # -------------------------------------------------------------
-    # REGION / BRANCH
-    #
-    # Pre-aggregated per ASM, so an ASM heading several branches
-    # stays a single row and their branches are listed together.
-    # -------------------------------------------------------------
-
-    asm_branch_map_sql = """
-        SELECT
-            u.full_name AS asm_name,
-
-            GROUP_CONCAT(
-                DISTINCT b.region
-                ORDER BY b.region
-                SEPARATOR ', '
-            ) AS region,
-
-            GROUP_CONCAT(
-                DISTINCT b.branch_name
-                ORDER BY b.branch_name
-                SEPARATOR ', '
-            ) AS branch
-
-        FROM `tabRegion Branches` b
-
-        INNER JOIN `tabUser` u
-            ON b.branch_head = u.name
-
-        GROUP BY u.full_name
-    """
-
-    # Region / Branch filters match any branch the ASM heads.
-
-    dimension_conditions = [
-        "1 = 1"
-    ]
-
-    if filters.get("region"):
-        dimension_conditions.append(
-            """
-            EXISTS (
-                SELECT 1
-                FROM `tabRegion Branches` b2
-                INNER JOIN `tabUser` u3
-                    ON b2.branch_head = u3.name
-                WHERE u3.full_name = asm.asm_name
-                  AND b2.region = %(region)s
-            )
-            """
-        )
-
-    if filters.get("branch"):
-        dimension_conditions.append(
-            """
-            EXISTS (
-                SELECT 1
-                FROM `tabRegion Branches` b3
-                INNER JOIN `tabUser` u4
-                    ON b3.branch_head = u4.name
-                WHERE u4.full_name = asm.asm_name
-                  AND (
-                        b3.name = %(branch)s
-                        OR b3.branch_code = %(branch)s
-                        OR b3.branch_name = %(branch)s
-                  )
-            )
-            """
-        )
-
-    dimension_where = " AND ".join(dimension_conditions)
 
     # -------------------------------------------------------------
     # PERIOD MATCH
@@ -395,11 +360,15 @@ def get_data(filters):
     query = f"""
         SELECT
 
-            asm.asm_name AS asm_name,
+            COALESCE(
+                NULLIF(du.full_name, ''),
+                NULLIF(asm.asm_user, ''),
+                'Unassigned'
+            ) AS asm_name,
 
-            map.region AS region,
+            COALESCE(db.region, asm.region) AS region,
 
-            map.branch AS branch,
+            COALESCE(db.branch_name, asm.branch) AS branch,
 
             {period_sql} AS period,
 
@@ -507,33 +476,36 @@ def get_data(filters):
             {asm_dimension_sql}
         ) asm
 
-        LEFT JOIN (
-            {asm_branch_map_sql}
-        ) map
-            ON map.asm_name = asm.asm_name
+        LEFT JOIN `tabUser` du
+            ON du.name = asm.asm_user
+
+        LEFT JOIN `tabRegion Branches` db
+            ON db.name = asm.branch
 
         CROSS JOIN (
             {periods_sql}
         ) periods
 
         LEFT JOIN `tabCRM Contract` c
-            ON c.asm_name = asm.asm_name
+            ON c.user <=> asm.asm_user
+            AND c.region <=> asm.region
+            AND c.branch <=> asm.branch
             AND {contract_where}
             AND {period_match}
 
-        WHERE
-            {dimension_where}
-
         GROUP BY
-            asm.asm_name,
-            map.region,
-            map.branch,
+            asm.asm_user,
+            asm.region,
+            asm.branch,
+            du.full_name,
+            db.region,
+            db.branch_name,
             periods.period_no
 
         ORDER BY
-            map.region,
-            map.branch,
-            asm.asm_name,
+            region,
+            branch,
+            asm_name,
             {period_order_sql}
     """
 
