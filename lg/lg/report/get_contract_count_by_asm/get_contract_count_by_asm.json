@@ -16,6 +16,13 @@
       "reqd": 0
     },
     {
+      "fieldname": "branch",
+      "fieldtype": "Link",
+      "label": "Branch",
+      "options": "Branch",
+      "reqd": 0
+    },
+    {
       "fieldname": "asm",
       "fieldtype": "Link",
       "label": "ASM",
@@ -26,20 +33,14 @@
       "fieldname": "year",
       "fieldtype": "Select",
       "label": "Year",
-      "reqd": 0
+      "options": "",
+      "reqd": 1
     },
     {
       "fieldname": "deal_type",
       "fieldtype": "Select",
       "label": "Contract Type",
       "options": "\nAMC Renewal\nWarranty AMC Conversion\nLost Warranty Conversion\nLost AMC Conversion",
-      "reqd": 0
-    },
-    {
-      "fieldname": "area",
-      "fieldtype": "Link",
-      "label": "Branch",
-      "options": "branch",
       "reqd": 0
     },
     {
