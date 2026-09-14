@@ -3,9 +3,6 @@ function get_year_options() {
 
 	const years = [];
 
-	// Previous 2 years
-	// Current year
-	// Next 2 years
 	for (
 			let year = current_year - 2;
 			year <= current_year + 2;
@@ -22,31 +19,19 @@ frappe.query_reports["Get Contract Count By ASM"] = {
 
 	filters: [
 
-			// =====================================================
-			// REGION
-			// =====================================================
-
 			{
 					fieldname: "region",
 					label: __("Region"),
 					fieldtype: "Link",
-					options: "Region"
+					options: "Region Master"
 			},
-
-			// =====================================================
-			// Branch
-			// =====================================================
 
 			{
 					fieldname: "branch",
 					label: __("Branch"),
 					fieldtype: "Link",
-					options: "branch"
+					options: "Region Branches"
 			},
-
-			// =====================================================
-			// ASM
-			// =====================================================
 
 			{
 					fieldname: "asm",
@@ -54,10 +39,6 @@ frappe.query_reports["Get Contract Count By ASM"] = {
 					fieldtype: "Link",
 					options: "User"
 			},
-
-			// =====================================================
-			// YEAR
-			// =====================================================
 
 			{
 					fieldname: "year",
@@ -67,10 +48,6 @@ frappe.query_reports["Get Contract Count By ASM"] = {
 					default: String(new Date().getFullYear()),
 					reqd: 1
 			},
-
-			// =====================================================
-			// CONTRACT TYPE
-			// =====================================================
 
 			{
 					fieldname: "deal_type",
@@ -84,10 +61,6 @@ frappe.query_reports["Get Contract Count By ASM"] = {
 							"Lost AMC Conversion"
 					].join("\n")
 			},
-
-			// =====================================================
-			// GROUP BY
-			// =====================================================
 
 			{
 					fieldname: "group_by",

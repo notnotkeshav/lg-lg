@@ -12,14 +12,14 @@
       "fieldname": "region",
       "fieldtype": "Link",
       "label": "Region",
-      "options": "Region",
+      "options": "Region Master",
       "reqd": 0
     },
     {
       "fieldname": "branch",
       "fieldtype": "Link",
       "label": "Branch",
-      "options": "Branch",
+      "options": "Region Branches",
       "reqd": 0
     },
     {
