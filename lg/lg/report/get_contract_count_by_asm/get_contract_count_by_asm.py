@@ -129,6 +129,8 @@ def get_columns(filters):
     ]
 
 
+
+
 def get_data(filters):
     year = filters.get("year")
 
@@ -204,6 +206,11 @@ def get_data(filters):
 
     # -------------------------------------------------------------
     # USER / ASM CONDITIONS
+    #
+    # The ASM dimension is built from Users only - never from
+    # `tabRegion Branches`. A branch head heading more than one
+    # branch would otherwise repeat every one of their contracts
+    # once per branch.
     # -------------------------------------------------------------
 
     user_conditions = [
@@ -224,56 +231,137 @@ def get_data(filters):
             "u.name = %(asm)s"
         )
 
-    # -------------------------------------------------------------
-    # REGION / BRANCH CONDITIONS
-    # -------------------------------------------------------------
-
-    branch_conditions = [
-        "1 = 1"
-    ]
-
-    if filters.get("region"):
-        branch_conditions.append(
-            "b.region = %(region)s"
-        )
-
-    if filters.get("branch"):
-        branch_conditions.append(
-            """
-            (
-                b.name = %(branch)s
-                OR b.branch_code = %(branch)s
-                OR b.branch_name = %(branch)s
-            )
-            """
-        )
-
     user_where = " AND ".join(user_conditions)
-    branch_where = " AND ".join(branch_conditions)
 
     # -------------------------------------------------------------
     # CONTRACT CONDITIONS
     # -------------------------------------------------------------
 
-    contract_join = [
+    contract_conditions = [
         "c.docstatus < 2",
 
         # Customer PO Date is mandatory for this report
         "c.customer_po_date IS NOT NULL",
-
-        # CRM Contract ASM matches User full name
-        "c.asm_name = u.full_name",
 
         # Selected year is based on Customer PO Date
         "YEAR(c.customer_po_date) = %(year)s",
     ]
 
     if filters.get("deal_type"):
-        contract_join.append(
+        contract_conditions.append(
             "c.deal_type = %(deal_type)s"
         )
 
-    contract_join_sql = " AND ".join(contract_join)
+    contract_where = " AND ".join(contract_conditions)
+
+    # -------------------------------------------------------------
+    # ASM DIMENSION
+    #
+    # Area Managers, plus any ASM name found on a contract of the
+    # selected year that matches no Area Manager User - those
+    # contracts are reported under their own name instead of being
+    # dropped silently.
+    # -------------------------------------------------------------
+
+    asm_dimension_sql = f"""
+        SELECT u.full_name AS asm_name
+        FROM `tabUser` u
+        WHERE {user_where}
+          AND IFNULL(u.full_name, '') <> ''
+    """
+
+    if not filters.get("asm"):
+        asm_dimension_sql += f"""
+            UNION
+
+            SELECT DISTINCT c.asm_name
+            FROM `tabCRM Contract` c
+            WHERE {contract_where}
+              AND IFNULL(c.asm_name, '') <> ''
+              AND NOT EXISTS (
+                    SELECT 1
+                    FROM `tabUser` u2
+                    WHERE u2.full_name = c.asm_name
+                      AND u2.enabled = 1
+                      AND EXISTS (
+                            SELECT 1
+                            FROM `tabHas Role` hr2
+                            WHERE hr2.parent = u2.name
+                              AND hr2.role = 'Area Manager'
+                      )
+              )
+        """
+
+    # -------------------------------------------------------------
+    # REGION / BRANCH
+    #
+    # Pre-aggregated per ASM, so an ASM heading several branches
+    # stays a single row and their branches are listed together.
+    # -------------------------------------------------------------
+
+    asm_branch_map_sql = """
+        SELECT
+            u.full_name AS asm_name,
+
+            GROUP_CONCAT(
+                DISTINCT b.region
+                ORDER BY b.region
+                SEPARATOR ', '
+            ) AS region,
+
+            GROUP_CONCAT(
+                DISTINCT b.branch_name
+                ORDER BY b.branch_name
+                SEPARATOR ', '
+            ) AS branch
+
+        FROM `tabRegion Branches` b
+
+        INNER JOIN `tabUser` u
+            ON b.branch_head = u.name
+
+        GROUP BY u.full_name
+    """
+
+    # Region / Branch filters match any branch the ASM heads.
+
+    dimension_conditions = [
+        "1 = 1"
+    ]
+
+    if filters.get("region"):
+        dimension_conditions.append(
+            """
+            EXISTS (
+                SELECT 1
+                FROM `tabRegion Branches` b2
+                INNER JOIN `tabUser` u3
+                    ON b2.branch_head = u3.name
+                WHERE u3.full_name = asm.asm_name
+                  AND b2.region = %(region)s
+            )
+            """
+        )
+
+    if filters.get("branch"):
+        dimension_conditions.append(
+            """
+            EXISTS (
+                SELECT 1
+                FROM `tabRegion Branches` b3
+                INNER JOIN `tabUser` u4
+                    ON b3.branch_head = u4.name
+                WHERE u4.full_name = asm.asm_name
+                  AND (
+                        b3.name = %(branch)s
+                        OR b3.branch_code = %(branch)s
+                        OR b3.branch_name = %(branch)s
+                  )
+            )
+            """
+        )
+
+    dimension_where = " AND ".join(dimension_conditions)
 
     # -------------------------------------------------------------
     # PERIOD MATCH
@@ -307,11 +395,11 @@ def get_data(filters):
     query = f"""
         SELECT
 
-            u.full_name AS asm_name,
+            asm.asm_name AS asm_name,
 
-            b.region AS region,
+            map.region AS region,
 
-            b.branch_name AS branch,
+            map.branch AS branch,
 
             {period_sql} AS period,
 
@@ -363,16 +451,7 @@ def get_data(filters):
                 0
             ) AS lost_amc_conversion_amount,
 
-            COALESCE(
-                SUM(
-                    CASE
-                        WHEN c.name IS NOT NULL
-                        THEN COALESCE(c.amount, 0)
-                        ELSE 0
-                    END
-                ),
-                0
-            ) AS total_amount,
+            COALESCE(SUM(COALESCE(c.amount, 0)), 0) AS total_amount,
 
             # =====================================================
             # COUNTS
@@ -424,35 +503,37 @@ def get_data(filters):
 
             COUNT(c.name) AS total
 
-        FROM `tabUser` u
+        FROM (
+            {asm_dimension_sql}
+        ) asm
 
-        INNER JOIN `tabRegion Branches` b
-            ON b.branch_head = u.name
+        LEFT JOIN (
+            {asm_branch_map_sql}
+        ) map
+            ON map.asm_name = asm.asm_name
 
         CROSS JOIN (
             {periods_sql}
         ) periods
 
         LEFT JOIN `tabCRM Contract` c
-            ON {contract_join_sql}
+            ON c.asm_name = asm.asm_name
+            AND {contract_where}
             AND {period_match}
 
         WHERE
-            {user_where}
-            AND {branch_where}
+            {dimension_where}
 
         GROUP BY
-            u.name,
-            u.full_name,
-            b.name,
-            b.region,
-            b.branch_name,
+            asm.asm_name,
+            map.region,
+            map.branch,
             periods.period_no
 
         ORDER BY
-            b.region,
-            b.branch_name,
-            u.full_name,
+            map.region,
+            map.branch,
+            asm.asm_name,
             {period_order_sql}
     """
 
