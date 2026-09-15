@@ -785,74 +785,100 @@ def accept_contract(docname, dealer_id):
 				dealer_name = d.dealer_name
 				break
 		else:
-			return f"❌ Dealer {dealer_id} not found in contract"
+			frappe.respond_as_web_page(
+				"Dealer Not Found",
+				f"Dealer {dealer_id} not found in contract {docname}.",
+				success=False,
+				indicator_color="red",
+				primary_action=None,
+			)
+			return
 
 		# Update contract status
 		doc.custom_contract_status = "Accepted"
 		doc.save(ignore_permissions=True)
 		frappe.db.commit()
 
-		recipients = []
+		# Notifying the internal team must never break the dealer's confirmation page —
+		# the status is already saved and committed above.
+		try:
+			recipients = []
 
-		dealer_email_r = frappe.db.get_value("Dealer", dealer_id, "email_id")
-		print(dealer_email_r)
-		recipients.append(dealer_email_r)
+			dealer_email_r = frappe.db.get_value("Dealer", dealer_id, "email_id")
+			if dealer_email_r:
+				recipients.append(dealer_email_r)
 
-		# 1️⃣ Region Head (linked via Region field)
-		if doc.region:
-			region_head = frappe.get_value("Region Master", doc.region, "region_head")
-			if region_head:
+			# 1️⃣ Region Head (linked via Region field)
+			if doc.region:
+				region_head = frappe.get_value("Region Master", doc.region, "region_head")
 				if region_head:
 					recipients.append(region_head)
 
-		# 2️⃣ All users with "Finance" role
-		finance_users = frappe.db.sql("""
-			SELECT DISTINCT user.name, user.email
-			FROM `tabHas Role` hr
-			JOIN `tabUser` user ON hr.parent = user.name
-			WHERE hr.role = 'Finance' AND user.enabled = 1
-		""", as_dict=True)
+			# 2️⃣ All users with "Finance" role
+			finance_users = frappe.db.sql("""
+				SELECT DISTINCT user.name, user.email
+				FROM `tabHas Role` hr
+				JOIN `tabUser` user ON hr.parent = user.name
+				WHERE hr.role = 'Finance' AND user.enabled = 1
+			""", as_dict=True)
 
-		for u in finance_users:
-			if u.email:
-				recipients.append(u.email)
+			for u in finance_users:
+				if u.email:
+					recipients.append(u.email)
 
-		# Prepare email content
-		if recipients:
-			contract_id = doc.name
-			customer = doc.customer if hasattr(doc, "customer") else "N/A"
+			# Prepare email content
+			if recipients:
+				contract_id = doc.name
+				customer = doc.customer if hasattr(doc, "customer") else "N/A"
 
-			message = f"""
-			<p>Dear Team,</p>
-			<p>The following contract has been <strong>Accepted</strong> ✅:</p>
-			<ul>
-				<li><strong>Contract ID:</strong> {contract_id}</li>
-				<li><strong>Customer:</strong> {customer}</li>
-				<li><strong>Dealer ID:</strong> {dealer_id}</li>
-				<li><strong>Dealer Name:</strong> {dealer_name or "N/A"}</li>
-				<li><strong>Status:</strong> Accepted</li>
-			</ul>
-			<p>Thank you,<br>Hi-M Solutek Pvt. Ltd.</p>
-			"""
+				message = f"""
+				<p>Dear Team,</p>
+				<p>The following contract has been <strong>Accepted</strong> ✅:</p>
+				<ul>
+					<li><strong>Contract ID:</strong> {contract_id}</li>
+					<li><strong>Customer:</strong> {customer}</li>
+					<li><strong>Dealer ID:</strong> {dealer_id}</li>
+					<li><strong>Dealer Name:</strong> {dealer_name or "N/A"}</li>
+					<li><strong>Status:</strong> Accepted</li>
+				</ul>
+				<p>Thank you,<br>Hi-M Solutek Pvt. Ltd.</p>
+				"""
 
-			
+				frappe.sendmail(
+					recipients=recipients,
+					sender="notify.himsolutek@lgepartner.com",
+					subject=f"Contract Accepted - {contract_id}",
+					message=message,
+					now=True
+				)
 
-			frappe.sendmail(
-				recipients=recipients,
-				sender="notify.himsolutek@lgepartner.com",
-				subject=f"Contract Accepted - {contract_id}",
-				message=message,
-				now=True
-			)
+				# title is capped at 140 chars — keep the recipient list in the message
+				frappe.log_error(
+					title="Contract Accepted",
+					message=f"✅ Notification email sent to: {', '.join(recipients)}"
+				)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Contract Accepted - Notification Failed")
 
-			frappe.log_error(f"✅ Notification email sent to: {', '.join(recipients)}", "Contract Accepted")
-			print(recipients)
-			
-		return "✅ Contract accepted successfully"
+		frappe.respond_as_web_page(
+			"Contract Accepted",
+			"Contract Accepted successfully",
+			success=True,
+			indicator_color="green",
+			primary_action=None,
+		)
+		return
 
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Accept Contract Failed")
-		return "❌ Failed to accept"
+		frappe.respond_as_web_page(
+			"Something Went Wrong",
+			"Failed to accept the contract. Please contact Hi-M Solutek Pvt. Ltd.",
+			success=False,
+			indicator_color="red",
+			primary_action=None,
+		)
+		return
 
 # @frappe.whitelist(allow_guest=True)
 # def accept_contract(docname, dealer_id):
@@ -888,16 +914,38 @@ def reject_contract(docname, dealer_id):
 				d.sent_time = frappe.utils.now_datetime()
 				break
 		else:
-			return f"❌ Dealer {dealer_id} not found in contract"
+			frappe.respond_as_web_page(
+				"Dealer Not Found",
+				f"Dealer {dealer_id} not found in contract {docname}.",
+				success=False,
+				indicator_color="red",
+				primary_action=None,
+			)
+			return
 
 		doc.custom_contract_status = "Rejected"
 		doc.save(ignore_permissions=True)
 		frappe.db.commit()
-		return "❌ Contract rejected successfully"
+
+		frappe.respond_as_web_page(
+			"Contract Rejected",
+			"Contract Rejected successfully",
+			success=False,
+			indicator_color="red",
+			primary_action=None,
+		)
+		return
 
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Reject Contract Failed")
-		return "❌ Failed to reject"
+		frappe.respond_as_web_page(
+			"Something Went Wrong",
+			"Failed to reject the contract. Please contact Hi-M Solutek Pvt. Ltd.",
+			success=False,
+			indicator_color="red",
+			primary_action=None,
+		)
+		return
 
 
 

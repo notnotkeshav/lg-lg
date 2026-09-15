@@ -18,7 +18,7 @@ frappe.ui.form.on("CRM Quotation", {
                 frm: frm,
                 subject: __("Quotation: {0}", [frm.doc.name]),
                 recipients: frm.doc.contact_email || "",   // customer email field
-                sender: "econnect.himsolutek@lgepartner.com",
+                sender: "payal@extensioncrm.com",
                 attach_document_print: true,  // attach PDF
                 message: __("Please find attached quotation."),
             });
@@ -234,6 +234,9 @@ frappe.ui.form.on("CRM Quotation", {
     },
     end_date_as_per_po: function (frm) {
         generate_billing_schedule_as_per_po_date(frm)
+    },
+    price_rate__as_per_year:function(frm){
+        generate_billing_schedule(frm)
     }
 
 
@@ -260,7 +263,12 @@ async function generate_billing_schedule(frm) {
     } = frm.doc;
 
     const billing_terms = frm.doc.billing_terms || "Post"; // Pre or Post or Advance
-
+    const yearly_prices = frm.doc.price_rate__as_per_year
+        ? frm.doc.price_rate__as_per_year
+            .split(",")
+            .map(v => parseFloat(v.trim()))
+            .filter(v => v > 0)
+        : [];
     if (!start_date || !end_date || !payment_frequency || !total_amount) {
         return;
     }
@@ -349,7 +357,6 @@ async function generate_billing_schedule(frm) {
         dates.pop();
     }
 
-    const per_row_amount = dates.length > 0 ? flt(total_amount) / dates.length : 0;
 
     // 🔹 Get minimum days row from Payment Term
     let min_row = null;
@@ -374,7 +381,38 @@ async function generate_billing_schedule(frm) {
         billing_date_obj.setDate(billing_date_obj.getDate() + min_days);
         row.payment_date = frappe.datetime.obj_to_str(billing_date_obj);
 
-        row.amount = per_row_amount;
+                // Calculate contract year (not calendar year)
+        const startObj = frappe.datetime.str_to_obj(start_date);
+
+        let monthsElapsed =
+            (dates[i].getFullYear() - startObj.getFullYear()) * 12 +
+            (dates[i].getMonth() - startObj.getMonth());
+
+        let contractYear = Math.floor(monthsElapsed / 12);
+
+        let yearlyAmount;
+
+        // Year 1 -> Total Amount
+        if (contractYear === 0) {
+            yearlyAmount = flt(total_amount);
+        }
+        // Year 2 onwards -> Price Rate As Per Year
+        else if (yearly_prices.length >= contractYear) {
+            yearlyAmount = yearly_prices[contractYear - 1];
+        }
+        // If not enough values are provided, continue with Total Amount
+        else {
+            yearlyAmount = flt(total_amount);
+        }
+
+        const installmentCount = {
+            "Monthly": 12,
+            "Quarterly": 4,
+            "Semi-Annually": 2,
+            "Annually": 1
+        }[payment_frequency];
+
+        row.amount = flt(yearlyAmount / installmentCount);
         row.billing_term = get_ordinal(term_counter++) + " Term";
         row.status = "Pending";
         row.invoice_portion = min_invoice_portion;
@@ -505,8 +543,49 @@ async function generate_billing_schedule_as_per_po_date(frm) {
 
     console.log("Calculated schedule dates:", dates);
 
-    const per_row_amount = dates.length > 0 ? flt(total_amount) / dates.length : 0;
-    console.log("Calculated per-row amount:", per_row_amount);
+    // ===============================
+// 🔹 Year-wise pricing logic
+// ===============================
+    const yearly_prices = frm.doc.price_rate__as_per_year
+        ? frm.doc.price_rate__as_per_year
+            .split(",")
+            .map(v => parseFloat(v.trim()))
+            .filter(v => v > 0)
+        : [];
+
+            const startObj = frappe.datetime.str_to_obj(start_date_as_per_po);
+
+            let per_row_amount_list = [];
+
+            for (let i = 0; i < dates.length; i++) {
+
+                let monthsElapsed =
+                    (dates[i].getFullYear() - startObj.getFullYear()) * 12 +
+                    (dates[i].getMonth() - startObj.getMonth());
+
+                let contractYear = Math.floor(monthsElapsed / 12);
+
+                let yearlyAmount;
+
+                if (contractYear === 0) {
+                    yearlyAmount = flt(total_amount);
+                }
+                else if (yearly_prices.length >= contractYear) {
+                    yearlyAmount = yearly_prices[contractYear - 1];
+                }
+                else {
+                    yearlyAmount = flt(total_amount);
+                }
+
+                const installmentCount = {
+                    "Monthly": 12,
+                    "Quarterly": 4,
+                    "Semi-Annually": 2,
+                    "Annually": 1
+                }[payment_frequency];
+
+                per_row_amount_list.push(flt(yearlyAmount / installmentCount));
+            }
 
     let min_days = 0;
     let min_invoice_portion = 100;
@@ -532,7 +611,7 @@ async function generate_billing_schedule_as_per_po_date(frm) {
         billing_date_obj.setDate(billing_date_obj.getDate() + min_days);
         row.payment_date = frappe.datetime.obj_to_str(billing_date_obj);
 
-        row.amount = per_row_amount;
+        row.amount = per_row_amount_list[i];
         row.billing_term = get_ordinal(term_counter++) + " Term";
         row.status = "Pending";
         row.invoice_portion = min_invoice_portion;
