@@ -216,6 +216,9 @@ def get_data(filters):
         conditions = [
             f"{alias}.docstatus < 2",
 
+            # Only active contracts are counted in this report
+            f"{alias}.custom_contract_status = 'Active'",
+
             # Customer PO Date is mandatory for this report
             f"{alias}.customer_po_date IS NOT NULL",
 
