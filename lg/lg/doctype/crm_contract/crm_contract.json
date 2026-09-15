@@ -7,25 +7,41 @@
  "engine": "InnoDB",
  "field_order": [
   "tab_2_tab",
-  "section_break_hcqt",
+  "discontinue_details_section",
   "title",
   "naming_series",
   "company",
   "customer",
   "customer_name",
+  "customer_hc",
+  "column_break_dvwg",
   "region",
   "branch",
+  "user",
+  "asm_name",
+  "billing_progress_status",
+  "section_break_hcqt",
   "column_break_pdbk",
+  "ssd_category",
+  "ssd_name_dealer",
+  "ssd_bill_to_code",
+  "bill_ship_code",
+  "amc_type",
   "date",
-  "customer_hc",
   "project",
-  "industry",
   "is_govt",
-  "discontinue_details_section",
+  "column_break_gyad",
+  "customer_po_id",
+  "customer_po_date",
+  "work_order_issue_date",
+  "work_order_no",
+  "industry",
   "discontinue_date",
+  "parent_vertical",
   "contract_details_section",
   "contract_from",
   "deal_type",
+  "with_tms",
   "start_date",
   "expiry_date",
   "column_break_pvzt",
@@ -50,8 +66,11 @@
   "advance_end_date",
   "billing_schedule_section",
   "payment_frequency",
+  "billing_terms",
+  "payment_term",
   "billing_schedule",
   "address_contacts",
+  "section_break_dack",
   "customer_address",
   "custom_address_html",
   "address_html",
@@ -61,26 +80,7 @@
   "shipping_address_html",
   "dealer_tab",
   "dealer",
-  "amended_from",
-  "bill_ship_code",
-  "ssd_name_dealer",
-  "ssd_category",
-  "ssd_bill_to_code",
-  "parent_vertical",
-  "customer_po_id",
-  "customer_po_date",
-  "work_order_issue_date",
-  "work_order_no",
-  "user",
-  "asm_name",
-  "billing_progress_status",
-  "amc_type",
-  "with_tms",
-  "payment_term",
-  "column_break_hzmz",
-  "billing_terms",
-  "column_break_ewls",
-  "section_break_ihzb"
+  "amended_from"
  ],
  "fields": [
   {
@@ -198,8 +198,7 @@
   },
   {
    "fieldname": "discontinue_details_section",
-   "fieldtype": "Section Break",
-   "label": "Discontinue Details"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "discontinue_date",
@@ -230,8 +229,7 @@
    "fieldname": "start_date",
    "fieldtype": "Date",
    "label": "Start Date",
-   "reqd": 1,
-   "in_list_view": 0
+   "reqd": 1
   },
   {
    "fieldname": "expiry_date",
@@ -281,12 +279,12 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "custom_contract_status",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Contract Status",
    "options": "Active\nExpired\nDiscontinue\nAccepted\nRejected",
-   "allow_on_submit": 1,
-   "in_list_view": 1,
    "translatable": 1
   },
   {
@@ -392,8 +390,8 @@
   },
   {
    "fieldname": "custom_address_html",
-   "label": "Address HTML",
-   "fieldtype": "HTML"
+   "fieldtype": "HTML",
+   "label": "Address HTML"
   },
   {
    "fieldname": "address_html",
@@ -412,8 +410,8 @@
   },
   {
    "fieldname": "custom_shipping_address_html",
-   "label": "Shipping Address HTML",
-   "fieldtype": "HTML"
+   "fieldtype": "HTML",
+   "label": "Shipping Address HTML"
   },
   {
    "fieldname": "shipping_address_html",
@@ -532,10 +530,6 @@
    "options": "Pay Term"
   },
   {
-   "fieldname": "column_break_hzmz",
-   "fieldtype": "Column Break"
-  },
-  {
    "allow_on_submit": 1,
    "fieldname": "billing_terms",
    "fieldtype": "Select",
@@ -543,19 +537,23 @@
    "options": "\nAdvance\nPost"
   },
   {
-   "fieldname": "column_break_ewls",
+   "fieldname": "column_break_dvwg",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_ihzb",
+   "fieldname": "column_break_gyad",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_dack",
    "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-09-15 13:00:00.000000",
- "modified_by": "khushi.rai@lgepartner.com",
+ "modified": "2026-09-15 15:25:35.535772",
+ "modified_by": "Administrator",
  "module": "Lg",
  "name": "CRM Contract",
  "naming_rule": "By \"Naming Series\" field",
@@ -577,7 +575,6 @@
  "row_format": "Dynamic",
  "search_fields": "customer,customer_hc,company ",
  "show_title_field_in_link": 1,
- "sort_field": "",
  "sort_order": "DESC",
  "states": [],
  "title_field": "customer",

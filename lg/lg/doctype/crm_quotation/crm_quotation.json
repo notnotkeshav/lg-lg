@@ -397,13 +397,12 @@
   {
    "depends_on": "eval:doc.is_multi_year",
    "fieldname": "multi_year_section",
-   "fieldtype": "Section Break",
-   "label": "Multi Year Breakup"
+   "fieldtype": "Section Break"
   },
   {
-   "depends_on": "eval:doc.is_multi_year",
    "fieldname": "amc_yearly_breakup",
    "fieldtype": "Table",
+   "hidden": 1,
    "label": "Year Wise Breakup",
    "options": "AMC Yearly Breakup"
   },
@@ -882,7 +881,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-09-15 14:24:45.977627",
+ "modified": "2026-09-15 15:12:15.115151",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "CRM Quotation",
