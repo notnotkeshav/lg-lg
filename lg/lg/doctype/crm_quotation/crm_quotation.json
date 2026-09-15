@@ -871,8 +871,7 @@
    "fieldname": "payment_term",
    "fieldtype": "Link",
    "label": "Payment Term",
-   "options": "Pay Term",
-   "reqd": 1
+   "options": "Pay Term"
   },
   {
    "fieldname": "price_rate__as_per_year",
@@ -883,7 +882,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-09-15 13:11:21.782807",
+ "modified": "2026-09-15 14:24:45.977627",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "CRM Quotation",
