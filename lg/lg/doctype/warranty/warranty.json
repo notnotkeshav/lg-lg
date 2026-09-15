@@ -6,6 +6,9 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "custom_column_break_souwp",
+  "custom_warranty_",
+  "custom_column_break_y2td8",
   "warranty_information_section",
   "created_by",
   "warranty_status",
@@ -39,16 +42,19 @@
  ],
  "fields": [
   {
-   "fieldname": "column_break_wcaf",
-   "fieldtype": "Column Break"
+   "fieldname": "custom_column_break_souwp",
+   "fieldtype": "Column Break",
+   "label": ""
   },
   {
-   "fieldname": "warranty_requester",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Warranty Requester",
-   "options": "Customer\nDealer\nTechnician",
-   "reqd": 1
+   "fieldname": "custom_warranty_",
+   "fieldtype": "Int",
+   "label": "Warranty "
+  },
+  {
+   "fieldname": "custom_column_break_y2td8",
+   "fieldtype": "Column Break",
+   "label": ""
   },
   {
    "fieldname": "warranty_information_section",
@@ -63,8 +69,34 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_tlpj",
+   "fieldname": "warranty_status",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warranty Status",
+   "options": "Warranty Status",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "column_break_wcaf",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "warranty_requester",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Warranty Requester",
+   "options": "Customer\nDealer\nTechnician",
+   "reqd": 1
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Infomation"
   },
   {
    "fieldname": "phone",
@@ -72,14 +104,45 @@
    "label": "Phone"
   },
   {
+   "fieldname": "column_break_tlpj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "organization",
+   "fieldtype": "Link",
+   "label": "Organization",
+   "options": "CRM Organization"
+  },
+  {
    "fieldname": "address_information_section",
    "fieldtype": "Section Break",
    "label": "Address Information"
   },
   {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State "
+  },
+  {
    "fieldname": "street",
    "fieldtype": "Data",
    "label": "Street "
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "approval_date",
+   "fieldtype": "Date",
+   "label": "Approval Date ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "file1",
+   "fieldtype": "Attach",
+   "label": "File1"
   },
   {
    "fieldname": "column_break_zesj",
@@ -91,25 +154,9 @@
    "label": "Tower No "
   },
   {
-   "fieldname": "city",
-   "fieldtype": "Data",
-   "label": "City"
-  },
-  {
-   "fieldname": "state",
-   "fieldtype": "Data",
-   "label": "State "
-  },
-  {
    "fieldname": "pincode",
    "fieldtype": "Data",
    "label": "Pincode"
-  },
-  {
-   "fieldname": "approval_date",
-   "fieldtype": "Date",
-   "label": "Approval Date ",
-   "reqd": 1
   },
   {
    "fieldname": "approval_name",
@@ -118,19 +165,14 @@
    "reqd": 1
   },
   {
-   "fieldname": "details_section",
-   "fieldtype": "Section Break",
-   "label": "Customer Infomation"
-  },
-  {
-   "fieldname": "file1",
-   "fieldtype": "Attach",
-   "label": "File1"
-  },
-  {
    "fieldname": "file2",
    "fieldtype": "Attach",
    "label": "File2"
+  },
+  {
+   "fieldname": "dealer_information_section",
+   "fieldtype": "Section Break",
+   "label": "Dealer Information"
   },
   {
    "fieldname": "dealer_name",
@@ -143,40 +185,15 @@
    "label": "Dealer ID"
   },
   {
-   "fieldname": "product_information_tab",
-   "fieldtype": "Tab Break",
-   "label": "Product Information"
-  },
-  {
-   "fieldname": "dealer_information_section",
-   "fieldtype": "Section Break",
-   "label": "Dealer Information"
-  },
-  {
    "fieldname": "product_information_section",
    "fieldtype": "Section Break",
    "label": "Item Detail"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Warranty",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
   },
   {
    "fieldname": "item",
    "fieldtype": "Table",
    "label": "Item",
    "options": "Warranty Item"
-  },
-  {
-   "fieldname": "expiry_date",
-   "fieldtype": "Date",
-   "label": "Expiry Date"
   },
   {
    "fieldname": "contacts_tab",
@@ -190,24 +207,25 @@
    "options": "Warranty Contact"
   },
   {
-   "fieldname": "organization",
-   "fieldtype": "Link",
-   "label": "Organization",
-   "options": "CRM Organization"
+   "fieldname": "product_information_tab",
+   "fieldtype": "Tab Break",
+   "label": "Product Information"
   },
   {
-   "fieldname": "warranty_status",
+   "fieldname": "amended_from",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Warranty Status",
-   "options": "Warranty Status",
-   "reqd": 1
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Warranty",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-03 14:37:27.238541",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Warranty",

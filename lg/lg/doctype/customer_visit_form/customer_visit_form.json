@@ -10,6 +10,7 @@
   "purpose_of_visit",
   "other_purpose_of_visit",
   "description",
+  "visitor_name",
   "visited_by",
   "accompanied_by"
  ],
@@ -49,17 +50,27 @@
    "label": "Other Purpose of Visit"
   },
   {
+   "fetch_from": "visitor_name.full_name",
+   "fetch_if_empty": 1,
    "fieldname": "visited_by",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Visited By"
+  },
+  {
+   "fieldname": "visitor_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Visitor Name",
+   "options": "User"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-03-02 13:48:52.309820",
+ "modified": "2026-09-15 12:11:53.592358",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Customer Visit Form",

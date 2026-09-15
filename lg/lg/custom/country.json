@@ -1,0 +1,19 @@
+{
+ "custom_fields": [],
+ "custom_perms": [],
+ "doctype": "Country",
+ "links": [],
+ "property_setters": [
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Country",
+   "doctype_or_field": "DocType",
+   "property": "naming_rule",
+   "property_type": "Data",
+   "value": "By fieldname",
+   "module": "Lg",
+   "name": "Country-main-naming_rule"
+  }
+ ],
+ "sync_on_migrate": 1
+}

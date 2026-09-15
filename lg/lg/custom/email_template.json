@@ -1,0 +1,30 @@
+{
+ "custom_fields": [
+  {
+   "doctype": "Custom Field",
+   "dt": "Email Template",
+   "label": "Enabled",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "default": "0",
+   "name": "Email Template-enabled",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Email Template",
+   "label": "Doctype",
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "options": "DocType",
+   "insert_after": "enabled",
+   "name": "Email Template-reference_doctype",
+   "module": "Lg"
+  }
+ ],
+ "custom_perms": [],
+ "doctype": "Email Template",
+ "links": [],
+ "property_setters": [],
+ "sync_on_migrate": 1
+}

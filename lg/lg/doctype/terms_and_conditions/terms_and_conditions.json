@@ -18,7 +18,8 @@
   {
    "fieldname": "title",
    "fieldtype": "Data",
-   "label": "Title"
+   "label": "Title",
+   "unique": 1
   },
   {
    "default": "0",
@@ -61,7 +62,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-22 11:44:13.050260",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Terms and Conditions",
@@ -82,5 +83,7 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "autoname": "field:title",
+ "naming_rule": "By fieldname"
 }

@@ -5,6 +5,7 @@ let auto_price_rate = false;
 frappe.ui.form.on("CRM Quotation", {
     refresh(frm) {
 
+        set_default_print_format(frm);
         frm.set_df_property("total_hp", "read_only", 1);
         if (frm.doc.total_hp && frm.doc.industry) {
             show_filtered_zone_rates(frm);
@@ -223,6 +224,10 @@ frappe.ui.form.on("CRM Quotation", {
     },
     amc_year: function (frm) {
         calculate_amount(frm)
+        detect_multi_year(frm)
+    },
+    amc_term: function (frm) {
+        detect_multi_year(frm)
     },
     start_date_as_per_po: function (frm) {
         generate_billing_schedule_as_per_po_date(frm)
@@ -657,7 +662,7 @@ function priceRate(frm) {
             if (r.message) {
                 if (r.message.error) return;
 
-                frm.set_value(frm, "zone", r.message.zone || "");
+                frm.set_value("zone", r.message.zone || "");
                 let rate = parseFloat(r.message.price_rate) || 0;
                 let min_rate = parseFloat(r.message.minimum_rate || 0);
                 let max_rate = parseFloat(r.message.maximum_rate || 0);
@@ -917,35 +922,95 @@ function show_filtered_zone_rates(frm) {
 
 
 function calculate_amc_duration(frm) {
-    if (frm.doc.start_date && frm.doc.end_date) {
-        const start = frappe.datetime.str_to_obj(frm.doc.start_date);
-        const end = frappe.datetime.str_to_obj(frm.doc.end_date);
-
-        if (start > end) {
-            frappe.msgprint(__('End Date must be after Start Date'));
-            set_amc_values(frm, 0, 0);
-            return;
-        }
-
-        let total_months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
-        let years = Math.floor(total_months / 12);
-        let months = total_months;
-
-        set_amc_values(frm, years, months);
-    } else {
+    if (!frm.doc.start_date || !frm.doc.end_date) {
         set_amc_values(frm, 0, 0);
+        return;
     }
+
+    const start = frappe.datetime.str_to_obj(frm.doc.start_date);
+    const end = frappe.datetime.str_to_obj(frm.doc.end_date);
+
+    if (start > end) {
+        frappe.msgprint(__('End Date must be after Start Date'));
+        set_amc_values(frm, 0, 0);
+        return;
+    }
+
+    const total_months = get_amc_months(start, end);
+    set_amc_values(frm, Math.floor(total_months / 12), total_months);
+}
+
+// Inclusive month count, e.g. 01-Jan-25 -> 31-Dec-26 = 24, 15-Jan-25 -> 14-Feb-25 = 1.
+// Mirrors get_amc_months() in crm_quotation.py - keep both in sync.
+function get_amc_months(start, end) {
+    // the end date is inclusive, so measure up to the day after it
+    const till = new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1);
+
+    let months = (till.getFullYear() - start.getFullYear()) * 12 + (till.getMonth() - start.getMonth());
+
+    // anchor = start date shifted by that many whole months
+    const anchor = new Date(start.getFullYear(), start.getMonth() + months, start.getDate());
+    if (anchor > till) {
+        months -= 1;
+    }
+
+    // any leftover days count as a further (part) month
+    const anchored = new Date(start.getFullYear(), start.getMonth() + months, start.getDate());
+    if (anchored < till) {
+        months += 1;
+    }
+
+    return Math.max(months, 0);
 }
 
 function set_amc_values(frm, years, months) {
     frm.set_df_property("amc_year", "read_only", 0);
     frm.set_df_property("amc_term", "read_only", 0);
 
-    frm.set_value(frm, "amc_year", years);
-    frm.set_value(frm, "amc_term", months);
+    frm.set_value("amc_year", years);
+    frm.set_value("amc_term", months);
 
     frm.set_df_property("amc_year", "read_only", 1);
     frm.set_df_property("amc_term", "read_only", 1);
+
+    detect_multi_year(frm);
+}
+
+// Auto detect a multi year quotation purely from amc_year / amc_term.
+function detect_multi_year(frm) {
+    const is_multi_year = (cint(frm.doc.amc_term) > 12 || cint(frm.doc.amc_year) > 1) ? 1 : 0;
+
+    if (cint(frm.doc.is_multi_year) !== is_multi_year) {
+        frm.set_value("is_multi_year", is_multi_year);
+    }
+
+    set_default_print_format(frm);
+}
+
+// Multi year quotations default to the year-wise print format.
+function set_default_print_format(frm) {
+    const print_format = cint(frm.doc.is_multi_year)
+        ? "AMC Offer Quote Multi Year"
+        : "AMC Offer quote";
+
+    // frm.meta IS locals.DocType["CRM Quotation"] (form.js: this.meta =
+    // frappe.get_doc("DocType", this.doctype)) - the very object the DocType editor
+    // binds to and saves. A plain assignment leaks into that save and trips
+    // "Standard DocType cannot have default print format, use Customize Form".
+    //
+    // Defining it non-enumerable keeps it readable by frappe.meta.get_print_formats()
+    // and the print view, while JSON.stringify - which is how the doc is sent to the
+    // server - skips it entirely.
+    try {
+        Object.defineProperty(frm.meta, "default_print_format", {
+            value: print_format,
+            enumerable: false,
+            writable: true,
+            configurable: true,
+        });
+    } catch (e) {
+        // a print-format preference must never stop the form from rendering
+    }
 }
 
 

@@ -5,6 +5,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "workflow_state",
   "customer_name",
   "zone",
   "project_type",
@@ -14,6 +15,14 @@
   "workflow_status"
  ],
  "fields": [
+  {
+   "fieldname": "workflow_state",
+   "label": "Workflow State",
+   "fieldtype": "Link",
+   "options": "Workflow State",
+   "hidden": 1,
+   "allow_on_submit": 1
+  },
   {
    "fieldname": "customer_name",
    "fieldtype": "Data",
@@ -55,7 +64,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-03 18:56:48.260529",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "AMC Quotation",

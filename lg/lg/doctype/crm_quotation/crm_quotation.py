@@ -15,7 +15,8 @@ from frappe.utils import (
 	flt,
 	today,
 	add_days,
-	date_diff
+	date_diff,
+	cint
 )
 from frappe.utils.formatters import fmt_money
 import json
@@ -27,6 +28,90 @@ class CRMQuotation(Document):
 	def validate(self):
 		if not self.customer:
 			frappe.throw(_("Customer is required"))
+
+		self.set_amc_duration()
+		self.set_multi_year_details()
+
+	def get_print_format(self):
+		"""Multi year quotations print year wise."""
+		return "AMC Offer Quote Multi Year" if self.is_multi_year else "AMC Offer quote"
+
+	def set_amc_duration(self):
+		"""Derive AMC Term (in Years) and AMC Term (in Months) from Start / End Date."""
+		if not (self.start_date and self.end_date):
+			return
+
+		start, end = getdate(self.start_date), getdate(self.end_date)
+		if start > end:
+			frappe.throw(_("End Date must be after Start Date"))
+
+		self.amc_term = get_amc_months(start, end)
+		self.amc_year = self.amc_term // 12
+
+	def set_multi_year_details(self):
+		"""Auto detect a multi year quotation and build its year wise breakup."""
+		months = cint(self.amc_term)
+		self.is_multi_year = 1 if (months > 12 or cint(self.amc_year) > 1) else 0
+
+		if not self.is_multi_year or not self.start_date:
+			self.amc_yearly_breakup = []
+			return
+
+		# keep whatever the user manually edited, keyed on the period start
+		existing = {str(row.from_date): row for row in (self.amc_yearly_breakup or [])}
+
+		rows = []
+		start = getdate(self.start_date)
+		year_no = 1
+		remaining = months
+
+		while remaining > 0:
+			span = min(12, remaining)
+			from_date = add_months(start, (year_no - 1) * 12)
+			to_date = add_days(add_months(from_date, span), -1)
+			if self.end_date and getdate(to_date) > getdate(self.end_date):
+				to_date = getdate(self.end_date)
+
+			row = {
+				"year_no": year_no,
+				"year_label": _("Year {0}").format(year_no),
+				"from_date": from_date,
+				"to_date": to_date,
+				"months": span,
+				"rate_per_hp": flt(self.price_rate),
+				"amount": flt(self.total_hp) * flt(self.price_rate) * span / 12.0,
+			}
+
+			old_row = existing.get(str(from_date))
+			if old_row and cint(old_row.months) == span:
+				# user overrides survive a re-validate
+				row["rate_per_hp"] = flt(old_row.rate_per_hp) or row["rate_per_hp"]
+				row["amount"] = flt(old_row.amount) or row["amount"]
+
+			rows.append(row)
+			remaining -= span
+			year_no += 1
+
+		self.amc_yearly_breakup = []
+		for row in rows:
+			self.append("amc_yearly_breakup", row)
+
+
+def get_amc_months(start, end):
+	"""Inclusive month count between two dates, e.g. 01-Jan-25 to 31-Dec-26 = 24."""
+	start, end = getdate(start), getdate(end)
+	if end < start:
+		return 0
+
+	# end date is inclusive, so measure up to the day after it
+	delta = relativedelta(add_days(end, 1), start)
+	months = delta.years * 12 + delta.months
+
+	# any leftover days count as a further (part) month
+	if delta.days > 0:
+		months += 1
+
+	return months
 
 	def on_update(self,method=None):
 		if self.workflow_state == "Customer Approval Pending" and self.customer:
@@ -43,7 +128,7 @@ class CRMQuotation(Document):
 				self.doctype,
 				self.name,
 				file_name=self.name,
-				print_format="AMC Offer quote",  # change if custom print format
+				print_format=self.get_print_format(),
 				lang="en"
 			)
 
@@ -291,29 +376,11 @@ def get_zone_from_vertical_master(horse_power, project_type=None, start_date=Non
     amc_year, amc_term = 0, 0
     try:
         if start_date and end_date:
-            start = datetime.strptime(start_date, "%Y-%m-%d")
-            end = datetime.strptime(end_date, "%Y-%m-%d")
-
-            if end < start:
+            if getdate(end_date) < getdate(start_date):
                 return {"error": "Start Date cannot be after End Date."}
 
-            years = end.year - start.year
-            months = end.month - start.month
-            days = end.day - start.day
-
-            if days < 0:
-                months -= 1
-                days += (start.replace(month=start.month % 12 + 1, day=1) - start.replace(day=1)).days
-
-            if months < 0:
-                years -= 1
-                months += 12
-
-            total_months = years * 12 + months + (1 if days > 0 else 0)
-
-            amc_year = years + (months + (1 if days > 0 else 0)) / 12
-            amc_year = round(amc_year, 2)
-            amc_term = total_months
+            amc_term = get_amc_months(start_date, end_date)
+            amc_year = amc_term // 12
     except Exception as e:
         return {"error": f"Invalid date format or date error: {e}"}
 

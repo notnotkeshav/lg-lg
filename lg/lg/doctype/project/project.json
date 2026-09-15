@@ -9,14 +9,13 @@
   "tab_2_tab",
   "customer_info_section",
   "project_name",
-  "project",
   "customer",
   "customer_name",
-  "industry",
-  "parent_vertical",
   "current_deal",
   "status",
   "expiry_date",
+  "industry",
+  "parent_vertical",
   "region",
   "branch",
   "branch_head_name",
@@ -25,9 +24,113 @@
   "address_html",
   "column_break_rgzj",
   "shipping_address",
-  "shipping_address_html"
+  "shipping_address_html",
+  "project",
+  "custom_column_break_ashyk"
  ],
  "fields": [
+  {
+   "fieldname": "tab_2_tab",
+   "fieldtype": "Tab Break",
+   "label": "Customer"
+  },
+  {
+   "fieldname": "customer_info_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Info"
+  },
+  {
+   "fieldname": "project_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project ID (IL)",
+   "unique": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Reference No.",
+   "options": "CRM Organization"
+  },
+  {
+   "fetch_from": "customer.organization_name",
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "current_deal",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Current Opportunity",
+   "options": "CRM Deal",
+   "read_only": 1,
+   "in_list_view": 0
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "\nIN Warranty\nOUT Warranty\nAMC Active\nAMC Expired",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Expiry Date"
+  },
+  {
+   "fetch_from": "customer.industry",
+   "fieldname": "industry",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Vertical",
+   "options": "CRM Industry"
+  },
+  {
+   "fetch_from": "industry.parent_vertical",
+   "fieldname": "parent_vertical",
+   "fieldtype": "Data",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Parent Vertical",
+   "read_only": 1
+  },
+  {
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "label": "Region",
+   "options": "Region Master"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "label": "Branch",
+   "options": "Region Branches"
+  },
+  {
+   "fetch_from": "branch.branch_head",
+   "fieldname": "branch_head_name",
+   "fieldtype": "Data",
+   "label": "Branch Head Name"
+  },
   {
    "fieldname": "address_contact_tab",
    "fieldtype": "Tab Break",
@@ -60,115 +163,18 @@
    "label": "Shipping Address HTML"
   },
   {
-   "fieldname": "tab_2_tab",
-   "fieldtype": "Tab Break",
-   "label": "Customer"
-  },
-  {
-   "fieldname": "customer_info_section",
-   "fieldtype": "Section Break",
-   "label": "Customer Info"
-  },
-  {
-   "fieldname": "project_name",
-   "fieldtype": "Data",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Project ID (IL)",
-   "unique": 1
-  },
-  {
-   "fieldname": "customer",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Customer Reference No.",
-   "options": "CRM Organization"
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Status",
-   "options": "\nIN Warranty\nOUT Warranty\nAMC Active\nAMC Expired",
-   "read_only": 1
-  },
-  {
-   "fieldname": "expiry_date",
-   "fieldtype": "Date",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Expiry Date"
-  },
-  {
-   "fieldname": "current_deal",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Current Opportunity",
-   "options": "CRM Deal",
-   "read_only": 1
-  },
-  {
-   "fieldname": "region",
-   "fieldtype": "Link",
-   "label": "Region",
-   "options": "Region Master"
-  },
-  {
-   "fieldname": "branch",
-   "fieldtype": "Link",
-   "label": "Branch",
-   "options": "Region Branches"
-  },
-  {
-   "fetch_from": "branch.branch_head",
-   "fieldname": "branch_head_name",
-   "fieldtype": "Data",
-   "label": "Branch Head Name"
-  },
-  {
-   "fetch_from": "customer.organization_name",
-   "fieldname": "customer_name",
-   "fieldtype": "Data",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Customer Name"
-  },
-  {
-   "fetch_from": "customer.industry",
-   "fieldname": "industry",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Vertical",
-   "options": "CRM Industry"
-  },
-  {
-   "fetch_from": "industry.parent_vertical",
-   "fieldname": "parent_vertical",
-   "fieldtype": "Data",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Parent Vertical",
-   "read_only": 1
-  },
-  {
    "fieldname": "project",
    "fieldtype": "Data",
    "label": "Project Name"
+  },
+  {
+   "fieldname": "custom_column_break_ashyk",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-02 13:31:29.140851",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Project",

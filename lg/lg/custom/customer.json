@@ -1,0 +1,71 @@
+{
+ "custom_fields": [],
+ "custom_perms": [],
+ "doctype": "Customer",
+ "links": [],
+ "property_setters": [
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Customer",
+   "doctype_or_field": "DocType",
+   "property": "autoname",
+   "property_type": "Data",
+   "value": "naming_series:CR-###",
+   "name": "Customer-main-autoname",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Customer",
+   "doctype_or_field": "DocType",
+   "property": "field_order",
+   "property_type": "Data",
+   "value": "[\"customer_information_section\", \"naming_series\", \"customer_type\", \"customer_name\", \"email_id\", \"description\", \"column_break_iavv\", \"phone\", \"gender\", \"date_of_birth\", \"address_and_contact\", \"address_information_section\", \"address_line_1\", \"address_line_2\", \"pincode\", \"zone\", \"column_break_bxyc\", \"city\", \"country\", \"state\", \"custom_visit_information\", \"custom_visit_name\"]",
+   "name": "Customer-main-field_order",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Customer",
+   "doctype_or_field": "DocType",
+   "property": "title_field",
+   "property_type": "Data",
+   "value": "customer_name",
+   "name": "Customer-main-title_field",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Customer",
+   "doctype_or_field": "DocField",
+   "field_name": "country",
+   "property": "hidden",
+   "property_type": "Check",
+   "value": "1",
+   "name": "Customer-country-hidden",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Customer",
+   "doctype_or_field": "DocField",
+   "field_name": "country",
+   "property": "options",
+   "property_type": "Text",
+   "value": "Country",
+   "name": "Customer-country-options",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Customer",
+   "doctype_or_field": "DocField",
+   "field_name": "naming_series",
+   "property": "options",
+   "property_type": "Text",
+   "name": "Customer-naming_series-options",
+   "module": "Lg"
+  }
+ ],
+ "sync_on_migrate": 1
+}

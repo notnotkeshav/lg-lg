@@ -263,10 +263,20 @@ scheduler_events = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+# Custom Field and Property Setter are deliberately NOT fixtures.
+#
+# Fixtures are a snapshot of whichever site they were last exported from, with
+# `filters: []` grabbing every record on that site regardless of which app owns
+# it. That snapshot silently drifts from the database, and anything missing from
+# it is lost on a fresh install or restore.
+#
+# Instead:
+#   * DocTypes owned by lg carry their fields and properties directly in
+#     lg/lg/doctype/<name>/<name>.json.
+#   * DocTypes owned by frappe/crm are customized through
+#     lg/lg/custom/<name>.json, which bench migrate re-applies on every run.
 fixtures = [
-    {"dt": "Custom Field", "filters": []},
-    {"dt": "Property Setter", "filters": []},
-    {"dt": "Client Script", "filters":[]}
+    {"dt": "Client Script", "filters": []}
 ]
 
 website_route_rules = [{'from_route': '/dashboard/<path:app_path>', 'to_route': 'dashboard'}, {'from_route': '/frontend/<path:app_path>', 'to_route': 'frontend'}, {'from_route': '/lgcrm/<path:app_path>', 'to_route': 'lgcrm'}, {'from_route': '/frontend/<path:app_path>', 'to_route': 'frontend'}, {'from_route': '/frontend/<path:app_path>', 'to_route': 'frontend'},]

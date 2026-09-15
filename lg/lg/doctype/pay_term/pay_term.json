@@ -22,6 +22,14 @@
    "unique": 1
   },
   {
+   "default": "Post",
+   "fieldname": "payment_frequency",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Payment Frequency",
+   "options": "Advance\nPost"
+  },
+  {
    "fieldname": "column_break_zvnz",
    "fieldtype": "Column Break"
   },
@@ -30,14 +38,6 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Description"
-  },
-  {
-   "default": "Post",
-   "fieldname": "payment_frequency",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Payment Frequency",
-   "options": "Advance\nPost"
   },
   {
    "fieldname": "section_break_wkni",
@@ -53,7 +53,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-22 12:35:13.820524",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Pay Term",
@@ -76,5 +76,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "search_fields": "description,payment_frequency"
 }

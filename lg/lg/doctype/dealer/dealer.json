@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "naming_series:DL.-YYYY.-####",
+ "autoname": "format:DL-.{YYYY}.-.{####}",
  "creation": "2024-09-25 18:14:43.924926",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -47,115 +47,8 @@
    "fieldname": "naming_series",
    "fieldtype": "Autocomplete",
    "in_standard_filter": 1,
-   "label": "Dealer ID (HC)"
-  },
-  {
-   "fieldname": "email_id",
-   "fieldtype": "Data",
-   "label": "Email ID",
-   "options": "Email"
-  },
-  {
-   "fieldname": "column_break_iavv",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "customer_type",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Dealer Type",
-   "options": "Residential\nCommercial\nIndividual"
-  },
-  {
-   "default": "India",
-   "fieldname": "phone",
-   "fieldtype": "Phone",
-   "in_standard_filter": 1,
-   "label": "Phone"
-  },
-  {
-   "fieldname": "address_and_contact",
-   "fieldtype": "Tab Break",
-   "label": "Address & Contact"
-  },
-  {
-   "fieldname": "address_information_section",
-   "fieldtype": "Section Break",
-   "label": "Address Information"
-  },
-  {
-   "default": "hello",
-   "fieldname": "address_line_1",
-   "fieldtype": "Data",
-   "label": "Address Line 1"
-  },
-  {
-   "fieldname": "address_line_2",
-   "fieldtype": "Data",
-   "label": "Address Line 2"
-  },
-  {
-   "fieldname": "pincode",
-   "fieldtype": "Link",
-   "label": "Pincode",
-   "options": "Pincode Master"
-  },
-  {
-   "fieldname": "column_break_bxyc",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fetch_from": "pincode.city",
-   "fieldname": "city",
-   "fieldtype": "Data",
-   "label": "City"
-  },
-  {
-   "fetch_from": "pincode.country",
-   "fieldname": "country",
-   "fieldtype": "Data",
-   "label": "Country"
-  },
-  {
-   "fieldname": "territory",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_preview": 1,
-   "in_standard_filter": 1,
-   "label": "Territory",
-   "options": "CRM Territory"
-  },
-  {
-   "fieldname": "dealer_owner",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Dealer Owner"
-  },
-  {
-   "fieldname": "created_by",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Created By",
-   "options": "User",
-   "read_only": 1
-  },
-  {
-   "fieldname": "modified_by1",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "Modified by",
-   "options": "User",
-   "read_only": 1
-  },
-  {
-   "fieldname": "zone",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Zone"
+   "label": "Dealer ID (HC)",
+   "options": null
   },
   {
    "fieldname": "dealer_name",
@@ -166,10 +59,26 @@
    "reqd": 1
   },
   {
-   "fieldname": "commission_rate",
-   "fieldtype": "Percent",
+   "fieldname": "customer_type",
+   "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Commission Rate (%)"
+   "in_standard_filter": 1,
+   "label": "Dealer Type",
+   "options": "Residential\nCommercial\nIndividual"
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Data",
+   "label": "Email ID",
+   "options": "Email"
+  },
+  {
+   "fieldname": "created_by",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Created By",
+   "options": "User",
+   "read_only": 1
   },
   {
    "fieldname": "customer",
@@ -184,15 +93,42 @@
    "options": "LCC\nASP\nAMC"
   },
   {
-   "fieldname": "dealer_visits",
-   "fieldtype": "Table",
-   "label": "Dealer Visits",
-   "options": "Dealer Visit Form"
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
   },
   {
-   "fieldname": "dealer_visits_section",
-   "fieldtype": "Section Break",
-   "label": "Dealer Visits"
+   "fieldname": "column_break_iavv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dealer_owner",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 0,
+   "in_standard_filter": 1,
+   "label": "Dealer Owner"
+  },
+  {
+   "default": "India",
+   "fieldname": "phone",
+   "fieldtype": "Phone",
+   "in_standard_filter": 1,
+   "label": "Phone"
+  },
+  {
+   "fieldname": "modified_by1",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Modified by",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "commission_rate",
+   "fieldtype": "Percent",
+   "in_list_view": 0,
+   "label": "Commission Rate (%)"
   },
   {
    "fieldname": "organization",
@@ -225,18 +161,84 @@
    "options": "Region Master"
   },
   {
-   "fieldname": "contact_person",
+   "fieldname": "dealer_visits_section",
+   "fieldtype": "Section Break",
+   "label": "Dealer Visits"
+  },
+  {
+   "fieldname": "dealer_visits",
+   "fieldtype": "Table",
+   "label": "Dealer Visits",
+   "options": "Dealer Visit Form"
+  },
+  {
+   "fieldname": "address_and_contact",
+   "fieldtype": "Tab Break",
+   "label": "Address & Contact"
+  },
+  {
+   "fieldname": "address_information_section",
+   "fieldtype": "Section Break",
+   "label": "Address Information"
+  },
+  {
+   "default": "hello",
+   "fieldname": "address_line_1",
    "fieldtype": "Data",
-   "label": "Contact Person"
+   "label": "Address Line 1"
+  },
+  {
+   "fieldname": "address_line_2",
+   "fieldtype": "Data",
+   "label": "Address Line 2"
+  },
+  {
+   "fieldname": "pincode",
+   "fieldtype": "Link",
+   "label": "Pincode",
+   "options": "Pincode Master"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Zone"
+  },
+  {
+   "fieldname": "column_break_bxyc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "pincode.city",
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City",
+   "options": "City"
+  },
+  {
+   "fetch_from": "pincode.country",
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country"
+  },
+  {
+   "fieldname": "territory",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 0,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Territory",
+   "options": "CRM Territory"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-06 11:32:49.151928",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Dealer",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

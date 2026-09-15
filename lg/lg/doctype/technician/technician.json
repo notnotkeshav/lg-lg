@@ -54,6 +54,15 @@
    "fieldname": "naming_series",
    "fieldtype": "Data",
    "label": "Technician ID",
+   "reqd": 1,
+   "options": null
+  },
+  {
+   "fieldname": "technician_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Technician Name",
    "reqd": 1
   },
   {
@@ -62,6 +71,18 @@
    "label": "Email ID",
    "options": "Email",
    "reqd": 1
+  },
+  {
+   "fieldname": "dealerassigned_to",
+   "fieldtype": "Link",
+   "label": "Dealer(Assigned To)",
+   "options": "Dealer"
+  },
+  {
+   "fieldname": "technician_category",
+   "fieldtype": "Select",
+   "label": "Technician Category",
+   "options": "\nA\nB\nC\nD"
   },
   {
    "fieldname": "column_break_iavv",
@@ -120,6 +141,11 @@
    "label": "PIncode"
   },
   {
+   "fieldname": "street",
+   "fieldtype": "Small Text",
+   "label": "Street"
+  },
+  {
    "fieldname": "column_break_bxyc",
    "fieldtype": "Column Break"
   },
@@ -139,16 +165,9 @@
    "label": "Territory"
   },
   {
-   "fieldname": "dealerassigned_to",
-   "fieldtype": "Link",
-   "label": "Dealer(Assigned To)",
-   "options": "Dealer"
-  },
-  {
-   "fieldname": "technician_category",
+   "fieldname": "region",
    "fieldtype": "Select",
-   "label": "Technician Category",
-   "options": "\nA\nB\nC\nD"
+   "label": "Region"
   },
   {
    "fieldname": "call_information_tab",
@@ -156,9 +175,19 @@
    "label": "Service Rate Information"
   },
   {
+   "fieldname": "call_information_section",
+   "fieldtype": "Section Break",
+   "label": "Call Information"
+  },
+  {
    "fieldname": "less_than_6_hours",
    "fieldtype": "Currency",
    "label": "Less Than 6 Hours"
+  },
+  {
+   "fieldname": "greater_than_24_hours",
+   "fieldtype": "Currency",
+   "label": "Greater Than 24 Hours"
   },
   {
    "fieldname": "column_break_grei",
@@ -170,27 +199,9 @@
    "label": "Less Than 24 Hours"
   },
   {
-   "fieldname": "greater_than_24_hours",
-   "fieldtype": "Currency",
-   "label": "Greater Than 24 Hours"
-  },
-  {
    "fieldname": "same_origin",
    "fieldtype": "Select",
    "label": "Same Origin Rate "
-  },
-  {
-   "fieldname": "call_information_section",
-   "fieldtype": "Section Break",
-   "label": "Call Information"
-  },
-  {
-   "fieldname": "technician_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Technician Name",
-   "reqd": 1
   },
   {
    "fieldname": "tab_4_tab",
@@ -231,21 +242,11 @@
    "fieldname": "dealer_name",
    "fieldtype": "Select",
    "label": "Dealer Name"
-  },
-  {
-   "fieldname": "street",
-   "fieldtype": "Small Text",
-   "label": "Street"
-  },
-  {
-   "fieldname": "region",
-   "fieldtype": "Select",
-   "label": "Region"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-04 17:18:51.551309",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Technician",
