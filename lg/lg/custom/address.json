@@ -1,0 +1,246 @@
+{
+ "custom_fields": [
+  {
+   "doctype": "Custom Field",
+   "dt": "Address",
+   "label": "Pin Code",
+   "fieldname": "custom_pin_code",
+   "fieldtype": "Link",
+   "options": "Pincode Master",
+   "insert_after": "address_line2",
+   "name": "Address-custom_pin_code",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Address",
+   "label": "GSTIN",
+   "fieldname": "custom_gstin",
+   "fieldtype": "Int",
+   "insert_after": "custom_gst_details",
+   "name": "Address-custom_gstin",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Address",
+   "label": "PAN",
+   "fieldname": "custom_pan",
+   "fieldtype": "Data",
+   "insert_after": "custom_gstin",
+   "name": "Address-custom_pan",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Address",
+   "label": "GST Details",
+   "fieldname": "custom_gst_details",
+   "fieldtype": "Section Break",
+   "insert_after": "disabled",
+   "name": "Address-custom_gst_details",
+   "module": "Lg"
+  }
+ ],
+ "custom_perms": [],
+ "doctype": "Address",
+ "links": [],
+ "property_setters": [
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocType",
+   "property": "autoname",
+   "property_type": "Data",
+   "value": "field:address_title",
+   "module": "Lg",
+   "name": "Address-main-autoname"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocType",
+   "property": "field_order",
+   "property_type": "Data",
+   "value": "[\"address_details\", \"address_title\", \"address_type\", \"address_line1\", \"address_line2\", \"custom_pin_code\", \"city\", \"county\", \"state\", \"country\", \"pincode\", \"column_break0\", \"email_id\", \"phone\", \"fax\", \"is_primary_address\", \"is_shipping_address\", \"disabled\", \"gst_details_section\", \"gstin\", \"pan\", \"linked_with\", \"links\"]",
+   "name": "Address-main-field_order",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocType",
+   "property": "naming_rule",
+   "property_type": "Data",
+   "value": "By fieldname",
+   "module": "Lg",
+   "name": "Address-main-naming_rule"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "address_line1",
+   "property": "reqd",
+   "property_type": "check",
+   "value": "0",
+   "module": "Lg",
+   "name": "Address-address_line1-reqd"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "address_title",
+   "property": "label",
+   "property_type": "Data",
+   "value": "Address Code",
+   "module": "Lg",
+   "name": "Address-address_title-label"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "address_title",
+   "property": "unique",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "Address-address_title-unique"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "city",
+   "property": "fetch_from",
+   "property_type": "Small Text",
+   "value": "custom_pin_code.city",
+   "module": "Lg",
+   "name": "Address-city-fetch_from"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "city",
+   "property": "fetch_if_empty",
+   "property_type": "Check",
+   "value": "1",
+   "name": "Address-city-fetch_if_empty",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "city",
+   "property": "reqd",
+   "property_type": "check",
+   "value": "0",
+   "module": "Lg",
+   "name": "Address-city-reqd"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "country",
+   "property": "fetch_from",
+   "property_type": "Small Text",
+   "value": "custom_pin_code.country",
+   "module": "Lg",
+   "name": "Address-country-fetch_from"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "county",
+   "property": "fetch_from",
+   "property_type": "Small Text",
+   "value": "custom_pin_code.country",
+   "name": "Address-county-fetch_from",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "county",
+   "property": "fetch_if_empty",
+   "property_type": "Check",
+   "value": "1",
+   "name": "Address-county-fetch_if_empty",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "county",
+   "property": "hidden",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "Address-county-hidden"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "phone",
+   "property": "default",
+   "property_type": "Text",
+   "module": "Lg",
+   "name": "Address-phone-default"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "phone",
+   "property": "fieldtype",
+   "property_type": "data",
+   "value": "Phone",
+   "row_name": "14",
+   "module": "Lg",
+   "name": "Address-phone-Fieldtype"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "pincode",
+   "property": "hidden",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "Address-pincode-hidden"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "state",
+   "property": "fetch_from",
+   "property_type": "Small Text",
+   "value": "custom_pin_code.state",
+   "module": "Lg",
+   "name": "Address-state-fetch_from"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Address",
+   "doctype_or_field": "DocField",
+   "field_name": "state",
+   "property": "fetch_if_empty",
+   "property_type": "Check",
+   "value": "1",
+   "name": "Address-state-fetch_if_empty",
+   "module": "Lg"
+  }
+ ],
+ "sync_on_migrate": 1
+}

@@ -1,0 +1,30 @@
+{
+ "custom_fields": [],
+ "custom_perms": [],
+ "doctype": "Contact",
+ "links": [],
+ "property_setters": [
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Contact",
+   "doctype_or_field": "DocType",
+   "property": "search_fields",
+   "property_type": "Data",
+   "value": "email_id",
+   "module": "Lg",
+   "name": "Contact-main-search_fields"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Contact",
+   "doctype_or_field": "DocField",
+   "field_name": "first_name",
+   "property": "reqd",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "Contact-first_name-reqd"
+  }
+ ],
+ "sync_on_migrate": 1
+}

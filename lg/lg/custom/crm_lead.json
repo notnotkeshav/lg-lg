@@ -1,0 +1,19 @@
+{
+ "custom_fields": [],
+ "custom_perms": [],
+ "doctype": "CRM Lead",
+ "links": [],
+ "property_setters": [
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Lead",
+   "doctype_or_field": "DocType",
+   "property": "field_order",
+   "property_type": "Data",
+   "value": "[\"details\", \"organization\", \"website\", \"territory\", \"industry\", \"job_title\", \"source\", \"lead_owner\", \"person_tab\", \"salutation\", \"first_name\", \"last_name\", \"email\", \"mobile_no\", \"organization_tab\", \"section_break_uixv\", \"naming_series\", \"lead_name\", \"middle_name\", \"gender\", \"phone\", \"column_break_dbsv\", \"status\", \"no_of_employees\", \"annual_revenue\", \"image\", \"converted\", \"sla_tab\", \"sla\", \"sla_creation\", \"column_break_ffnp\", \"sla_status\", \"communication_status\", \"response_details_section\", \"response_by\", \"column_break_pweh\", \"first_response_time\", \"first_responded_on\", \"log_tab\", \"status_change_log\", \"lead_nameeee\"]",
+   "module": "Lg",
+   "name": "CRM Lead-main-field_order"
+  }
+ ],
+ "sync_on_migrate": 1
+}

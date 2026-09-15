@@ -4,3 +4,4 @@
 
 [post_model_sync]
 # Patches added in this section will be executed after doctypes are migrated
+lg.patches.v1_0.drop_customizations_baked_into_schema

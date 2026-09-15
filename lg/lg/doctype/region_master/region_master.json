@@ -25,6 +25,30 @@
    "unique": 1
   },
   {
+   "fieldname": "region_head",
+   "fieldtype": "Link",
+   "in_filter": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Region Head",
+   "options": "User"
+  },
+  {
+   "fetch_from": "region_head.full_name",
+   "fieldname": "region_head_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Region Head Name"
+  },
+  {
+   "fieldname": "branches",
+   "fieldtype": "Table",
+   "ignore_user_permissions": 1,
+   "label": "Branches",
+   "options": "Branch",
+   "allow_bulk_edit": 1
+  },
+  {
    "fieldname": "lft",
    "fieldtype": "Int",
    "hidden": 1,
@@ -47,6 +71,12 @@
    "label": "Is Group"
   },
   {
+   "default": "0",
+   "fieldname": "is_sub_region",
+   "fieldtype": "Check",
+   "label": "Is Sub Region"
+  },
+  {
    "fieldname": "old_parent",
    "fieldtype": "Link",
    "label": "Old Parent",
@@ -58,41 +88,12 @@
    "ignore_user_permissions": 1,
    "label": "Parent Region Master",
    "options": "Region Master"
-  },
-  {
-   "fieldname": "region_head",
-   "fieldtype": "Link",
-   "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Region Head",
-   "options": "User"
-  },
-  {
-   "fetch_from": "region_head.full_name",
-   "fieldname": "region_head_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Region Head Name"
-  },
-  {
-   "fieldname": "branches",
-   "fieldtype": "Table",
-   "ignore_user_permissions": 1,
-   "label": "Branches",
-   "options": "Branch"
-  },
-  {
-   "default": "0",
-   "fieldname": "is_sub_region",
-   "fieldtype": "Check",
-   "label": "Is Sub Region"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2026-03-05 11:16:46.925473",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Region Master",

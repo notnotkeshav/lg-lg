@@ -20,7 +20,7 @@
   {
    "fieldname": "model_no",
    "fieldtype": "Data",
-   "in_list_view": 1,
+   "in_list_view": 0,
    "label": "Model",
    "reqd": 1,
    "unique": 1
@@ -34,6 +34,10 @@
    "fieldname": "model_categories",
    "fieldtype": "Data",
    "label": "Model Category"
+  },
+  {
+   "fieldname": "column_break_jvzh",
+   "fieldtype": "Column Break"
   },
   {
    "default": "Outdoor",
@@ -50,7 +54,8 @@
    "fieldname": "category_of_model",
    "fieldtype": "Select",
    "label": "Category of Model",
-   "options": "Multi-V\nCAC\nOthers"
+   "options": "Multi-V\nCAC\nOthers",
+   "in_list_view": 1
   },
   {
    "fieldname": "tonnes",
@@ -61,10 +66,6 @@
    "fieldname": "hp",
    "fieldtype": "Float",
    "label": "HP"
-  },
-  {
-   "fieldname": "column_break_jvzh",
-   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -75,7 +76,7 @@
    "link_fieldname": "model_no"
   }
  ],
- "modified": "2025-11-07 16:12:57.871419",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "admin@himindia.com",
  "module": "Lg",
  "name": "Model No",

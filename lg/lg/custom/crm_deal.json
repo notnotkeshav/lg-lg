@@ -1,0 +1,255 @@
+{
+ "custom_fields": [
+  {
+   "doctype": "Custom Field",
+   "dt": "CRM Deal",
+   "label": "Probability Progress",
+   "fieldname": "custom_probability_progress",
+   "fieldtype": "HTML",
+   "insert_after": "custom_section_break_u8oqp",
+   "read_only": 1,
+   "name": "CRM Deal-custom_probability_progress",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "CRM Deal",
+   "fieldname": "custom_section_break_u8oqp",
+   "fieldtype": "Section Break",
+   "insert_after": "details_tab",
+   "name": "CRM Deal-custom_section_break_u8oqp",
+   "module": "Lg"
+  }
+ ],
+ "custom_perms": [],
+ "doctype": "CRM Deal",
+ "links": [],
+ "property_setters": [
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocType",
+   "property": "default_view",
+   "property_type": "Select",
+   "value": "List",
+   "module": "Lg",
+   "name": "CRM Deal-main-default_view"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocType",
+   "property": "field_order",
+   "property_type": "Data",
+   "value": "[\"details_tab\", \"custom_section_break_u8oqp\", \"custom_probability_progress\", \"deal_information_section\", \"register_date\", \"status\", \"probability\", \"warranty_expiry_date\", \"amc_expiry_date\", \"warranty_amc_status\", \"annual_revenue\", \"column_break_enty\", \"opportunity_id\", \"deal_category\", \"deal_type\", \"from_contract\", \"deal_owner\", \"reason\", \"customer_information_section\", \"customer\", \"customer_name\", \"industry\", \"is_govt\", \"column_break_ylzn\", \"project\", \"region\", \"branch\", \"subsidiary_information_section\", \"organization\", \"column_break_hevz\", \"section_break_gqzg\", \"lost_by_am\", \"lost_by_alok\", \"column_break_ddld\", \"lost_by_rsm\", \"deal_duplicate_information_section\", \"last_duplicate_date\", \"duplicate_trigger_date\", \"column_break_gkuy\", \"duplicate_count\", \"from_duplicate\", \"tab_7_tab\", \"contact_information_section\", \"email\", \"column_break_obaw\", \"phone\", \"address_information_section\", \"customer_address\", \"address_html\", \"column_break_booz\", \"shipping_address\", \"shipping_address_html\", \"product_information_tab\", \"product_details\", \"total_hp\", \"hp_under_amc\", \"sla_tab\", \"sla\", \"sla_creation\", \"column_break_pfvq\", \"sla_status\", \"communication_status\", \"response_details_section\", \"response_by\", \"column_break_hpvj\", \"first_response_time\", \"first_responded_on\", \"log_tab\", \"status_change_log\", \"activities_tab\", \"tasks_section\", \"task_list\"]",
+   "module": "Lg",
+   "name": "CRM Deal-main-field_order"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocType",
+   "property": "force_re_route_to_default_view",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "CRM Deal-main-force_re_route_to_default_view"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocType",
+   "property": "search_fields",
+   "property_type": "Data",
+   "value": "customer,customer_name,industry",
+   "name": "CRM Deal-main-search_fields",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "amc_expiry_date",
+   "property": "read_only",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "CRM Deal-amc_expiry_date-read_only"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "commision_date",
+   "property": "reqd",
+   "property_type": "Check",
+   "value": "1",
+   "name": "CRM Deal-commision_date-reqd",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "custom_customer_code",
+   "property": "options",
+   "value": "Customers",
+   "module": "Lg",
+   "name": "CRM Deal-custom_customer_code-options"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "customer_name",
+   "property": "in_list_view",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "CRM Deal-customer_name-in_list_view"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "deal_category",
+   "property": "in_list_view",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "CRM Deal-deal_category-in_list_view"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "deal_owner",
+   "property": "label",
+   "property_type": "Data",
+   "value": "Owner",
+   "module": "Lg",
+   "name": "CRM Deal-deal_owner-label"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "deal_type",
+   "property": "in_list_view",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "CRM Deal-deal_type-in_list_view"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "deal_type",
+   "property": "label",
+   "property_type": "Data",
+   "value": "Opportunity Type",
+   "module": "Lg",
+   "name": "CRM Deal-deal_type-label"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "naming_series",
+   "property": "default",
+   "property_type": "Text",
+   "value": "CRM-DEAL-.YYYY.-",
+   "module": "Lg",
+   "name": "CRM Deal-naming_series-default"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "naming_series",
+   "property": "options",
+   "property_type": "Text",
+   "value": "CRM-DEAL-.YYYY.-",
+   "module": "Lg",
+   "name": "CRM Deal-naming_series-options"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "opportunity_id",
+   "property": "fetch_from",
+   "property_type": "Small Text",
+   "name": "CRM Deal-opportunity_id-fetch_from",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "project",
+   "property": "fetch_from",
+   "property_type": "Small Text",
+   "value": "customer.project",
+   "name": "CRM Deal-project-fetch_from",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "project",
+   "property": "fetch_if_empty",
+   "property_type": "Check",
+   "value": "1",
+   "name": "CRM Deal-project-fetch_if_empty",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "register_date",
+   "property": "label",
+   "property_type": "Data",
+   "value": "Invoice Date",
+   "name": "CRM Deal-register_date-label",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "status",
+   "property": "in_list_view",
+   "property_type": "Check",
+   "value": "0",
+   "module": "Lg",
+   "name": "CRM Deal-status-in_list_view"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "warranty_amc_status",
+   "property": "in_list_view",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "CRM Deal-warranty_amc_status-in_list_view"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "warranty_expiry_date",
+   "property": "in_list_view",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "CRM Deal-warranty_expiry_date-in_list_view"
+  }
+ ],
+ "sync_on_migrate": 1
+}

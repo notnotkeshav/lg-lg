@@ -14,7 +14,8 @@
   "exchange_rate",
   "column_break_conk",
   "for_buying",
-  "for_selling"
+  "for_selling",
+  "custom_lock_in"
  ],
  "fields": [
   {
@@ -46,10 +47,6 @@
    "width": "3"
   },
   {
-   "fieldname": "column_break_conk",
-   "fieldtype": "Column Break"
-  },
-  {
    "fieldname": "exchange_rate",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -57,6 +54,10 @@
    "precision": "9",
    "reqd": 1,
    "width": "3"
+  },
+  {
+   "fieldname": "column_break_conk",
+   "fieldtype": "Column Break"
   },
   {
    "default": "1",
@@ -69,11 +70,16 @@
    "fieldname": "for_selling",
    "fieldtype": "Check",
    "label": "For Selling"
+  },
+  {
+   "fieldname": "custom_lock_in",
+   "label": "Lock In",
+   "fieldtype": "Check"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-10 18:20:56.367398",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Currency Exchange",

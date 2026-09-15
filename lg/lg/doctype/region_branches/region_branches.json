@@ -18,18 +18,18 @@
  "fields": [
   {
    "columns": 2,
+   "fieldname": "branch_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Branch Code"
+  },
+  {
+   "columns": 2,
    "fieldname": "branch_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Branch Name",
    "reqd": 1
-  },
-  {
-   "columns": 2,
-   "fieldname": "branch_code",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Branch Code"
   },
   {
    "fieldname": "branch_head",
@@ -75,7 +75,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-03-05 11:24:55.113518",
+ "modified": "2026-09-15 02:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Region Branches",
