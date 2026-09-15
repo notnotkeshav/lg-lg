@@ -36,6 +36,164 @@ class CRMQuotation(Document):
 		"""Multi year quotations print year wise."""
 		return "AMC Offer Quote Multi Year" if self.is_multi_year else "AMC Offer quote"
 
+	def on_update(self):
+		"""Mail the quotation out the moment it moves to Customer Approval Pending."""
+		previous = self.get_doc_before_save()
+		was = previous.workflow_state if previous else None
+
+		if self.workflow_state == "Customer Approval Pending" and was != self.workflow_state:
+			self.email_quotation_to_customer()
+
+	def get_customer_email(self):
+		"""Contact on the quotation first, the organization's email as a fallback."""
+		if self.contact_email:
+			return self.contact_email
+
+		if self.customer:
+			return frappe.db.get_value("CRM Organization", self.customer, "email")
+
+	def get_amc_term_label(self):
+		months = cint(self.amc_term)
+		years, remainder = divmod(months, 12)
+
+		parts = []
+		if years:
+			parts.append(f"{years} Year" + ("s" if years != 1 else ""))
+		if remainder:
+			parts.append(f"{remainder} Month" + ("s" if remainder != 1 else ""))
+
+		return " ".join(parts) or "-"
+
+	def get_quotation_email_subject(self):
+		customer = self.customer_name or self.customer
+		amc_type = f"{self.amc_type} " if self.amc_type else ""
+
+		return _("Quotation {0} - {1}AMC Proposal for {2}").format(self.name, amc_type, customer)
+
+	def get_quotation_email_body(self):
+		"""Covering note that goes with the quotation PDF."""
+		currency = self.price_list_currency or "INR"
+		total = flt(self.rounded_total_inr) or flt(self.grand_total_inr) or flt(self.amount)
+
+		rows = [
+			(_("Quotation No."), self.name),
+			(_("Quotation Date"), frappe.utils.formatdate(self.date, "dd MMMM yyyy") if self.date else "-"),
+			(_("AMC Type"), self.amc_type or "-"),
+			(_("Contract Period"), self.get_amc_term_label()),
+			(
+				_("Contract Dates"),
+				"{0} to {1}".format(
+					frappe.utils.formatdate(self.start_date, "dd MMMM yyyy") if self.start_date else "-",
+					frappe.utils.formatdate(self.end_date, "dd MMMM yyyy") if self.end_date else "-",
+				),
+			),
+			(_("Total Contract Value"), f"{fmt_money(total, currency=currency)} ({_('inclusive of applicable taxes')})"),
+		]
+
+		if self.valid_till:
+			rows.append((_("Offer Valid Till"), frappe.utils.formatdate(self.valid_till, "dd MMMM yyyy")))
+
+		summary = "".join(
+			f"""<tr>
+				<td style="padding:6px 12px 6px 0;color:#555;white-space:nowrap;">{label}</td>
+				<td style="padding:6px 0;font-weight:600;color:#111;">{value}</td>
+			</tr>"""
+			for label, value in rows
+		)
+
+		return f"""
+			<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#222;line-height:1.6;">
+				<p>Dear {self.customer_name or self.customer},</p>
+
+				<p>
+					Thank you for your interest in the after-sales support services of
+					<b>Hi-M. Solutek India Pvt. Ltd.</b>, authorised service partner for LG air conditioning systems.
+				</p>
+
+				<p>
+					Please find attached our quotation for the Annual Maintenance Contract of the LG air
+					conditioning units installed at your premises. The scope of work, commercial terms and the
+					applicable terms &amp; conditions are detailed in the attached document.
+				</p>
+
+				<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:18px 0;">
+					{summary}
+				</table>
+
+				<p>
+					Kindly review the attached quotation. To confirm your acceptance, please approve the
+					quotation in the portal or revert to this email with your confirmation and Purchase Order.
+				</p>
+
+				<p>
+					Should you need any clarification on the coverage, pricing or contract period, please feel
+					free to contact our service team.
+				</p>
+
+				<p>
+					Warm regards,<br>
+					<b>Customer Support Team</b><br>
+					Hi-M. Solutek India Pvt. Ltd.
+				</p>
+
+				<hr style="border:none;border-top:1px solid #ddd;margin:24px 0 12px;">
+				<p style="font-size:11px;color:#888;line-height:1.5;">
+					This is an auto-generated email from the Hi-M. Solutek CRM system and does not require a
+					signature. Please do not reply to this mailbox for any queries other than the acceptance of
+					this quotation.
+				</p>
+			</div>
+		"""
+
+	def email_quotation_to_customer(self, recipients=None):
+		"""Send the quotation PDF to the customer with a covering note."""
+		recipients = recipients or [self.get_customer_email()]
+		recipients = [email for email in recipients if email]
+
+		if not recipients:
+			frappe.msgprint(
+				_("No customer email found on the quotation or on {0}, quotation not sent.").format(
+					self.customer or _("the organization")
+				),
+				indicator="orange",
+				alert=True,
+			)
+			return
+
+		try:
+			attachment = frappe.attach_print(
+				self.doctype,
+				self.name,
+				file_name=self.name,
+				print_format=self.get_print_format(),
+				lang="en",
+			)
+
+			frappe.sendmail(
+				sender="econnect.himsolutek@lgepartner.com",
+				recipients=recipients,
+				subject=self.get_quotation_email_subject(),
+				message=self.get_quotation_email_body(),
+				attachments=[attachment],
+				reference_doctype=self.doctype,
+				reference_name=self.name,
+			)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), f"Quotation Email Failed: {self.name}")
+			frappe.msgprint(
+				_("Could not email quotation {0} to the customer.").format(self.name),
+				indicator="red",
+				alert=True,
+			)
+			return
+
+		frappe.msgprint(
+			_("Quotation emailed to {0}.").format(", ".join(recipients)),
+			indicator="green",
+			alert=True,
+		)
+
+
 	def set_amc_duration(self):
 		"""Derive AMC Term (in Years) and AMC Term (in Months) from Start / End Date."""
 		if not (self.start_date and self.end_date):
@@ -160,35 +318,7 @@ def get_amc_months(start, end):
 
 	return months
 
-	def on_update(self,method=None):
-		if self.workflow_state == "Customer Approval Pending" and self.customer:
 
-			# Customer email fetch
-			email = frappe.db.get_value("CRM Organization", self.customer, "email")
-
-			if not email:
-				frappe.msgprint("Customer email not found")
-				return
-
-			# Attach print format PDF
-			attachment = frappe.attach_print(
-				self.doctype,
-				self.name,
-				file_name=self.name,
-				print_format=self.get_print_format(),
-				lang="en"
-			)
-
-			frappe.sendmail(
-                sender="econnect.himsolutek@lgepartner.com",
-				recipients=[email],
-				subject=f"Quotation {self.name}",
-				message="Please find attached quotation.",
-				attachments=[attachment],
-				reference_doctype=self.doctype,
-				reference_name=self.name
-			)
-				
 @frappe.whitelist()
 def create_quotation(args):
 	"""Create a new quotation"""
@@ -815,3 +945,15 @@ def update_workflow_to_sent(docname):
 			"success": False,
 			"message": f"Error: {str(e)}"
 		}
+
+@frappe.whitelist()
+def send_quotation_email(docname, recipients=None):
+	"""Manually email a quotation PDF to the customer."""
+	doc = frappe.get_doc("CRM Quotation", docname)
+	doc.check_permission("read")
+
+	if isinstance(recipients, str):
+		recipients = [email.strip() for email in recipients.split(",") if email.strip()]
+
+	doc.email_quotation_to_customer(recipients=recipients)
+	return {"status": "success", "recipients": recipients or [doc.get_customer_email()]}
