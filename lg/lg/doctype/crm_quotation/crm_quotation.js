@@ -235,13 +235,73 @@ frappe.ui.form.on("CRM Quotation", {
     end_date_as_per_po: function (frm) {
         generate_billing_schedule_as_per_po_date(frm)
     },
-    price_rate__as_per_year:function(frm){
+    price_rate__as_per_year: function (frm) {
+        calculate_amount(frm)
         generate_billing_schedule(frm)
     }
 
 
 });
 
+
+// ============================================================================
+// Year-wise pricing
+//
+// price_rate__as_per_year is a comma separated list of the TOTAL charge for each
+// year from year 2 onward: the first value is year 2, the second year 3, and so
+// on. It is an amount, not a per-HP rate. Year 1 is always total_hp * price_rate.
+// Keep in sync with get_amount_for_year() in crm_quotation.py.
+// ============================================================================
+
+function get_yearly_amounts(frm) {
+    return String(frm.doc.price_rate__as_per_year || "")
+        .split(",")
+        .map(v => parseFloat(String(v).trim()))
+        .filter(v => !isNaN(v) && v > 0);
+}
+
+function get_contract_months(frm) {
+    return cint(frm.doc.amc_term) || (cint(frm.doc.amc_year) * 12);
+}
+
+// Charge for one contract year (1-based), prorated when that year is partial.
+function get_annual_amount(frm, year_no) {
+    const total_months = get_contract_months(frm);
+    const months = Math.max(0, Math.min(12, total_months - (year_no - 1) * 12));
+
+    let annual;
+    if (year_no <= 1) {
+        annual = flt(frm.doc.total_hp) * flt(frm.doc.price_rate);
+    } else {
+        const amounts = get_yearly_amounts(frm);
+        annual = amounts.length
+            // when fewer values than years are given, carry the last one forward
+            ? flt(amounts[Math.min(year_no - 2, amounts.length - 1)])
+            : flt(frm.doc.total_hp) * flt(frm.doc.price_rate);
+    }
+
+    return annual * (months / 12);
+}
+
+function get_installment_amounts(frm, dates, start_date) {
+    const startObj = frappe.datetime.str_to_obj(start_date);
+    const advance = (frm.doc.billing_terms || "Post") === "Advance";
+
+    const year_of = dates.map(d => {
+        const elapsed =
+            (d.getFullYear() - startObj.getFullYear()) * 12 +
+            (d.getMonth() - startObj.getMonth());
+        // an Advance installment is dated at the start of the period it covers,
+        // a Post one at the end - so the end date of year 1 still belongs to year 1
+        const anchor = advance ? elapsed : Math.max(0, elapsed - 1);
+        return Math.floor(anchor / 12) + 1;
+    });
+
+    const per_year = {};
+    year_of.forEach(y => { per_year[y] = (per_year[y] || 0) + 1; });
+
+    return dates.map((d, i) => flt(get_annual_amount(frm, year_of[i]) / per_year[year_of[i]]));
+}
 
 function calculate_total_ton_amount(frm) {
     const total_ton = frm.doc.total_tonne
@@ -263,12 +323,7 @@ async function generate_billing_schedule(frm) {
     } = frm.doc;
 
     const billing_terms = frm.doc.billing_terms || "Post"; // Pre or Post or Advance
-    const yearly_prices = frm.doc.price_rate__as_per_year
-        ? frm.doc.price_rate__as_per_year
-            .split(",")
-            .map(v => parseFloat(v.trim()))
-            .filter(v => v > 0)
-        : [];
+
     if (!start_date || !end_date || !payment_frequency || !total_amount) {
         return;
     }
@@ -373,6 +428,8 @@ async function generate_billing_schedule(frm) {
     let min_days = min_row ? min_row.days : 0;
     let min_invoice_portion = min_row ? min_row.invoice_portion : 100;
 
+    const installment_amounts = get_installment_amounts(frm, dates, start_date);
+
     for (let i = 0; i < dates.length; i++) {
         const row = frm.add_child("billing_schedule");
         row.billing_date = frappe.datetime.obj_to_str(dates[i]);
@@ -381,38 +438,7 @@ async function generate_billing_schedule(frm) {
         billing_date_obj.setDate(billing_date_obj.getDate() + min_days);
         row.payment_date = frappe.datetime.obj_to_str(billing_date_obj);
 
-                // Calculate contract year (not calendar year)
-        const startObj = frappe.datetime.str_to_obj(start_date);
-
-        let monthsElapsed =
-            (dates[i].getFullYear() - startObj.getFullYear()) * 12 +
-            (dates[i].getMonth() - startObj.getMonth());
-
-        let contractYear = Math.floor(monthsElapsed / 12);
-
-        let yearlyAmount;
-
-        // Year 1 -> Total Amount
-        if (contractYear === 0) {
-            yearlyAmount = flt(total_amount);
-        }
-        // Year 2 onwards -> Price Rate As Per Year
-        else if (yearly_prices.length >= contractYear) {
-            yearlyAmount = yearly_prices[contractYear - 1];
-        }
-        // If not enough values are provided, continue with Total Amount
-        else {
-            yearlyAmount = flt(total_amount);
-        }
-
-        const installmentCount = {
-            "Monthly": 12,
-            "Quarterly": 4,
-            "Semi-Annually": 2,
-            "Annually": 1
-        }[payment_frequency];
-
-        row.amount = flt(yearlyAmount / installmentCount);
+        row.amount = installment_amounts[i];
         row.billing_term = get_ordinal(term_counter++) + " Term";
         row.status = "Pending";
         row.invoice_portion = min_invoice_portion;
@@ -543,49 +569,8 @@ async function generate_billing_schedule_as_per_po_date(frm) {
 
     console.log("Calculated schedule dates:", dates);
 
-    // ===============================
-// 🔹 Year-wise pricing logic
-// ===============================
-    const yearly_prices = frm.doc.price_rate__as_per_year
-        ? frm.doc.price_rate__as_per_year
-            .split(",")
-            .map(v => parseFloat(v.trim()))
-            .filter(v => v > 0)
-        : [];
-
-            const startObj = frappe.datetime.str_to_obj(start_date_as_per_po);
-
-            let per_row_amount_list = [];
-
-            for (let i = 0; i < dates.length; i++) {
-
-                let monthsElapsed =
-                    (dates[i].getFullYear() - startObj.getFullYear()) * 12 +
-                    (dates[i].getMonth() - startObj.getMonth());
-
-                let contractYear = Math.floor(monthsElapsed / 12);
-
-                let yearlyAmount;
-
-                if (contractYear === 0) {
-                    yearlyAmount = flt(total_amount);
-                }
-                else if (yearly_prices.length >= contractYear) {
-                    yearlyAmount = yearly_prices[contractYear - 1];
-                }
-                else {
-                    yearlyAmount = flt(total_amount);
-                }
-
-                const installmentCount = {
-                    "Monthly": 12,
-                    "Quarterly": 4,
-                    "Semi-Annually": 2,
-                    "Annually": 1
-                }[payment_frequency];
-
-                per_row_amount_list.push(flt(yearlyAmount / installmentCount));
-            }
+    // Year-wise pricing: each year's charge split across its own installments
+    const per_row_amount_list = get_installment_amounts(frm, dates, start_date_as_per_po);
 
     let min_days = 0;
     let min_invoice_portion = 100;
@@ -669,11 +654,22 @@ function fetch_price_rate_from_zone(frm) {
 
 
 function calculate_amount(frm) {
-    const total_hp = frm.doc.total_hp
-    const priceRate = frm.doc.price_rate
-    const amcYear = frm.doc.amc_year
-    let res = total_hp * priceRate * amcYear
-    frm.set_value('amount', res)
+    const total_months = get_contract_months(frm);
+
+    if (!total_months) {
+        // fall back to the old shape when the term is not known yet
+        frm.set_value('amount', flt(frm.doc.total_hp) * flt(frm.doc.price_rate) * cint(frm.doc.amc_year));
+        return;
+    }
+
+    // sum each contract year at its own rate, so a year-2 rate in
+    // price_rate__as_per_year is reflected in the total
+    let res = 0;
+    for (let year = 1; (year - 1) * 12 < total_months; year++) {
+        res += get_annual_amount(frm, year);
+    }
+
+    frm.set_value('amount', res);
 }
 
 
