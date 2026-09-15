@@ -48,17 +48,56 @@ class CRMQuotation(Document):
 		self.amc_term = get_amc_months(start, end)
 		self.amc_year = self.amc_term // 12
 
-	def set_multi_year_details(self):
-		"""Auto detect a multi year quotation and build its year wise breakup."""
+	def get_yearly_amounts(self):
+		"""Per-year charges held in price_rate__as_per_year.
+
+		The field is a comma separated list covering year 2 onward: the first
+		value is year 2's total charge, the second year 3's, and so on. It is an
+		amount, not a per-HP rate. Year 1 is always total_hp * price_rate.
+		"""
+		amounts = []
+		for part in (self.price_rate__as_per_year or "").split(","):
+			part = part.strip()
+			if not part:
+				continue
+			try:
+				amounts.append(flt(part))
+			except (TypeError, ValueError):
+				continue
+		return amounts
+
+	def get_amount_for_year(self, year_no, months=12):
+		"""Charge for a 1-based contract year, prorated when the year is partial."""
+		if cint(year_no) <= 1:
+			annual = flt(self.total_hp) * flt(self.price_rate)
+		else:
+			amounts = self.get_yearly_amounts()
+			if amounts:
+				# if fewer values than years are given, carry the last one forward
+				annual = amounts[min(cint(year_no) - 2, len(amounts) - 1)]
+			else:
+				annual = flt(self.total_hp) * flt(self.price_rate)
+
+		return annual * cint(months) / 12.0
+
+	def get_rate_for_year(self, year_no):
+		"""Per-HP rate implied by that year's charge. Year 1 is price_rate itself."""
+		if cint(year_no) <= 1:
+			return flt(self.price_rate)
+
+		hp = flt(self.total_hp)
+		return self.get_amount_for_year(year_no, 12) / hp if hp else 0.0
+
+	def get_year_breakup(self):
+		"""Year wise rows, computed from the current field values.
+
+		Print formats call this directly rather than reading amc_yearly_breakup,
+		so a quotation saved before the pricing changed still prints correctly.
+		rate_per_hp and amount are always derived - never carried forward.
+		"""
 		months = cint(self.amc_term)
-		self.is_multi_year = 1 if (months > 12 or cint(self.amc_year) > 1) else 0
-
-		if not self.is_multi_year or not self.start_date:
-			self.amc_yearly_breakup = []
-			return
-
-		# keep whatever the user manually edited, keyed on the period start
-		existing = {str(row.from_date): row for row in (self.amc_yearly_breakup or [])}
+		if not months or not self.start_date:
+			return []
 
 		rows = []
 		start = getdate(self.start_date)
@@ -72,29 +111,37 @@ class CRMQuotation(Document):
 			if self.end_date and getdate(to_date) > getdate(self.end_date):
 				to_date = getdate(self.end_date)
 
-			row = {
+			rows.append({
 				"year_no": year_no,
 				"year_label": _("Year {0}").format(year_no),
 				"from_date": from_date,
 				"to_date": to_date,
 				"months": span,
-				"rate_per_hp": flt(self.price_rate),
-				"amount": flt(self.total_hp) * flt(self.price_rate) * span / 12.0,
-			}
+				"rate_per_hp": self.get_rate_for_year(year_no),
+				"amount": self.get_amount_for_year(year_no, span),
+			})
 
-			old_row = existing.get(str(from_date))
-			if old_row and cint(old_row.months) == span:
-				# user overrides survive a re-validate
-				row["rate_per_hp"] = flt(old_row.rate_per_hp) or row["rate_per_hp"]
-				row["amount"] = flt(old_row.amount) or row["amount"]
-
-			rows.append(row)
 			remaining -= span
 			year_no += 1
 
+		return rows
+
+	def set_multi_year_details(self):
+		"""Auto detect a multi year quotation and build its year wise breakup."""
+		months = cint(self.amc_term)
+		self.is_multi_year = 1 if (months > 12 or cint(self.amc_year) > 1) else 0
+
+		if not self.is_multi_year or not self.start_date:
+			self.amc_yearly_breakup = []
+			return
+
 		self.amc_yearly_breakup = []
-		for row in rows:
+		for row in self.get_year_breakup():
 			self.append("amc_yearly_breakup", row)
+
+		# the quotation total has to match the year wise rows, otherwise the
+		# billing schedule and the taxes are computed off a different figure
+		self.amount = sum(flt(row.amount) for row in self.amc_yearly_breakup)
 
 
 def get_amc_months(start, end):
