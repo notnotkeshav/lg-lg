@@ -93,15 +93,37 @@ frappe.ui.form.on("CRM Contract", {
 					});
 				}
 			});
-        		}
-			
+			}
 
+			// Send Work Order: available on any saved, non-cancelled contract
+			if (frm.doc.docstatus != 2) {
+				frm.add_custom_button("Send Work Order", function () {
+
+					frappe.call({
+						method: "lg.lg.doctype.crm_contract.crm_contract.send_work_order",
+						args: {
+							name: frm.doc.name
+						},
+						freeze: true,
+						freeze_message: __("Sending Work Order..."),
+
+						callback: function (r) {
+							console.log("r",r)
+							if (!r.exc) {
+								frappe.msgprint(__("Work Order sent successfully."));
+							}
+						}
+					});
+
+				});
+			}
 
 			// Add task list in activities tab
 			if (frm.doc.name) {
 				show_activity_list(frm);
 			}
 		}
+
 	},
 	
 	expiry_date: function (frm) {

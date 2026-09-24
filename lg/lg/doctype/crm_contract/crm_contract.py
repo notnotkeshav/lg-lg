@@ -1254,3 +1254,71 @@ def upload_product_details(file_url, docname):
     doc.save(ignore_permissions=True)
 
     return "success"
+
+
+import frappe
+from frappe.utils import get_url
+from frappe.utils.pdf import get_pdf
+
+
+@frappe.whitelist()
+def send_work_order(name):
+
+    doc = frappe.get_doc("CRM Contract", name)
+
+    if doc.docstatus == 2:
+        frappe.throw("Cancelled contracts cannot send Work Order.")
+
+    if not doc.branch:
+        frappe.throw("Please select a Branch first.")
+
+    # Get Branch Head
+    branch_head = frappe.db.get_value(
+        "Region Branches",
+        doc.branch,
+        "branch_head"
+    )
+
+    if not branch_head:
+        frappe.throw("Branch Head is not set for this Branch.")
+
+    recipients = []
+
+    if branch_head:
+        recipients.append(branch_head)
+
+    # Additional emails
+    if doc.work_order_additional_emails:
+        additional_emails = [
+            email.strip()
+            for email in doc.work_order_additional_emails.split(",")
+            if email.strip()
+        ]
+
+        recipients.extend(additional_emails)
+
+    if not recipients:
+        frappe.throw("No email recipient found.")
+
+    # Generate PDF from SSD WO print format
+    pdf = frappe.get_print(
+        "CRM Contract",
+        doc.name,
+        print_format="SSD WO",
+        as_pdf=True
+    )
+
+    frappe.sendmail(
+        recipients=recipients,
+        subject=f"Work Order - {doc.work_order_no or doc.name}",
+        message=f"Please find attached the Work Order {doc.name}.",
+        attachments=[
+            {
+                "fname": f"{doc.work_order_no or doc.name}.pdf",
+                "fcontent": pdf
+            }
+        ]
+    )
+	
+
+    return "Work Order sent successfully."
