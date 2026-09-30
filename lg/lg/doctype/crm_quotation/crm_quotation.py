@@ -23,6 +23,8 @@ import json
 from datetime import datetime
 import pandas as pd
 
+from lg.lg.doctype.crm_deal.crm_deal import update_deal_status_from_quotation
+
 
 class CRMQuotation(Document):
     def validate(self):
@@ -46,6 +48,14 @@ class CRMQuotation(Document):
             and was != self.workflow_state
         ):
             self.email_quotation_to_customer()
+
+        update_deal_status_from_quotation(self)
+
+    def on_submit(self):
+        update_deal_status_from_quotation(self)
+
+    def on_update_after_submit(self):
+        update_deal_status_from_quotation(self)
 
     def get_customer_email(self):
         """Contact on the quotation first, the organization's email as a fallback."""
@@ -1037,6 +1047,8 @@ def update_workflow_to_sent(docname):
             "Workflow",
             f"Workflow state changed from 'Approved' to 'Quote Sent to Customer' - Quote sent to customer",
         )
+        # The SQL update above skips on_update, so sync the deal status here
+        update_deal_status_from_quotation(doc)
 
         return {
             "success": True,

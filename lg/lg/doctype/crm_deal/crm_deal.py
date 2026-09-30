@@ -12,12 +12,60 @@ from frappe.utils import (
     today
 )
 
+STATUS_PROBABILITY = {
+    "Qualification": 10,
+    "Proposal/Quotation": 40,
+    "Negotiation": 60,
+    "Spec-In": 80,
+    "Ready to Close": 80,
+    "Won/Award": 100,
+}
+
+# Order a deal moves through as its quotation progresses. Deals are only moved
+# forward; statuses outside this list (Lost, Lost by AM/RSM, Sales) are left alone.
+STATUS_PROGRESSION = [
+    "Qualification",
+    "Proposal/Quotation",
+    "Negotiation",
+    "Spec-In",
+    "Ready to Close",
+    "Won/Award",
+]
+
+# CRM Quotation workflow_state -> CRM Deal status. Any other state except
+# "Rejected" (i.e. draft / internal approval) means Proposal/Quotation.
+QUOTATION_STATE_TO_DEAL_STATUS = {
+    "Customer Approval Pending": "Negotiation",
+    "PO Pending": "Spec-In",
+    "PO Received": "Spec-In",
+    "Quote Won": "Won/Award",
+}
+
+
+def update_deal_status_from_quotation(quotation):
+    if not quotation.deal or quotation.docstatus == 2 or quotation.workflow_state == "Rejected":
+        return
+
+    new_status = QUOTATION_STATE_TO_DEAL_STATUS.get(quotation.workflow_state, "Proposal/Quotation")
+    deal = frappe.get_doc("CRM Deal", quotation.deal)
+    if deal.status not in STATUS_PROGRESSION:
+        return
+    if STATUS_PROGRESSION.index(new_status) <= STATUS_PROGRESSION.index(deal.status):
+        return
+
+    deal.status = new_status
+    deal.flags.ignore_mandatory = True
+    deal.save(ignore_permissions=True)
+
 class CRMDeal(Document):
     def validate(self):
         if not self.is_new():
             if self.has_value_changed("status"):
                 add_status_change_log(self)
-                
+
+        # Keep in sync with the "Update Probability on deal status update" Client Script
+        self.probability = STATUS_PROBABILITY.get(self.status, 0)
+
         current_date = getdate(today())
         if self.amc_expiry_date:
             expiry_date = getdate(self.amc_expiry_date)
@@ -375,7 +423,7 @@ def get_recent_activities():
 
 def mark_deals_as_lost():
     current_date = getdate(today())
-    deals =frappe.get_all("CRM Deal",filters={"status":["not in",["Proposal/Quotation", "Won/Award","Lost"]]},fields=["name","warranty_expiry_date","amc_expiry_date","status"])
+    deals =frappe.get_all("CRM Deal",filters={"status":["not in",["Proposal/Quotation", "Negotiation", "Spec-In", "Ready to Close", "Won/Award","Lost"]]},fields=["name","warranty_expiry_date","amc_expiry_date","status"])
     for deal in deals:
         expiry_date = None
         if deal.warranty_expiry_date:
@@ -385,5 +433,6 @@ def mark_deals_as_lost():
         if expiry_date:
             six_months_after=add_months(expiry_date,6)
             if six_months_after<=current_date:
-                frappe.db.set_value("CRM Deal",deal.name,"status","Lost")
+                # db.set_value skips validate(), so set probability here too
+                frappe.db.set_value("CRM Deal",deal.name,{"status":"Lost","probability":STATUS_PROBABILITY.get("Lost",0)})
     frappe.db.commit()
