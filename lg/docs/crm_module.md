@@ -84,7 +84,7 @@ Every doctype in this flow that carries money (`CRM Quotation`, `CRM Contract`) 
 | Won/Award | 100% | Quotation `workflow_state` = Quote Won (PO received, submitted) |
 | Sales | 0% | `deal_category` set to Sales (Client Script "Deal category set Sales") |
 | Lost by AM / Lost by RSM | 0% | **Not Interested** button — branch head (Service deals) / region head |
-| Lost | 0% | **Not Interested** by final approver; or daily `mark_deals_as_lost()` |
+| Lost | 0% | **Not Interested** by final approver; or the daily expiry follow-up job (`lg/lg/expiry_follow_up.py`), 3 months after Warranty/AMC expiry |
 
 Quote-driven changes come from `update_deal_status_from_quotation(quotation)` in `crm_deal.py`, called from `CRMQuotation.on_update` / `on_submit` / `on_update_after_submit` and from `update_workflow_to_sent` (which updates via raw SQL and so skips `on_update`). Rules:
 - **Forward only**, in the order of `STATUS_PROGRESSION` (Qualification → Proposal/Quotation → Negotiation → Spec-In → Ready to Close → Won/Award). "Revise Quote" (back to Open) or a second quotation never moves a deal backwards.
@@ -102,9 +102,17 @@ Quote-driven changes come from `update_deal_status_from_quotation(quotation)` in
 
 ### Scheduled/whitelisted functions in this file
 
-- `mark_deals_as_lost()` — **daily scheduled job** (`hooks.py`). Any Deal not in `Proposal/Quotation`, `Negotiation`, `Spec-In`, `Ready to Close`, `Won/Award`, or `Lost` (i.e. no active quotation pipeline) whose warranty/AMC expiry is more than 6 months in the past gets set to `status = "Lost"` and `probability = 0`. Uses `frappe.db.set_value`, which skips `validate()` — so probability is set explicitly in the same call.
 - `update_deal_status_from_quotation(quotation)` — quote-driven status sync; see "Status & probability" above.
 - `get_performance_metrics()`, `get_recent_activities()` — whitelisted, used by dashboards (win rate, pipeline value, quotation conversion, contract renewal rate; last-7-days activity feed across Deal/Quotation/Contract).
+
+### Warranty/AMC expiry follow-up (`lg/lg/expiry_follow_up.py`)
+
+Daily job `run_expiry_follow_up()`. Covers AMC `CRM Contract`s and Warranty Deals linked to a `Project` (`warranty_expiry_date` + `project` set, no `amc_expiry_date`, no contract made from the deal yet). Starting 2 months before expiry, the responsible user gets a `CRM Task`, a system notification (`Notification Log`) and an email, once per stage. A stage only notifies within its first 7 days (`STAGE_NOTICE_DAYS`): that catches up missed runs, but doesn't flood users with a backlog of stages that started long ago.
+- 0–1 month: AM (contract `user` / deal `deal_owner`, falling back to the branch head)
+- 1–1.5 months: RSM (`Region Master.region_head`)
+- 1.5 months up to the Lost date: HO (users with the `Alok` role)
+
+3 months after expiry (of the deal itself, or of the contract it renews / was made from), a deal not in an engaged status (`Proposal/Quotation`…`Won/Award`), not `Lost` and not `Sales` is set to `Lost` via `save()`, so validate/status log run. Pending `Lost by AM`/`Lost by RSM` deals are finalized too. `reason` keeps the AM/RSM reason if there is one, else an automatic one. This is the only automatic Lost rule. `check_warranty_conversion` (crm fork) and `CRMContract.before_save` set the **category** `deal_type`/`contract_type` to "Lost … Conversion" on the same 3-month boundary, and they don't touch the status.
 
 ---
 

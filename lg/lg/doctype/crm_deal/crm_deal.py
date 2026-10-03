@@ -417,22 +417,4 @@ def get_recent_activities():
     
     except Exception as e:
         frappe.log_error(f"Error in get_recent_activities: {str(e)}")
-        return {"activities": []} 
-
-
-
-def mark_deals_as_lost():
-    current_date = getdate(today())
-    deals =frappe.get_all("CRM Deal",filters={"status":["not in",["Proposal/Quotation", "Negotiation", "Spec-In", "Ready to Close", "Won/Award","Lost"]]},fields=["name","warranty_expiry_date","amc_expiry_date","status"])
-    for deal in deals:
-        expiry_date = None
-        if deal.warranty_expiry_date:
-            expiry_date = deal.warranty_expiry_date
-        elif deal.amc_expiry_date:
-            expiry_date=deal.amc_expiry_date
-        if expiry_date:
-            six_months_after=add_months(expiry_date,6)
-            if six_months_after<=current_date:
-                # db.set_value skips validate(), so set probability here too
-                frappe.db.set_value("CRM Deal",deal.name,{"status":"Lost","probability":STATUS_PROBABILITY.get("Lost",0)})
-    frappe.db.commit()
+        return {"activities": []}

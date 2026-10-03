@@ -160,7 +160,7 @@ scheduler_events = {
         "lg.lg.doctype.crm_quotation.crm_quotation.check_advance_payment_reminders",
         "lg.lg.doctype.crm_contract.crm_contract.check_advance_payment_reminders",
         "lg.lg.doctype.crm_contract.crm_contract.check_billing_schedule_and_notify",
-        "lg.lg.doctype.crm_deal.crm_deal.mark_deals_as_lost",
+        "lg.lg.expiry_follow_up.run_expiry_follow_up",
         "lg.lg.doctype.invoice.invoice.update_invoice_outstanding_per_portion",
         "lg.lg.doctype.crm_contract.crm_contract.set_status_expired",
 
