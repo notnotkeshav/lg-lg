@@ -10,3 +10,5 @@ lg/public/dashboard/
 lg/public/dist/*
 lg-dashboard/
 /dashboard/
+
+lg/www/dashboard.html
