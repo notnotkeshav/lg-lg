@@ -16,11 +16,22 @@ AGEING_BUCKETS = ((30, "1-30 Days"), (60, "31-60 Days"), (90, "61-90 Days"), (No
 
 def execute(filters=None):
 	filters = frappe._dict(filters or {})
+	for key in ("category", "region", "branch"):
+		filters[key] = as_list(filters.get(key))
 	data = get_data(filters)
 	if not data:
 		return get_columns(), []
 
 	return get_columns(), data, get_message(), get_chart(data, filters.chart_by), get_report_summary(data)
+
+
+def as_list(value):
+	"""Filters may come as a single value, a list, or a JSON list (from the dashboard multi-selects)."""
+	if not value:
+		return []
+	if isinstance(value, str):
+		value = frappe.parse_json(value) if value.startswith("[") else [value]
+	return [v for v in value if v]
 
 
 def get_columns():
@@ -57,11 +68,12 @@ def get_data(filters):
 		("contract", "c.name"),
 		("customer", "c.customer"),
 		("project", "c.project"),
-		("region", "c.region"),
-		("branch", "c.branch"),
 	):
 		if filters.get(key):
 			conditions.append(f"{column} = %({key})s")
+	for key, column in (("region", "c.region"), ("branch", "c.branch")):
+		if filters.get(key):
+			conditions.append(f"{column} IN %({key})s")
 
 	# One row per invoice payment-term portion of an invoiced billing row. The billing row
 	# points at its Invoice via invoice_link; older rows only carry the invoice number.
@@ -111,7 +123,7 @@ def get_data(filters):
 		row.days_overdue = max(date_diff(as_on, due_date), 0) if due_date else 0
 		row.ageing = get_ageing_bucket(row.days_overdue)
 
-		if filters.category and row.category != filters.category:
+		if filters.category and row.category not in filters.category:
 			continue
 		data.append(row)
 

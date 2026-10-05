@@ -21,7 +21,7 @@ frappe.query_reports["Net Revenue"] = {
 			fieldname: "case",
 			label: __("Case"),
 			fieldtype: "Select",
-			options: ["", "Billed", "Non-Billed"],
+			options: ["", "Billed", "Non-Billed", "Revenue"],
 		},
 		{
 			fieldname: "contract",
@@ -66,6 +66,7 @@ frappe.query_reports["Net Revenue"] = {
 			.dt-row:has(.nr-month) .dt-cell__content { font-weight: 600; }
 			.dt-row:has(.nr-case--billed) .dt-cell { background: color-mix(in srgb, var(--bg-orange) 35%, transparent); }
 			.dt-row:has(.nr-case--non-billed) .dt-cell { background: color-mix(in srgb, var(--bg-blue) 35%, transparent); }
+			.dt-row:has(.nr-case--revenue) .dt-cell { background: color-mix(in srgb, var(--bg-green) 35%, transparent); }
 			.dt-row:has(.nr-total) .dt-cell {
 				background: var(--subtle-accent);
 				border-top: 2px solid var(--gray-500);
@@ -118,10 +119,10 @@ frappe.query_reports["Net Revenue"] = {
 		}
 
 		if (data.indent === 1) {
-			const billed = data.label === "Billed";
+			const color = { Billed: "orange", "Non-Billed": "blue", Revenue: "green" }[data.label] || "blue";
 			if (field === "label") {
-				const marker = `nr-case--${billed ? "billed" : "non-billed"}`;
-				return `<span class="${marker}">${pill(billed ? "orange" : "blue")}</span>`;
+				const marker = `nr-case--${data.label.toLowerCase()}`;
+				return `<span class="${marker}">${pill(color)}</span>`;
 			}
 			return `<span class="nr-case-total"><b>${value}</b></span>`;
 		}
@@ -148,6 +149,8 @@ frappe.query_reports["Net Revenue"] = {
 			}
 			case "received":
 				return data.received > 0 ? `<span class="nr-amount--received">${value}</span>` : value;
+			case "revenue":
+				return data.revenue > 0 ? `<span class="nr-amount--received">${value}</span>` : value;
 			case "to_collect":
 				return data.to_collect > 0 ? `<span class="nr-amount--due">${value}</span>` : value;
 		}

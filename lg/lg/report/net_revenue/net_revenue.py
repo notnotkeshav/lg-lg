@@ -9,6 +9,8 @@ from frappe.utils import add_days, add_months, flt, get_first_day, get_last_day,
 
 BILLED = "Billed"
 NON_BILLED = "Non-Billed"
+REVENUE = "Revenue"
+CASES = (BILLED, NON_BILLED, REVENUE)
 
 
 def execute(filters=None):
@@ -19,11 +21,24 @@ def execute(filters=None):
 	if filters.from_date > filters.to_date:
 		frappe.throw(_("From Date cannot be after To Date"))
 
+	filters.case = as_list(filters.case)
+	for key in ("region", "branch"):
+		filters[key] = as_list(filters.get(key))
+
 	data, months, end_position = get_data(filters)
 	if not data:
 		return get_columns(), []
 
 	return get_columns(), data, get_message(), get_chart(months), get_report_summary(end_position)
+
+
+def as_list(value):
+	"""Filters may come as a single value, a list, or a JSON list (from the dashboard multi-selects)."""
+	if not value:
+		return []
+	if isinstance(value, str):
+		value = frappe.parse_json(value) if value.startswith("[") else [value]
+	return [v for v in value if v]
 
 
 def get_columns():
@@ -42,7 +57,8 @@ def get_columns():
 		{"label": _("Received"), "fieldname": "received", "fieldtype": "Currency", "width": 120},
 		{"label": _("Collected %"), "fieldname": "collected_pct", "fieldtype": "Percent", "width": 100},
 		{"label": _("Total To Collect"), "fieldname": "to_collect", "fieldtype": "Currency", "width": 150},
-		# {"label": _("Monthly Value (Per Day)"), "fieldname": "monthly_value", "fieldtype": "Currency", "width": 140},
+		{"label": _("Active Days"), "fieldname": "active_days", "fieldtype": "Int", "width": 100},
+		{"label": _("Revenue (Pro-rata)"), "fieldname": "revenue", "fieldtype": "Currency", "width": 150},
 	]
 
 
@@ -59,26 +75,37 @@ def get_data(filters):
 	today = getdate(nowdate())
 	data, months = [], []
 	month_row = None
-	total_monthly_value = 0.0
+	total_revenue = 0.0
 
 	for window_start, window_end in get_month_windows(filters.from_date, filters.to_date):
 		# case -> contract -> aggregated row
-		case_rows = {BILLED: {}, NON_BILLED: {}}
+		case_rows = {case: {} for case in CASES}
 		for contract in contracts:
-			for term in terms_by_contract.get(contract.name, []):
+			if contract.name not in terms_by_contract:
+				# No billing schedule: revenue comes from the contract value spread over its dates
+				if contract.value_term:
+					add_revenue(case_rows, contract, contract.value_term, window_start, window_end)
+				continue
+			for term in terms_by_contract[contract.name]:
 				add_term(case_rows, contract, term, window_start, window_end)
+				add_revenue(case_rows, contract, term, window_start, window_end)
 
 		as_on = min(window_end, today)
 		month_row = {"label": window_start.strftime("%b-%Y"), "indent": 0, **new_totals()}
 		month_rows = []
-		for case in (BILLED, NON_BILLED):
-			if filters.case and filters.case != case:
+		for case in CASES:
+			if filters.case and case not in filters.case:
 				continue
 			rows = sorted(case_rows[case].values(), key=lambda r: (r["billing_date"], r["contract_id"]))
+			if case == REVENUE and not rows:
+				continue
 			case_row = {"label": case, "indent": 1, **new_totals()}
 			for row in rows:
 				row["billing_terms"] = ", ".join(row["billing_terms"])
-				row["days_overdue"] = max((as_on - row["billing_date"]).days, 0)
+				if case == REVENUE:
+					row["active_days"] = len(row.pop("active_dates"))
+				else:
+					row["days_overdue"] = max((as_on - row["billing_date"]).days, 0)
 				add_to_totals(case_row, row)
 			add_to_totals(month_row, case_row)
 			month_row[case] = case_row
@@ -89,30 +116,30 @@ def get_data(filters):
 		for row in month_rows:
 			if row.get("case", row["label"]) == BILLED:
 				row["collected_pct"] = collected_pct(row)
-			if row["indent"] == 2 and row["days_overdue"] > 90:
+			if row["indent"] == 2 and row.get("days_overdue", 0) > 90:
 				month_row["overdue_90"] += row["to_collect"]
 
-		total_monthly_value += month_row["monthly_value"]
-		if not month_row["pending_terms"]:
-			# Nothing due or outstanding in this month - skip it rather than showing an empty tree
+		total_revenue += month_row["revenue"]
+		if not month_row["pending_terms"] and not month_row["revenue"]:
+			# Nothing due, outstanding or earned in this month - skip it rather than showing an empty tree
 			continue
 
 		months.append(month_row)
-		data.append({k: v for k, v in month_row.items() if k not in (BILLED, NON_BILLED, "overdue_90")})
+		data.append({k: v for k, v in month_row.items() if k not in (*CASES, "overdue_90")})
 		data.extend(month_rows)
 
 	if len(months) > 1 or (months and months[-1] is not month_row):
 		# Pending amounts carry forward month to month, so the range total is the position at the
-		# end of the range; only the per-day monthly value adds up across months.
+		# end of the range; only the pro-rata revenue adds up across months.
 		data.append({
 			"label": _("Total (as on {0})").format(frappe.format(window_end, "Date")),
 			"indent": 0,
 			"is_total": 1,
 			**{key: month_row[key] for key in new_totals()},
-			"monthly_value": total_monthly_value,
+			"revenue": total_revenue,
 		})
 	if month_row:
-		month_row["range_monthly_value"] = total_monthly_value
+		month_row["range_revenue"] = total_revenue
 	return data, months, month_row
 
 
@@ -162,14 +189,53 @@ def add_term(case_rows, contract, term, window_start, window_end):
 	row["billed_value"] += flt(billed_value)
 	row["received"] += received
 	row["to_collect"] += to_collect
-	# billed value / billed period * active days of the period falling in this month
-	row["monthly_value"] += flt(billed_value) / term.period_days * overlap_days(
-		term.period_from, term.period_to, window_start, window_end
-	)
+
+
+def add_revenue(case_rows, contract, term, window_start, window_end):
+	"""
+	Pro-rata revenue of one billing term for the month window, whether or not it has been billed or
+	paid: term amount / days in the term's period * days of that period active in this month.
+	A contract starting on the 12th of a 31-day month earns 20 days; one expiring on the 15th earns 15.
+	"""
+	if contract.custom_contract_status == "Rejected":
+		return
+
+	start, end = max(term.period_from, window_start), min(term.period_to, window_end)
+	if contract.service_end and contract.service_end < end:
+		end = contract.service_end
+	if start > end:
+		return
+
+	row = case_rows[REVENUE].get(contract.name)
+	if not row:
+		row = case_rows[REVENUE][contract.name] = {
+			"label": contract.name,
+			"indent": 2,
+			"case": REVENUE,
+			"contract_id": contract.name,
+			"customer": contract.customer,
+			"region": contract.region,
+			"branch": contract.branch,
+			"payment_frequency": contract.payment_frequency,
+			"billing_terms": [],
+			"billing_date": term.billing_date,
+			"active_dates": set(),
+			**new_totals(),
+		}
+
+	days = (end - start).days + 1
+	row["billing_terms"].append(term.billing_term or term.billing_date.strftime("%d-%m-%Y"))
+	row["billing_date"] = min(row["billing_date"], term.billing_date)
+	row["active_dates"].update(add_days(start, i) for i in range(days))
+	row["revenue"] += flt(term.amount) / term.period_days * days
 
 
 def get_message():
-	return _("Pending amounts are the position at each month end.")
+	return _(
+		"Pending amounts are the position at each month end. "
+		"<b>Revenue</b> is earned pro-rata by day: each billing term's amount spread over the days it covers, "
+		"so contracts starting or expiring mid-month count only their active days, billed or not."
+	)
 
 
 def get_chart(months):
@@ -182,11 +248,12 @@ def get_chart(months):
 			"datasets": [
 				{"name": _("Billed - Awaiting Payment"), "chartType": "bar", "values": [case_value(m, BILLED) for m in months]},
 				{"name": _("Due - Not Yet Billed"), "chartType": "bar", "values": [case_value(m, NON_BILLED) for m in months]},
+				{"name": _("Revenue (Pro-rata)"), "chartType": "line", "values": [flt(m["revenue"], 2) for m in months]},
 			],
 		},
 		"type": "axis-mixed",
 		"fieldtype": "Currency",
-		"colors": ["#8b5cf6", "#14b8a6"],
+		"colors": ["#8b5cf6", "#14b8a6", "#10b981"],
 		"barOptions": {"stacked": 1},
 		"height": 280,
 	}
@@ -202,7 +269,9 @@ def get_report_summary(end):
 	non_billed = end.get(NON_BILLED) or new_totals()
 	to_collect = flt(end["to_collect"])
 
+	revenue = flt(end.get("range_revenue"))
 	return [
+		{"label": _("Revenue (Pro-rata)"), "value": revenue, "datatype": "Currency", "indicator": "Green"},
 		{"label": _("Total To Collect"), "value": to_collect, "datatype": "Currency", "indicator": "Red" if to_collect else "Green"},
 		{"label": _("Billed - Awaiting Payment"), "value": flt(billed["to_collect"]), "datatype": "Currency", "indicator": "Orange"},
 		{"label": _("Due - Not Yet Billed"), "value": flt(non_billed["to_collect"]), "datatype": "Currency", "indicator": "Blue"},
@@ -213,30 +282,62 @@ def get_report_summary(end):
 
 def get_contracts(filters):
 	conditions = ["c.docstatus < 2"]
-	for key, column in (
-		("contract", "c.name"),
-		("customer", "c.customer"),
-		("region", "c.region"),
-		("branch", "c.branch"),
-	):
+	for key, column in (("contract", "c.name"), ("customer", "c.customer")):
 		if filters.get(key):
 			conditions.append(f"{column} = %({key})s")
+	for key, column in (("region", "c.region"), ("branch", "c.branch")):
+		if filters.get(key):
+			conditions.append(f"{column} IN %({key})s")
 
-	return frappe.db.sql(
+	# Contracts with a term already due for billing, or running during the range (they earn revenue
+	# from their start date, even when post-billed or without any billing schedule)
+	contracts = frappe.db.sql(
 		f"""
 		SELECT c.name, c.customer, c.region, c.branch, c.payment_frequency, c.billing_terms,
-			c.start_date, c.expiry_date
+			c.start_date, c.expiry_date, c.custom_contract_status, c.discontinue_date, c.amount
 		FROM `tabCRM Contract` c
 		WHERE {" AND ".join(conditions)}
-			AND EXISTS (
-				SELECT 1 FROM `tabContract Billing Schedule` b
-				WHERE b.parent = c.name AND b.parenttype = 'CRM Contract'
-					AND b.billing_date <= %(to_date)s
+			AND (
+				EXISTS (
+					SELECT 1 FROM `tabContract Billing Schedule` b
+					WHERE b.parent = c.name AND b.parenttype = 'CRM Contract'
+						AND b.billing_date <= %(to_date)s
+				)
+				OR (c.start_date <= %(to_date)s AND IFNULL(c.expiry_date, c.start_date) >= %(from_date)s)
 			)
 		ORDER BY c.name
 		""",
 		filters,
 		as_dict=True,
+	)
+
+	for contract in contracts:
+		# Revenue stops at expiry, or earlier when the contract was discontinued
+		ends = [getdate(contract.expiry_date)] if contract.expiry_date else []
+		if contract.custom_contract_status == "Discontinue" and contract.discontinue_date:
+			try:
+				ends.append(getdate(contract.discontinue_date))
+			except Exception:
+				pass
+		contract.service_end = min(ends) if ends else None
+		contract.value_term = get_contract_value_term(contract)
+	return contracts
+
+
+def get_contract_value_term(contract):
+	"""The whole contract as one term (start to expiry), for contracts without a billing schedule."""
+	if not (contract.start_date and contract.expiry_date and flt(contract.amount) > 0):
+		return None
+	start, expiry = getdate(contract.start_date), getdate(contract.expiry_date)
+	if expiry < start:
+		return None
+	return frappe._dict(
+		billing_term=_("Contract Value"),
+		billing_date=start,
+		period_from=start,
+		period_to=expiry,
+		period_days=(expiry - start).days + 1,
+		amount=flt(contract.amount),
 	)
 
 
@@ -396,7 +497,7 @@ def overlap_days(period_from, period_to, window_start, window_end):
 
 
 def new_totals():
-	return {"pending_terms": 0, "billed_value": 0.0, "received": 0.0, "to_collect": 0.0, "monthly_value": 0.0}
+	return {"pending_terms": 0, "billed_value": 0.0, "received": 0.0, "to_collect": 0.0, "revenue": 0.0}
 
 
 def add_to_totals(target, row):
