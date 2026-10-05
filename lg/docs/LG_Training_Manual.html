@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LG CRM &amp; AMC Platform — Training Manual</title>
+<style>
+  @page { margin: 25mm 18mm 22mm 18mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #1f2430;
+    font-size: 11.5pt;
+    line-height: 1.55;
+    margin: 0;
+  }
+  h1, h2, h3, h4 { font-family: "Helvetica Neue", Arial, sans-serif; color: #0b2545; margin-top: 0; }
+  h1 { font-size: 22pt; border-bottom: 3px solid #0b6e4f; padding-bottom: 8px; margin-bottom: 18px; page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2 { font-size: 15.5pt; color: #0b6e4f; margin-top: 26px; border-left: 5px solid #0b6e4f; padding-left: 10px; }
+  h3 { font-size: 13pt; color: #14304f; margin-top: 18px; }
+  h4 { font-size: 11.5pt; color: #14304f; margin-top: 14px; text-transform: uppercase; letter-spacing: .4px; }
+  p { margin: 8px 0; text-align: justify; }
+  ol, ul { margin: 6px 0 12px 0; padding-left: 22px; }
+  li { margin-bottom: 4px; }
+  code, .field { font-family: "Courier New", monospace; background: #eef2f5; padding: 1px 5px; border-radius: 3px; font-size: 10.3pt; color: #a3210f; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 18px 0; font-size: 10.3pt; }
+  th, td { border: 1px solid #cfd8e3; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #0b2545; color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: #f5f8fa; }
+  .callout { border-radius: 6px; padding: 10px 14px; margin: 14px 0; font-size: 10.5pt; }
+  .note { background: #eaf4ff; border-left: 5px solid #2b7de9; }
+  .warn { background: #fff6e5; border-left: 5px solid #e0952a; }
+  .danger { background: #fdecec; border-left: 5px solid #d3453b; }
+  .callout strong.tag { text-transform: uppercase; font-size: 9.5pt; letter-spacing: .5px; display: block; margin-bottom: 3px; }
+  .steps { background: #f5f8fa; border: 1px solid #d9e2ea; border-radius: 6px; padding: 10px 16px; }
+  .flow { background: #0b2545; color: #eaf1f8; font-family: "Courier New", monospace; font-size: 9.6pt; padding: 14px 16px; border-radius: 6px; white-space: pre; line-height: 1.4; overflow-x: auto; }
+  .cover { text-align: center; page-break-after: always; padding-top: 90px; }
+  .cover .kicker { color: #0b6e4f; letter-spacing: 3px; font-size: 12pt; font-weight: 700; }
+  .cover h1 { border: none; font-size: 34pt; margin-top: 18px; page-break-before: avoid; }
+  .cover .sub { font-size: 15pt; color: #445; margin-top: 6px; }
+  .cover .meta { margin-top: 90px; font-size: 11pt; color: #667; }
+  .cover .band { height: 6px; background: linear-gradient(90deg, #0b6e4f, #2b7de9); margin: 30px auto; width: 220px; border-radius: 3px; }
+  .toc { page-break-after: always; }
+  .toc ul { list-style: none; padding-left: 0; }
+  .toc li { display: flex; justify-content: space-between; border-bottom: 1px dotted #cfd8e3; padding: 5px 0; font-size: 11pt; }
+  .toc li.sub { padding-left: 20px; font-size: 10.3pt; color: #445; }
+  .toc a { color: #14304f; text-decoration: none; }
+  .badge { display: inline-block; background: #0b6e4f; color: #fff; border-radius: 10px; padding: 1px 9px; font-size: 9pt; margin-left: 6px; }
+  .small { font-size: 9.5pt; color: #667; }
+  .section-num { color: #0b6e4f; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="kicker">EXTENSION ERP &nbsp;•&nbsp; LG CUSTOMIZATION</div>
+  <h1>Training Manual</h1>
+  <div class="sub">CRM, Sales, Contracts &amp; AMC Service Platform</div>
+  <div class="band"></div>
+  <p style="max-width:520px;margin:0 auto;color:#556;">
+    A complete, step-by-step guide to using the LG system — covering
+    customers, deals, quotations, contracts, billing, warranty &amp; AMC service,
+    the management dashboard, and bulk data tools.
+  </p>
+  <div class="meta">
+    Site: <strong>lg.local</strong> &nbsp;|&nbsp; Version 1.0 &nbsp;|&nbsp; Issued: September 2026
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+<h1 style="page-break-before:avoid;">Table of Contents</h1>
+<ul>
+  <li><a href="#s1">1. Introduction &amp; How to Use This Manual</a><span></span></li>
+  <li><a href="#s2">2. Platform Overview</a><span></span></li>
+  <li class="sub"><a href="#s2-1">2.1 What the System Is Built From</a></li>
+  <li class="sub"><a href="#s2-2">2.2 The End-to-End Business Process</a></li>
+  <li class="sub"><a href="#s2-3">2.3 Roles You Will See Referenced</a></li>
+  <li class="sub"><a href="#s2-4">2.4 How to Create Any Record (the Desk)</a></li>
+  <li><a href="#s3">3. Master Data — Set These Up First</a><span></span></li>
+  <li><a href="#s4">4. Customers (CRM Organization)</a><span></span></li>
+  <li class="sub"><a href="#s4-project">4.1 The Project Module — Site/Installation Tracking</a></li>
+  <li><a href="#s5">5. Deals &amp; Opportunities (CRM Deal)</a><span></span></li>
+  <li><a href="#s6">6. Quotations &amp; the Approval Matrix</a><span></span></li>
+  <li><a href="#s7">7. Contracts (AMC &amp; Sales Agreements)</a><span></span></li>
+  <li><a href="#s8">8. Billing, Invoicing &amp; Payments</a><span></span></li>
+  <li><a href="#s9">9. Renewals</a><span></span></li>
+  <li class="sub"><a href="#s9-opp">9.1 Tracking Renewal &amp; Upsell Opportunities</a></li>
+  <li><a href="#s10">10. Service Operations — Warranty, AMC Records &amp; Support</a><span></span></li>
+  <li class="sub"><a href="#s10-1">10.1 Warranty</a></li>
+  <li class="sub"><a href="#s10-2">10.2 AMC Records &amp; AMC Term (Renewal Document)</a></li>
+  <li class="sub"><a href="#s10-3">10.3 Ticket Management (Call Centre)</a></li>
+  <li class="sub"><a href="#s10-4">10.4 Technicians, Dealers &amp; Field Visits</a></li>
+  <li class="sub"><a href="#s10-5">10.5 Repair, Defect, Escalation &amp; Parts</a></li>
+  <li class="sub"><a href="#s10-6">10.6 Serial No — Per-Unit Warranty/AMC Tracking</a></li>
+  <li><a href="#s11">11. The Analytics Dashboard</a><span></span></li>
+  <li><a href="#s12">12. Bulk Data Tools (Excel Import/Export)</a><span></span></li>
+  <li><a href="#s13">13. Automated Jobs Running in the Background</a><span></span></li>
+  <li><a href="#s14">14. Purchasing &amp; Procurement (Spares/Equipment)</a><span></span></li>
+  <li><a href="#s15">15. Mobile &amp; External API (for Administrators)</a><span></span></li>
+  <li><a href="#s16">16. Known Quirks &amp; Troubleshooting</a><span></span></li>
+  <li><a href="#s17">17. Glossary</a><span></span></li>
+</ul>
+</div>
+
+<!-- 1 -->
+<h1 id="s1"><span class="section-num">1.</span> Introduction &amp; How to Use This Manual</h1>
+
+<p>This manual documents the <strong>LG</strong> system — the platform that runs the complete air-conditioning
+sales, warranty, and Annual Maintenance Contract (AMC) business: from the first customer enquiry, through quotation
+approval, contract signing, invoicing and payment collection, to ongoing warranty/AMC service and contract renewal.</p>
+
+<p>It is written for the people who use the system day to day — sales executives, branch/regional managers, service
+coordinators, call-centre agents, finance/billing staff, and dealers/technicians who interact with it indirectly through
+email links — rather than for developers. Wherever the underlying system does something automatically (an email, a
+status change, a calculation), this manual calls it out explicitly so you know what to expect and don't mistake automation
+for a bug.</p>
+
+<div class="callout note">
+<strong class="tag">How sections are organised</strong>
+The manual follows the natural order of the business process: Customer → Deal → Quotation → Contract → Invoice →
+Payment → Renewal, followed by the service/support side (Warranty, AMC, Tickets), then the management dashboard,
+bulk tools, and a troubleshooting/glossary reference at the end. If you only handle one part of the process (e.g. you
+are a service coordinator, not a salesperson), jump straight to Section 10.
+</div>
+
+<div class="callout warn">
+<strong class="tag">Callout boxes used throughout</strong>
+<strong>Blue boxes</strong> are informational notes. <strong>Amber boxes</strong> (like this one) flag something you must do
+correctly or a step that is easy to get wrong. <strong>Red boxes</strong> flag a known system quirk or limitation —
+something the system does that looks like it should work differently, documented so you aren't caught off guard.
+</div>
+
+<!-- 2 -->
+<h1 id="s2"><span class="section-num">2.</span> Platform Overview</h1>
+
+<h2 id="s2-1">2.1 What You'll See When You Log In</h2>
+<p>Everything in this manual lives inside one system, reached through your web browser. Day to day, you'll work in two
+main places:</p>
+<ul>
+  <li><strong>The Desk</strong> — where all your data entry happens: Customers, Deals, Quotations, Contracts,
+      Warranty, AMC, and Tickets are all screens here. Each one gives you a searchable list of records and a form to
+      open, fill in, and save. This is where Sections 3–10 of this manual take place.</li>
+  <li><strong>The Dashboard</strong> — a separate, read-only reporting screen at the <code>/dashboard</code> web
+      address, for managers who want revenue/contract charts without opening individual records (Section 11).</li>
+</ul>
+<p>You don't need to know how the system is built behind the scenes — this manual describes only what you see and do
+on screen.</p>
+
+<h2 id="s2-2">2.2 The End-to-End Business Process</h2>
+<p>Almost everything in the system is a stage in one pipeline. Learn this flow first — every later section maps onto one
+box in this diagram:</p>
+<div class="flow">
+CUSTOMER  (CRM Organization)
+    │
+    ▼
+DEAL  (CRM Deal) ─── Qualification → Spec-In → Proposal/Quotation → Negotiation
+    │                 → Won/Award → Ready to Close   (or Lost / Lost by AM / Lost by RSM)
+    ▼
+QUOTATION  (CRM Quotation)  ── internal Zone approval matrix → customer approval → PO received
+    │
+    ▼
+CONTRACT  (CRM Contract)  ── signed agreement; generates the billing schedule
+    │
+    ▼
+INVOICE  (via Uploader, type=Invoice)  ── billing-schedule rows become real invoices
+    │
+    ▼
+PAYMENT  (via Uploader, type=Payment)  ── payments matched to invoices, contract marked Paid
+    │
+    ▼
+RENEWAL  ("Renew" button → AMC Term → new Contract)  once the old contract expires
+</div>
+<p>Running alongside this sales pipeline is the <strong>service side</strong>: Warranty and AMC records, field
+Technicians and Dealers, and a call-centre Ticket Management screen that logs complaints, repairs, defects, escalations,
+and spare parts consumed — see Section 10.</p>
+
+<h2 id="s2-3">2.3 Roles You Will See Referenced</h2>
+<table>
+<tr><th>Role / Person</th><th>What they typically do in the system</th></tr>
+<tr><td>Sales Executive / Account Manager (AM)</td><td>Creates and progresses Deals, builds Quotations, is the first approval tier on the zone matrix.</td></tr>
+<tr><td>RSM (Regional Sales Manager)</td><td>Second-tier approver on higher-value/higher-risk quotations; oversees a region's pipeline via the dashboard.</td></tr>
+<tr><td>Zone Approvers (Yellow / Orange / Red)</td><td>Special roles that gate quotation approval as risk/discount level increases (Section 6).</td></tr>
+<tr><td>Finance</td><td>Notified automatically when a dealer accepts a contract; handles billing/Uploader-driven invoicing and payment reconciliation (Section 8).</td></tr>
+<tr><td>Service Coordinator / Call-Centre Agent</td><td>Logs Warranty and AMC requests, works Ticket Management records, assigns Technicians (Section 10).</td></tr>
+<tr><td>Dealer</td><td>Channel partner who earns commission on contracts; receives Accept/Reject emails, doesn't need to log in to respond.</td></tr>
+<tr><td>Technician</td><td>Field service staff; assigned to visits/repairs; tracked as a master record with rates, category and territory.</td></tr>
+<tr><td>Branch / Regional / National Manager</td><td>Primary users of the Analytics Dashboard (Section 11).</td></tr>
+</table>
+<p>What you can see and do is controlled by the <strong>Role(s)</strong> your administrator has assigned you — some
+people can only view records, others can create/edit them, and some can also Submit or cancel them. A user needs the
+matching <strong>Yellow / Orange / Red Zone Approver</strong> role to approve or reject a quotation sitting at that
+specific zone tier, and the <strong>Finance</strong> role to receive the automatic dealer-acceptance notifications
+described in Section 7. The Dashboard's Region → Branch → Manager drill-down (Section 11) simply follows how branches
+are assigned to Branch Heads/Area Managers in the Region Branches records — it isn't a separate access lock, so if your
+organisation needs a stricter "only see your own branch" rule, ask an administrator to set that up for you.</p>
+
+<h2 id="s2-4">2.4 How to Create Any Record on the Desk</h2>
+<p>Day-to-day data entry for everything in this manual — Customers, Deals, Quotations, Contracts, Warranty, AMC,
+Tickets, and all master data — happens through the same simple pattern on the Desk:</p>
+<div class="steps">
+<ol>
+<li>Use the search bar at the top of the screen and type what you're looking for, e.g. "Deal", "Contract", "Warranty".</li>
+<li>Click <strong>+ New</strong> from the list that appears, fill in the required fields (marked with a red asterisk), and
+click <strong>Save</strong>.</li>
+<li>Some records — Quotation, Contract, Warranty, Purchase Order — need one more step once you're happy with them:
+click <strong>Submit</strong> to lock the record in and trigger whatever happens next (emails, status changes, a
+billing schedule being generated, etc.), as described throughout this manual. Once submitted, a record generally can't
+be edited directly — you'd need to cancel and amend it instead.</li>
+</ol>
+</div>
+<p>Two other screens exist alongside this main workspace: the <strong>Analytics Dashboard</strong> at
+<code>/dashboard</code> (Section 11 — for viewing reports only, no data entry) and a technical interface used to
+connect a mobile app (Section 15, relevant only to administrators). A couple of older, less-used screens also exist at
+<code>/frontend</code> and <code>/lgcrm</code> — unless you've been specifically told to use one of these, the main
+Desk and the Dashboard are the two places this manual focuses on.</p>
+
+<!-- 3 -->
+<h1 id="s3"><span class="section-num">3.</span> Master Data — Set These Up First</h1>
+<p>Before running deals through the system, the following reference ("master") records should exist. Getting these
+right up front avoids re-work later, since Deals, Quotations and Contracts all pull from them.</p>
+
+<h3>Territory &amp; Organisation Masters</h3>
+<table>
+<tr><th>Master</th><th>Purpose</th></tr>
+<tr><td>Region Master</td><td>Hierarchical sales territory tree (regions can have sub-regions); carries the <strong>Region Head</strong> used for contract-acceptance notifications.</td></tr>
+<tr><td>Region Branches</td><td>Branches within a region, each with its own head, address and GSTIN.</td></tr>
+<tr><td>Branch</td><td>A simpler branch record (id, name, code, head, email) used elsewhere as a lookup.</td></tr>
+<tr><td>Company</td><td>Legal entity/company tree (for multi-company setups).</td></tr>
+<tr><td>Vertical Master</td><td>Industry vertical classification (e.g. Hospitality, Education); carries the <strong>HP &amp; Zone Details</strong> table used to auto-suggest a quotation's pricing zone from total HP.</td></tr>
+</table>
+
+<h3>Product &amp; Pricing Masters</h3>
+<table>
+<tr><th>Master</th><th>Purpose</th></tr>
+<tr><td>Product / CRM Product / Item</td><td>The equipment catalogue — AC units and related items, with HSN/SAC codes, UOM, and item group.</td></tr>
+<tr><td>Model No</td><td>Equipment model catalogue with HP/tonnage and indoor/outdoor classification — linked from equipment line items everywhere (Deal, Contract, Serial No).</td></tr>
+<tr><td>Brand / Item Group / CRM Product Group / Product Bundle</td><td>Catalogue classification and bundling.</td></tr>
+<tr><td>Item Price List / Price List (AMC)</td><td>Base pricing by price list and currency.</td></tr>
+<tr><td>UOM</td><td>Units of measure used across item/product records.</td></tr>
+<tr><td>AMC Price Policy</td><td>Minimum/maximum rate bands by Zone × HP Range × Project Type, with the approval level each band requires — the reference table behind the quotation zone/approval logic in Section 6.</td></tr>
+</table>
+
+<h3>Payment &amp; Tax Masters</h3>
+<table>
+<tr><th>Master</th><th>Purpose</th></tr>
+<tr><td><strong>Pay Term</strong></td><td>The single source of truth for how a bill is split into instalments. Each Pay Term has a table underneath it (<strong>Pay Term List</strong>) of rows: <strong>Invoice Portion</strong> (% of the total) and <strong>Days</strong> (offset from the billing date to the due date). Set these up before creating Quotations — every billing schedule and every invoice split reads from here.</td></tr>
+<tr><td>Payment Frequency</td><td>Monthly / Quarterly / Semi-Annually / Annually / 100% for Partial Contract — how often billing repeats.</td></tr>
+<tr><td>Payment Terms / Payment Terms Template</td><td>Generic due-date and discount rules (credit days/months) used on purchasing-side documents.</td></tr>
+<tr><td>Mode of Payment, Currency Exchange, Currency Exchange Settings</td><td>Payment channel and multi-currency exchange-rate lookups.</td></tr>
+<tr><td>Sales/Purchase Taxes and Charges (+ Templates), Tax Category, Item Tax / Item Tax Template</td><td>Standard tax configuration for sales and purchase documents.</td></tr>
+</table>
+
+<h3>People &amp; Channel Masters</h3>
+<table>
+<tr><th>Master</th><th>Purpose</th></tr>
+<tr><td>Dealer</td><td>Channel partner master: name, customer type (Residential/Commercial/Individual), commission rate, LCC/ASP/AMC role type, region/branch, and a Dealer Visits log.</td></tr>
+<tr><td>Technician</td><td>Field engineer master: contact/address, technician type (ASP/Freelancer/Expert), category (A–D), hourly labour rates (under 6 hrs / under 24 hrs / over 24 hrs), assigned dealer, region.</td></tr>
+<tr><td>Supplier / Supplier Group</td><td>Vendors for purchasing (spares/equipment procurement side).</td></tr>
+</table>
+
+<h3>Other Reference Data</h3>
+<p>Pincode Master (pincode/city/state/country lookups), Terms and Conditions (standard T&amp;C text blocks for
+quotations/contracts), Cost Center, and Purchase Order / Purchase Order Item (for procurement of spares/equipment) round
+out the reference data. These are set-and-forget once configured correctly.</p>
+
+<div class="callout note">
+<strong class="tag">Practical tip</strong>
+Configure Region Master → Region Branches → Dealer → Pay Term in that order before your first live deal. A Deal or
+Contract created against an incomplete Pay Term will have a wrong or empty billing schedule, which then has to be
+manually corrected on the Quotation/Contract later.
+</div>
+
+<!-- 4 -->
+<h1 id="s4"><span class="section-num">4.</span> Customers (CRM Organization)</h1>
+<p>Every Deal, Quotation and Contract belongs to a <strong>Customer</strong>, represented by the <strong>CRM
+Organization</strong> record.</p>
+
+<h3>Key fields</h3>
+<table>
+<tr><th>Field</th><th>What it's for</th></tr>
+<tr><td><strong>Organization Name</strong></td><td>Customer/company name.</td></tr>
+<tr><td><strong>Naming Series</strong></td><td>A human-readable customer code, built automatically from the first 3 letters of the name + city + creation date (e.g. <code>abc-delhi-2026-07-08</code>). You do not fill this in — it's generated on save.</td></tr>
+<tr><td><strong>Site Location City</strong>, <strong>Project</strong>, <strong>Branch</strong></td><td>Site and territory details. <strong>Project</strong> is free text here (not a link to the Project record).</td></tr>
+<tr><td><strong>Expected HP</strong>, <strong>Expected Ton</strong></td><td>Sizing estimates used during early qualification.</td></tr>
+<tr><td><strong>Warranty Expiry Date</strong></td><td>Customer-level warranty tracking field (separate from the equipment-level dates on individual product lines).</td></tr>
+<tr><td><strong>Contracts Information</strong></td><td>Read-only history table — automatically gets a new row every time a Contract against this customer is submitted (contract id, start date, expiry date, status). You never edit this by hand.</td></tr>
+</table>
+
+<h3>Step-by-step: creating a customer</h3>
+<div class="steps">
+<ol>
+<li>Search first. Because the system blocks you from saving a duplicate — <strong>the same organisation name + project +
+branch combination cannot exist twice</strong> — always search before creating a new record, even if the name looks
+slightly different from what you expect.</li>
+<li>Fill in <strong>Organization Name</strong>, city, project, and branch.</li>
+<li>Save. The customer code (<strong>Naming Series</strong>) is generated automatically.</li>
+<li>Add contacts, addresses, and any Customer Visit Form entries as the relationship develops.</li>
+</ol>
+</div>
+
+<div class="callout warn">
+<strong class="tag">Duplicate check</strong>
+If you get an error saving a new customer, it almost always means one already exists with the same name + project +
+branch. Search for it rather than trying a slightly different name to force it through — that just creates a second,
+harder-to-find record for the same customer.
+</div>
+
+<h3>Bulk customer import</h3>
+<p>Use the <strong>Import Excel</strong> action on the Organization list to bulk-load customers (and any attached
+Customer Visit Form rows) from a spreadsheet. The importer is flexible about column headers — it matches by label, a
+"scrubbed" version of the label, a known alias, or the literal field name — and it <strong>updates existing customers
+instead of duplicating them</strong> when a row's customer code (or name+branch) already matches a record. This means
+you can safely re-upload a corrected version of the same sheet.</p>
+
+<h3 id="s4-project">The Project Module — Tracking a Customer's Site/Installation</h3>
+<p>A <strong>Project</strong> is a separate record from the Deal/Contract pipeline — it represents one specific
+customer installation or site (a customer can have more than one Project if they have multiple sites), and exists to
+give you a single, always-current answer to "is this site's cover still active?" without having to dig through that
+site's Deal history.</p>
+
+<h4>Key fields</h4>
+<table>
+<tr><th>Field</th><th>What it's for</th></tr>
+<tr><td><strong>Project ID</strong></td><td>The Project's own record name. It must start with the letters <strong>"IL"</strong> — the system blocks saving and clears the field if you type anything else. New Projects default to "IL" for you to complete.</td></tr>
+<tr><td><strong>Customer Reference No.</strong>, <strong>Customer Name</strong></td><td>Links back to the CRM Organization; Customer Name is filled in automatically from it.</td></tr>
+<tr><td><strong>Vertical</strong>, <strong>Parent Vertical</strong></td><td>Filled in automatically from the customer's industry — useful for filtering Projects by business type.</td></tr>
+<tr><td><strong>Status</strong></td><td><em>Read-only.</em> One of IN Warranty / OUT Warranty / AMC Active / AMC Expired — you never set this by hand, it is written automatically (see below).</td></tr>
+<tr><td><strong>Expiry Date</strong></td><td>The date this site's current cover (warranty or AMC) runs out — also kept in sync automatically.</td></tr>
+<tr><td><strong>Current Opportunity</strong></td><td>A hidden, read-only link to whichever Deal is currently considered this Project's "live" one.</td></tr>
+<tr><td><strong>Region</strong>, <strong>Branch</strong>, <strong>Branch Head Name</strong></td><td>The servicing territory for this site.</td></tr>
+<tr><td><strong>Address</strong> / <strong>Shipping Address</strong> tab</td><td>The site's billing and shipping addresses.</td></tr>
+</table>
+
+<h4>How Status and Expiry Date stay in sync with Deals</h4>
+<p>You don't update a Project's Status or Expiry Date directly — they are pushed onto the Project automatically every
+time a Deal that's linked to it is saved: if the Deal has a Warranty Expiry Date, that date and the Deal's own
+Warranty/AMC Status are copied onto the Project; if it has an AMC Expiry Date instead, that's copied instead. A second,
+more careful check then re-confirms the update only if the Deal you just saved is genuinely the most recently created
+Deal for that Project.</p>
+<div class="callout danger">
+<strong class="tag">Gotcha — this is also the cause of the Section 5 Project gotcha</strong>
+The first, simpler sync described above runs on <em>every</em> save of a linked Deal, with no check for whether it's
+the latest one — only the second check looks at recency. In practice this means editing an old, already-closed Deal
+for that site can still overwrite the Project's displayed Status/Expiry Date, exactly as flagged in Section 5. If a
+Project's status looks wrong, re-save the customer's actual current Deal for that site to put it right.
+</div>
+
+<h4>Turning an expired Project into a new Deal</h4>
+<p>Once a Project's Expiry Date has passed, a <strong>"Create AMC Opportunity"</strong> button appears on its form.
+Clicking it opens a new Deal, with the Deal Owner set to you, and the following pre-filled automatically from the
+Project:</p>
+<div class="steps">
+<ol>
+<li>Customer and customer address are copied across.</li>
+<li>Branch and Region are copied from the customer record.</li>
+<li>The new Deal's type is set based on the Project's current Status: <strong>AMC Expired</strong> → "Lost AMC
+Conversion"; <strong>OUT Warranty</strong> → "Lost Warranty Conversion".</li>
+</ol>
+</div>
+<p>Review the new Deal, add/confirm its equipment (Product Details), and work it forward through the normal Deal →
+Quotation → Contract cycle (Section 5 onward) like any other opportunity.</p>
+<div class="callout warn">
+<strong class="tag">Naming trap — this button does not create an "Opportunity" record</strong>
+Despite its label, <strong>"Create AMC Opportunity" creates a Deal</strong>, not a record in the separate
+<strong>Opportunity</strong> doctype described in Section 9.1. The two are unrelated features that happen to share
+similar wording — if you're looking for the customer's actual Deal from this button, check the Deals list, not
+Opportunities.
+</div>
+
+<!-- 5 -->
+<h1 id="s5"><span class="section-num">5.</span> Deals &amp; Opportunities (CRM Deal)</h1>
+<p>The <strong>Deal</strong> is where a salesperson tracks an opportunity from first contact through to a signed
+contract or a lost cause. This is the screen sales staff live in day to day.</p>
+
+<h3>Key fields</h3>
+<table>
+<tr><th>Field</th><th>What it's for</th></tr>
+<tr><td><strong>Status</strong></td><td>Qualification → Spec-In → Proposal/Quotation → Negotiation → Won/Award → Ready to Close, or Lost / Lost by AM / Lost by RSM.</td></tr>
+<tr><td><strong>Deal Category</strong></td><td><strong>Service</strong> (AMC/warranty-driven; the default) or <strong>Sales</strong> (new equipment). This choice affects which expiry date matters and which emails/renewal logic apply later — set it correctly at creation.</td></tr>
+<tr><td><strong>AMC Expiry Date</strong> / <strong>Warranty Expiry Date</strong></td><td>The dates the whole AMC/warranty status calculation is built on.</td></tr>
+<tr><td><strong>Warranty / AMC Status</strong></td><td><strong>Calculated automatically</strong> — you cannot set this directly. If an AMC expiry date is present: shows "AMC Active" or "AMC Expired". Otherwise, if a warranty expiry date is present: shows "IN Warranty" or "OUT Warranty".</td></tr>
+<tr><td><strong>Product Details</strong></td><td>Line-by-line list of equipment on this deal (serial no, product, model, HP/tons, warranty/AMC type, dates, maintenance status).</td></tr>
+<tr><td><strong>Total HP</strong></td><td><strong>Calculated automatically after every save</strong> by adding up the HP column across all <strong>Product Details</strong> rows.</td></tr>
+<tr><td><strong>From Contract</strong></td><td>Set automatically when this Deal originated from a contract renewal.</td></tr>
+<tr><td><strong>Project</strong></td><td>Link to the Project record grouping this customer's site history.</td></tr>
+</table>
+
+<h3>Step-by-step: working a deal</h3>
+<div class="steps">
+<ol>
+<li>Create the Deal from (or linked to) the Customer record.</li>
+<li>Choose <strong>Deal Category</strong> — Service or Sales — first; this is not easily changed later.</li>
+<li>Add every piece of equipment involved under <strong>Product Details</strong>, with serial number, model, and HP/tons filled in for each row.</li>
+<li>Move <strong>Status</strong> forward as the opportunity progresses: Qualification → Spec-In → Proposal/Quotation.</li>
+<li>At Proposal/Quotation stage, create a linked <strong>CRM Quotation</strong> (Section 6).</li>
+<li>Once a Contract is created and submitted from the quotation, the Deal is <strong>automatically</strong> updated with the final HP, AMC expiry date and annual revenue — you do not need to re-enter these.</li>
+</ol>
+</div>
+
+<div class="callout danger">
+<strong class="tag">Gotcha — HP must be a number</strong>
+Every row in Product Details must have a numeric value in the HP column. A blank or non-numeric HP on <em>any</em> row
+blocks the whole Deal from saving, because the system tries to sum the column into <strong>Total HP</strong>
+immediately after save. If a save fails with an HP-related error, check every product row, not just the one you just
+edited.
+</div>
+
+<div class="callout warn">
+<strong class="tag">Gotcha — editing an old Deal can overwrite Project status</strong>
+Saving <em>any</em> Deal linked to a Project pushes that Deal's status and expiry date onto the Project record — even
+if it's an old, already-closed Deal and not the customer's current one. If a Project's displayed status looks wrong
+after someone edits an old Deal for housekeeping, the fix is to re-save the actual current/latest Deal for that
+project, not to hand-edit the Project.
+</div>
+
+<div class="callout note">
+<strong class="tag">Automatic "Lost" clean-up</strong>
+Every night, the system automatically marks a Deal as <strong>Lost</strong> if it has sat for more than 6 months past
+its warranty/AMC expiry date without reaching Proposal/Quotation or Won/Award. This is expected housekeeping, not a
+sign that someone closed your deal — check the activity log if you need to confirm when/why.
+</div>
+
+<!-- 6 -->
+<h1 id="s6"><span class="section-num">6.</span> Quotations &amp; the Approval Matrix</h1>
+<p>The <strong>CRM Quotation</strong> is a formal document — one you Submit once it's approved — with a built-in multi-tier internal approval
+process before it can be sent to the customer, followed by tracking of the customer's own acceptance and purchase order.</p>
+
+<h3>Key fields</h3>
+<table>
+<tr><th>Field</th><th>What it's for</th></tr>
+<tr><td><strong>Zone</strong></td><td>Green / Yellow / Orange / Red — a risk/discount tier. Auto-suggested from the deal's industry (via Vertical Master) and total HP against the HP &amp; Zone Details table; you can override it if pricing genuinely differs.</td></tr>
+<tr><td><strong>Required Approval</strong></td><td>Which approvers must sign off — AM only, AM+RSM, AM+RSM+Mr Alok, or AM+RSM+Mr Alok+MD — driven by the zone.</td></tr>
+<tr><td><strong>Start Date</strong>, <strong>End Date</strong>, <strong>Payment Term</strong>, <strong>Payment Frequency</strong>, <strong>Billing Terms</strong></td><td>Contract period and billing cadence. Changing <em>any</em> of these automatically rebuilds the whole billing schedule (see below) — always set these before fine-tuning individual billing rows, not after.</td></tr>
+<tr><td><strong>Price Rate Per Year</strong></td><td>A comma-separated list of per-year rates for multi-year contracts with escalating pricing. Year 1 uses the main <strong>Amount</strong> field; year 2 onward pulls the next value from this list in order. If you don't supply enough values for every year, the remaining years simply reuse the base amount — so for an escalating contract, always supply one rate per year.</td></tr>
+<tr><td><strong>Uploaded</strong></td><td>Tick this once the customer's PO document is attached — the system will not let the quotation move on from "PO Pending" until this is checked.</td></tr>
+</table>
+
+<h3>The approval workflow</h3>
+<div class="flow">
+Open ──Submit for Approval──▶ Approval Pending ──Approve──▶ Approved
+Open ──Submit for Approval──▶ Yellow Zone Approval Pending
+   ──Yellow Zone Approve──▶ Approved
+   ──Yellow Zone Approve──▶ Orange Zone Approval Pending
+        ──Orange Zone Approve──▶ Approved
+        ──Orange Zone Approve──▶ Red Zone Approval Pending
+             ──Red Zone Approve──▶ Approved
+        ──Reject──▶ Rejected
+   ──Reject──▶ Rejected
+
+Approved ──Send Quote to Customer──▶ Customer Approval Pending
+Customer Approval Pending ──Quote Accept──▶ PO Pending
+Customer Approval Pending ──Revise Quote──▶ Open
+PO Pending ──PO Receive──▶ Quote Won  (quotation becomes locked/submitted)
+</div>
+<p>Only users holding the matching <strong>Yellow / Orange / Red Zone Approver</strong> role can approve or reject a
+quotation sitting at that tier. A higher-risk zone routes through more approval stages before reaching "Approved".</p>
+
+<div class="callout warn">
+<strong class="tag">Remarks are mandatory at rejection/approval points</strong>
+The system blocks you from moving a quotation out of certain states unless you have filled in the matching remarks
+field first (general <strong>Remarks</strong>, or the zone-specific
+<strong>Yellow Zone Approve Rejection Remarks</strong> / <strong>Orange ...</strong> /
+<strong>Red ...</strong> field). Always write your justification <em>before</em> clicking the workflow action
+button — the click itself will fail with an error until the remark is present.
+</div>
+
+<div class="callout danger">
+<strong class="tag">Gotcha — re-saving a sent quote resends the customer email</strong>
+As soon as a quotation's status becomes "Customer Approval Pending", the system automatically emails the customer a PDF
+of the quote. This check runs on <em>every save</em> while the quote sits in that state — not just the moment it first
+gets there. If you need to make an unrelated internal edit to a quotation that's already been sent, be aware the
+customer will receive another copy of the quote email when you save.
+</div>
+
+<h3>Advance-payment reminders</h3>
+<p>If a quotation carries an <strong>Advance Amount</strong> and hasn't been submitted yet, the system checks
+every night for unpaid advance instalments and emails the quotation's owner with escalating reminders at 1, 20, 25 and
+30 days overdue (government customers get an extra 60 days' grace). Ignoring these reminders long enough can flip the
+related contract's status to "Discontinue" automatically — see the caution under Section 15.</p>
+
+<h3>Turning a won quotation into a contract</h3>
+<p>Once a quotation is submitted (typically after "PO Receive" moves it to Quote Won), a <strong>"Create Sub
+Contract"</strong> button appears on the form. Clicking it generates a new CRM Contract pre-filled with the quotation's
+customer, dates, amount and billing schedule — you then review and submit the Contract (Section 7).</p>
+
+<!-- 7 -->
+<h1 id="s7"><span class="section-num">7.</span> Contracts (AMC &amp; Sales Agreements)</h1>
+<p>The <strong>CRM Contract</strong> is the signed, binding agreement. Submitting it is what actually starts the billing
+and service obligations — nothing before this point commits the company to anything.</p>
+
+<h3>Key fields</h3>
+<table>
+<tr><th>Field</th><th>What it's for</th></tr>
+<tr><td><strong>Contract Status</strong></td><td>Active / Expired / Discontinue. Set automatically to Expired once <strong>Expiry Date</strong> passes — but the system never overrides a status you've set manually.</td></tr>
+<tr><td><strong>Contract Type</strong></td><td>Calculated automatically on save: copied from the Deal's type for a brand-new customer relationship, or classified as "AMC Renewable" vs. "Lost AMC Conversion" by comparing today's date against the <em>previous</em> contract's expiry date plus 3 months.</td></tr>
+<tr><td><strong>Start Date</strong>, <strong>Expiry Date</strong></td><td>Contract period — the system blocks saving if the start date is after the expiry date.</td></tr>
+<tr><td><strong>Dealer</strong> (table)</td><td>Each dealer sharing commission on this contract, with their commission/contribution rate and their own accept/reject status.</td></tr>
+<tr><td><strong>Billing Schedule</strong></td><td>The full instalment plan carried over from the quotation (or regenerated the same way).</td></tr>
+<tr><td><strong>Product Details</strong></td><td>Equipment covered by the contract; has its own bulk Download/Upload CSV template buttons for editing many rows at once.</td></tr>
+<tr><td><strong>Customer PO ID</strong></td><td>Used later to reconcile bulk invoice-Excel uploads against this contract.</td></tr>
+</table>
+
+<h3>What happens automatically when you submit a contract</h3>
+<div class="steps">
+<ol>
+<li>The Deal that produced this contract is updated with the final total HP, AMC expiry date (= this contract's expiry
+date), annual revenue (= this contract's amount), and a "duplicate trigger date" one month before expiry — used for
+renewal timing.</li>
+<li>Every dealer listed in the contract's Dealer table receives an email with a PDF of the contract (print format
+"AMC Offer") containing <strong>Accept</strong> and <strong>Reject</strong> links they can click without logging in.</li>
+<li>A new row is appended to the customer's Organization record (<strong>Contracts Information</strong>)
+recording this contract's id, dates and status.</li>
+</ol>
+</div>
+<p>If a dealer's <strong>Commission Rate</strong> is changed after the contract is already submitted, that
+specific dealer automatically receives a new Accept/Reject email about the updated commission.</p>
+
+<h3>Dealer accept/reject links</h3>
+<p>These links work without the dealer logging in. Clicking Accept notifies the dealer, the region's Region Head, and
+everyone holding the <strong>Finance</strong> role. Clicking Reject updates just that dealer's status on the contract.
+A contract that seems "stuck" is often just waiting on one dealer's response among several, not on the customer.</p>
+
+<div class="callout danger">
+<strong class="tag">Gotcha — automatic renewal-deal creation does not run</strong>
+Older documentation and some code comments describe the system automatically creating a renewal Deal six months before
+a contract expires. <strong>This does not currently happen</strong> — do not rely on it. The working renewal path is
+the manual "Renew" button described in Section 9. Track upcoming expiries proactively (e.g. via the dashboard or a
+report) rather than waiting for an automatic prompt.
+</div>
+
+<h3>Nightly automated contract housekeeping</h3>
+<table>
+<tr><th>Job</th><th>What it does</th></tr>
+<tr><td>Expire contracts</td><td>Any contract past its expiry date that isn't already Expired/Discontinue is automatically set to Expired.</td></tr>
+<tr><td>Billing follow-up</td><td>Chases overdue, non-advance billing rows; sends an overdue-payment email at 30 days (60 for government customers) to the finance team, and automatically discontinues the contract past 60 days for either customer type.</td></tr>
+<tr><td>Advance-payment reminders</td><td>Same escalation pattern as the quotation version (Section 6), applied to the contract itself.</td></tr>
+</table>
+
+<!-- 8 -->
+<h1 id="s8"><span class="section-num">8.</span> Billing, Invoicing &amp; Payments</h1>
+<p>Invoices and payments are <strong>not</strong> created one at a time by editing a form — they are generated in
+batches using the <strong>Uploader</strong> tool, working directly off a Contract's billing schedule. Think of the
+Uploader as a "run an import" action rather than a permanent record you go back and edit.</p>
+
+<h3>Step-by-step: raising invoices</h3>
+<div class="steps">
+<ol>
+<li>Create a new Uploader record and set its type to <strong>Invoice</strong>.</li>
+<li>The system fetches the eligible billing-schedule rows and fills the Invoice Uploader table automatically.</li>
+<li>Review the rows — anything without a valid Contract ID, or that would duplicate an existing invoice, is skipped
+automatically.</li>
+<li><strong>Save the Uploader.</strong> This is the moment the actual invoices are created — nothing is written to the
+system before you save.</li>
+</ol>
+</div>
+<p>For each row processed, the system creates a new <strong>Invoice</strong> record, splits it into instalment rows
+using the contract's Pay Term (each portion gets its percentage of the total and a due date offset from the billing
+date), and marks the originating billing-schedule row as "Invoice Raised", linked to the new invoice.</p>
+
+<h3>Step-by-step: recording payments</h3>
+<div class="steps">
+<ol>
+<li>Create a new Uploader record and set its type to <strong>Payment</strong>.</li>
+<li>The Payment Uploader table fills automatically from the source payment data.</li>
+<li><strong>Save the Uploader.</strong> For each row, the system finds the matching invoice, applies the received
+amount to whichever instalment is due today-or-earlier and matches the portion amount, and recalculates the invoice's
+total paid/outstanding balance and status (Paid, or Partially Paid).</li>
+<li>The matching Contract Billing Schedule row is updated to reflect the same status, so the contract's payment
+history and the invoice always agree.</li>
+</ol>
+</div>
+
+<div class="callout danger">
+<strong class="tag">Gotcha — one bad row can affect the whole batch</strong>
+Both Uploader flows process every row in a single all-or-nothing operation. If one row in the middle of a batch fails
+(wrong contract id, mismatched amount, etc.), the whole save is aborted — but rows processed <em>before</em> the failure
+may already have been written. Always double-check your upload data before saving, and after any failed upload,
+verify what was actually created rather than assuming nothing happened.
+</div>
+
+<h3>Bulk reconciliation from Excel</h3>
+<p>On the Contract itself, an administrator can bulk-mark billing rows as paid by uploading an Excel sheet — the system
+matches each row's <strong>Customer PO ID</strong> against the contract to apply the update, rather than going
+through the Uploader tool.</p>
+
+<!-- 9 -->
+<h1 id="s9"><span class="section-num">9.</span> Renewals</h1>
+<p>When a contract's status becomes <strong>Expired</strong> or <strong>Discontinue</strong>, a <strong>"Renew"</strong>
+button appears on the Contract form — but only if no renewal document already references this contract.</p>
+
+<h3>Step-by-step: renewing a contract</h3>
+<div class="steps">
+<ol>
+<li>Open the expired/discontinued Contract and click <strong>Renew</strong>.</li>
+<li>A new <strong>AMC Term</strong> document opens, pre-filled with the customer and a reference back to the old
+contract.</li>
+<li>Complete the AMC Term's billing details (payment term, frequency, billing terms, amount, start/end dates, billing
+schedule).</li>
+<li>From the AMC Term, generate the new <strong>CRM Contract</strong>. It is automatically pre-filled with the
+customer, industry, region, branch and company copied from the old contract, plus the payment term, dates, amount,
+frequency and billing terms entered on the AMC Term.</li>
+<li>Review and submit the new contract as normal (Section 7) — this starts a fresh billing/service cycle.</li>
+</ol>
+</div>
+
+<div class="callout warn">
+<strong class="tag">This is a manual process</strong>
+As noted in Section 7, there is no automatic renewal reminder built into the Contract itself. Use the dashboard or a
+saved report of upcoming expiry dates to identify contracts needing renewal, and action the Renew button proactively —
+don't wait for the system to prompt you.
+</div>
+
+<h3 id="s9-opp">Tracking renewal &amp; upsell opportunities (Opportunity)</h3>
+<p>Separate from the Contract's own "Renew" button, <strong>Opportunity</strong> is a dedicated pre-sales
+record used by sales executives to actively work a pipeline of upcoming warranty-to-AMC conversions and AMC renewals,
+rather than reacting only once a contract has already expired.</p>
+<table>
+<tr><th>Field</th><th>Purpose</th></tr>
+<tr><td><strong>Opportunity Type</strong></td><td>Warranty or AMC — which kind of renewal/conversion this opportunity tracks.</td></tr>
+<tr><td><strong>Stage</strong></td><td>Qualified → Requirement Gathering → Proposal Creation → Proposal Sent → Negotiation/Review → Document Sign → Deal Won/Lost.</td></tr>
+<tr><td><strong>Opportunity Status</strong></td><td>A finer-grained tag: Renewal, Warranty Conversion, Lost Conversion, Chiller, or AMC+TMS.</td></tr>
+<tr><td><strong>Expected Value</strong>, <strong>Owner</strong> (SE Name)</td><td>Deal size and the sales executive responsible for working it.</td></tr>
+<tr><td><strong>Items</strong> (table, Opportunity Item)</td><td>The specific equipment lines being renewed/converted, including an SVC_TYPE service-code field used for AMC billing classification.</td></tr>
+</table>
+<p>A built-in lookup can pull, for any item code, its Warranty record and flag units that are within <strong>two months
+of warranty expiry</strong> — this is the intended source list for creating new Opportunities: don't wait for a
+customer to call in once their warranty has already lapsed, work the list of soon-to-expire units proactively.</p>
+
+<!-- 10 -->
+<h1 id="s10"><span class="section-num">10.</span> Service Operations — Warranty, AMC Records &amp; Support</h1>
+<p>This section covers the post-sale service side of the business: handling warranty and AMC service requests, running
+the call centre, and tracking technicians, repairs, defects, escalations and spare parts.</p>
+
+<h2 id="s10-1">10.1 Warranty</h2>
+<p>A <strong>Warranty</strong> record tracks a warranty claim/registration for a customer's equipment. It is a
+document you Submit once approved (naming pattern <code>ID-###</code>).</p>
+<table>
+<tr><th>Field</th><th>Purpose</th></tr>
+<tr><td><strong>Warranty Requester</strong></td><td>Who raised it — Customer, Dealer, or Technician.</td></tr>
+<tr><td><strong>Organization</strong></td><td>The customer this warranty belongs to.</td></tr>
+<tr><td><strong>Item</strong> (table, Warranty Item)</td><td>The specific product(s) under warranty, with item code, quantity, and pricing.</td></tr>
+<tr><td><strong>Contacts</strong> (table, Warranty Contact)</td><td>People to notify — supports marking one contact as primary.</td></tr>
+<tr><td><strong>Expiry Date</strong>, <strong>Warranty Status</strong></td><td>Tracks when cover ends and its current state (statuses are configurable, each with a colour for quick visual scanning on list views).</td></tr>
+<tr><td><strong>Approval Date</strong>, <strong>Approval Name</strong>, <strong>Attachment 1</strong>/<strong>Attachment 2</strong></td><td>Sign-off details and supporting document attachments.</td></tr>
+</table>
+<p>Warranty records are typically created, updated, and looked up through the same kind of guided screen used for
+Deals — searchable by organisation or by a linked contact — and can be formally submitted once approved.</p>
+
+<h2 id="s10-2">10.2 AMC Records &amp; AMC Term (Renewal Document)</h2>
+<p><strong>AMC</strong> is a standalone service record (distinct from the CRM Contract's AMC billing) —
+useful for tracking package-based AMC service outside the main contract pipeline, e.g. sold via a dealer/technician
+channel rather than the sales team.</p>
+<table>
+<tr><th>Field</th><th>Purpose</th></tr>
+<tr><td><strong>AMC Owner</strong>, <strong>AMC Activation Date</strong>, <strong>AMC End Date</strong></td><td>Who owns the record and its active period.</td></tr>
+<tr><td><strong>AMC Status</strong></td><td>Configurable status (colour-coded, like Warranty Status).</td></tr>
+<tr><td><strong>AMC Package</strong>, <strong>Package Base Price</strong>, <strong>Total Price</strong></td><td>The AMC package sold and its pricing.</td></tr>
+<tr><td><strong>Technician Name</strong>, <strong>Technician Type</strong>, <strong>Technician Owner</strong>, <strong>Technician Zone</strong></td><td>The assigned field engineer for this AMC.</td></tr>
+<tr><td><strong>Dealer Name</strong>, <strong>Dealer Type</strong>, <strong>Dealer Incentive</strong></td><td>The channel partner and their incentive for this AMC sale.</td></tr>
+<tr><td><strong>Organization</strong>, <strong>Contact</strong></td><td>Customer and contact list for this AMC.</td></tr>
+</table>
+<p><strong>AMC Term</strong> is the document used specifically for the contract-renewal flow (Section 9) —
+it is not a general AMC record but a short-lived staging document that captures the new billing terms and then converts
+into a fresh CRM Contract.</p>
+
+<h2 id="s10-3">10.3 Ticket Management (Call Centre)</h2>
+<p><strong>Ticket Mangement</strong> [sic — this is the actual name in the system] is the call-centre screen: one record
+captures an entire support interaction end-to-end, from the caller's identity through to parts consumed and the
+customer's satisfaction rating, rather than being split across several linked documents.</p>
+<table>
+<tr><th>Field group</th><th>What's captured</th></tr>
+<tr><td>Caller &amp; ticket</td><td><strong>Caller Type</strong> (Customer/Dealer), <strong>Type of Call</strong> (Repair/Installation/Amc visit), <strong>Status</strong> (Open/Closed/Pending/Escalation), ticket stage and owner.</td></tr>
+<tr><td>Customer</td><td>Name, ID, phone, pincode/state/country, customer type, date of birth.</td></tr>
+<tr><td>Dealer assignment</td><td>Assigned dealer, dealer type, dealer phone/zone (North/South/East/West), and a re-allocation timestamp/count if the ticket had to be reassigned.</td></tr>
+<tr><td>Equipment &amp; warranty</td><td>Model number, date of purchase, warranty status and expiry.</td></tr>
+<tr><td>Feedback</td><td>Overall, service, and communication ratings, plus a feedback timestamp.</td></tr>
+<tr><td>Defect/repair</td><td>Defect code and category/sub-category, repair end date/time.</td></tr>
+<tr><td>Escalation</td><td>Escalation source, reason and type; separate approve checkboxes for dealer and technician.</td></tr>
+<tr><td>Parts consumed</td><td>Part code/name/category, consumed quantity, plus item code/name/category and a Voice of Customer (VOC) free-text field.</td></tr>
+</table>
+
+<h3>Step-by-step: handling a call-centre ticket</h3>
+<div class="steps">
+<ol>
+<li>Agent takes the call and creates a Ticket Management record, capturing caller type and the type of call
+(Repair/Installation/AMC visit).</li>
+<li>Look up the customer, confirm equipment details (model, warranty status) — carried over from the customer's product
+history where available.</li>
+<li>Assign a dealer/technician zone; if the assignment needs to change later, the re-allocation fields track that
+history.</li>
+<li>Record the defect code/category once diagnosed, and any parts consumed during the repair.</li>
+<li>If the issue needs to go further (unresolved, disputed, or high-severity), set an escalation source/reason/type and
+route for the relevant approval (dealer, ASM, or technician sign-off).</li>
+<li>Capture the customer's satisfaction rating and any free-text feedback (VOC) once the ticket is resolved.</li>
+<li>Move <strong>Status</strong> to Closed once complete.</li>
+</ol>
+</div>
+
+<h2 id="s10-4">10.4 Technicians, Dealers &amp; Field Visits</h2>
+<p>Technicians and Dealers are master records (Section 3) referenced throughout the service flow. <strong>Visit</strong>
+is a small summary record (first visit, most recent visit, number of chats/visits, average time spent, days
+visited) used to log a dealer's or technician's engagement history — it appears as the <strong>Dealer Visits</strong>
+table on the Dealer master. The <strong>Customer Visit Form</strong> is the customer-facing equivalent, recording
+a site visit's date, purpose (linked to the same Deal Type list used elsewhere), who accompanied it, and remarks — these
+rows are what the Organization bulk-import tool (Section 4) can also populate from a spreadsheet.</p>
+
+<h2 id="s10-5">10.5 Repair, Defect, Escalation &amp; Parts</h2>
+<p>These four areas exist as their own record types with dedicated fields — for example, <strong>Repair</strong> tracks a
+defect code, category/sub-category, symptom code, repair end date/time, and remarks; <strong>Defect</strong> tracks an
+item, a defect code (A/B/C), an attachment, and a Voice of Customer note; <strong>Escalation</strong> tracks source,
+reason, type, remarks, and separate ASM/dealer/technician approval checkboxes; <strong>Part</strong> tracks part
+code/name/category, consumed quantity, replacement type and warranty status of the part itself.</p>
+<div class="callout note">
+<strong class="tag">How these are used today</strong>
+In current day-to-day operation, the fields described above are most commonly filled in <strong>directly on the Ticket
+Management record</strong> (Section 10.3), which duplicates the same information in one flat screen for call-centre
+convenience. The standalone Repair/Defect/Escalation/Part records exist as independent masters/logs for anyone who
+needs to track this data outside a specific ticket (e.g. defect-code reference lists) — check with your service manager
+which one your team is expected to use for day-to-day logging.
+</div>
+
+<h2 id="s10-6">10.6 Serial No — Per-Unit Warranty/AMC Tracking</h2>
+<p>Every physical installed unit can be tracked individually via a <strong>Serial No</strong> record: serial number,
+product/model, HP/tonnage, start date, expiry date, days left to expiry, and a <strong>Maintenance
+Status</strong> of Under Warranty / Out of Warranty / Under AMC / Out of AMC. A <strong>Type</strong> field
+(N/A / AMC / Warranty) indicates which coverage the record's dates represent. The near-identical
+<strong>Product Details</strong> table (Section 5) captures the same fields as line items directly inside a Deal
+or Contract — including a "dummy serial number" option for units not yet individually serialised.</p>
+<div class="callout note">
+<strong class="tag">Two ways to check the same thing</strong>
+Because Serial No and Product Details share the same fields, a unit's warranty/AMC status can be checked either from
+the master Serial No list, or by opening the specific Deal/Contract line where that unit was originally sold or
+contracted. Field/mobile-app users can also look this up per serial number via the Contract API (Section 15).
+</div>
+
+<!-- 11 -->
+<h1 id="s11"><span class="section-num">11.</span> The Analytics Dashboard</h1>
+<p>The Dashboard is a separate, browser-based reporting app (built with React) aimed at branch managers, regional
+managers, and executives who need a business overview without opening individual CRM records. It is reached at the
+site's <code>/dashboard</code> address.</p>
+
+<h3>Navigation structure (drill-down)</h3>
+<div class="flow">
+All-India Overview  (Homepage)
+       │  click a region row / chart segment
+       ▼
+Region page  (per region, with Branches / Managers tab toggle)
+       │  click a branch, or a manager
+       ▼
+Branch page                       Manager page
+(single branch KPIs & charts)     (single manager's book of business)
+</div>
+
+<h3>What each level shows</h3>
+<table>
+<tr><th>Page</th><th>Audience</th><th>Contents</th></tr>
+<tr><td>All-India Overview</td><td>Executives / national management</td><td>Four headline KPI cards (Total Revenue with average contract value, Total/Active/Expired Contracts depending on the selected filter, Total Customers, Total Opportunities with quotation count); a stacked bar chart of revenue by region and of contract counts by region, broken down into AMC Renewal / Warranty Conversion / Lost AMC Conversion / Lost Warranty Conversion; a 12-month contract timeline (count and revenue); a pie chart of revenue by industry vertical (click a slice to drill into that vertical's industry breakdown); and a sortable regions table.</td></tr>
+<tr><td>Region page</td><td>Regional Sales Managers</td><td>The same KPI/chart pattern scoped to one region, with an additional toggle between a Branches view and a Managers view for that region, plus donut/area charts for a closer look at composition and trend.</td></tr>
+<tr><td>Branch page</td><td>Branch Managers</td><td>Branch-level KPIs, deal-type donut breakdown, and trend charts scoped to a single branch.</td></tr>
+<tr><td>Manager page</td><td>Individual Account/Branch Manager review</td><td>One manager's personal book of business within their region, using the same chart set scoped to their deals/contracts.</td></tr>
+</table>
+
+<h3>Using the filters</h3>
+<p>Every page shares a common <strong>Filter Panel</strong> (date range, industry, contract status, and a toggle to
+use the customer's PO date instead of the contract date for the timeline) plus a global <strong>Reset</strong> to clear
+back to defaults. Filters you apply persist as you drill down from All-India into a Region, Branch, or Manager, so you
+don't need to reapply date ranges at each level. Clicking directly on a chart segment (a stacked-bar slice, a pie
+slice) is a shortcut that both drills down <em>and</em> applies the matching filter (e.g. clicking the "AMC Renewal"
+portion of a region's bar takes you into that region already filtered to AMC Renewal deals).</p>
+
+<div class="callout note">
+<strong class="tag">Reading the four deal-type categories</strong>
+Across every chart, contracts/revenue are split into four categories: <strong>AMC Renewal</strong>, <strong>Warranty
+Conversion</strong>, <strong>Lost AMC Conversion</strong>, and <strong>Lost Warranty Conversion</strong>. These map
+directly onto the <strong>Contract Type</strong> field described in Section 7 — "Lost" here means the
+customer lapsed before renewing and this contract represents winning them back, not a failed contract.
+</div>
+
+<!-- 12 -->
+<h1 id="s12"><span class="section-num">12.</span> Bulk Data Tools (Excel Import/Export)</h1>
+<p>Several screens support spreadsheet-based bulk operations so staff don't have to hand-enter large volumes of data:</p>
+<table>
+<tr><th>Where</th><th>What it does</th></tr>
+<tr><td>CRM Organization — Import Excel</td><td>Bulk-creates or updates customers and their Customer Visit Form history. Flexible column matching; upserts by customer code (Section 4).</td></tr>
+<tr><td>CRM Contract — Download/Upload Product Template</td><td>Round-trips the equipment list (Product Details) as a CSV — download to edit many rows in a spreadsheet, then upload to replace the table on the contract.</td></tr>
+<tr><td>CRM Contract — bulk invoice reconciliation</td><td>Upload an Excel of paid invoices; the system matches rows to contracts by Customer PO ID and marks the corresponding billing-schedule rows Paid.</td></tr>
+<tr><td>Uploader (Invoice / Payment)</td><td>The primary batch tool for generating invoices and applying payments — see Section 8 for the full step-by-step.</td></tr>
+</table>
+<div class="callout warn">
+<strong class="tag">Always verify after a bulk operation</strong>
+None of these tools show a live progress bar with per-row confirmation before committing — review the result (the
+updated list, or the Uploader's processed rows) immediately after each bulk action, and re-run only the rows that
+didn't go through rather than re-uploading the entire file.
+</div>
+
+<!-- 13 -->
+<h1 id="s13"><span class="section-num">13.</span> Automated Jobs Running in the Background</h1>
+<p>The following happen automatically, every night, without anyone triggering them. Knowing this list helps you tell
+"the system did this on its own" apart from "someone changed this manually."</p>
+<table>
+<tr><th>Job</th><th>Effect</th></tr>
+<tr><td>Mark stale deals as Lost</td><td>Deals stuck outside Proposal/Quotation/Won/Award for 6+ months past expiry are force-set to Lost.</td></tr>
+<tr><td>Quotation advance-payment reminders</td><td>Escalating emails to the quote owner at 1/20/25/30 days overdue on an unpaid advance (govt customers: +60 days grace).</td></tr>
+<tr><td>Contract advance-payment reminders</td><td>Same pattern, applied directly to submitted contracts.</td></tr>
+<tr><td>Contract billing follow-up</td><td>Overdue-payment emails to the finance team at 30 (60 for govt) days; auto-discontinues the contract past 60 days.</td></tr>
+<tr><td>Contract auto-expiry</td><td>Any contract past its expiry date is automatically set to Expired (unless already Expired/Discontinue).</td></tr>
+<tr><td>Deal status refresh</td><td>General daily pass keeping deal status current across the pipeline.</td></tr>
+</table>
+
+<!-- 14 -->
+<h1 id="s14"><span class="section-num">14.</span> Purchasing &amp; Procurement (Spares/Equipment)</h1>
+<p>Alongside the sales pipeline, the system has a standard procurement flow for buying spares and equipment from
+vendors — used by the purchasing/stores team, largely independent of the CRM/Deal side.</p>
+<table>
+<tr><th>Screen</th><th>Purpose</th></tr>
+<tr><td>Supplier / Supplier Group</td><td>Vendor master — name, group, type (Company/Individual/Partnership), default billing currency and default price list. Set up a Supplier before raising any Purchase Order against them.</td></tr>
+<tr><td><strong>Purchase Order</strong></td><td>The standard "raise a PO to a supplier" document — auto-numbered, and Submitted once approved (<code>PUR-ORD-YYYY-####</code>). Carries a line-item table (item, quantity, UOM, required-by/expected-delivery date, price-list rate), the same Tax Category/Taxes-and-Charges templates used on sales documents, a Payment Terms Template with its own Payment Schedule, and full supplier/shipping/company address details fetched automatically onto the form.</td></tr>
+<tr><td>Purchase</td><td>A simpler goods-received log line (invoice no./date, item, quantity) with an <strong>If Warranty</strong> flag — used to record incoming stock that carries a manufacturer warranty, feeding the Warranty/Serial No records described in Section 10.1.</td></tr>
+</table>
+<div class="callout note">
+<strong class="tag">Who uses this</strong>
+This section is for procurement/stores staff, not sales. It reuses the same Tax Category and Taxes-and-Charges-Template
+masters described in Section 3 — a template is set up once by finance and then simply selected on each Purchase Order.
+</div>
+
+<!-- 15 -->
+<h1 id="s15"><span class="section-num">15.</span> Mobile &amp; External API (for Administrators)</h1>
+<p>This section is for whoever administers or troubleshoots the mobile app / external system integration, not for
+day-to-day CRM users.</p>
+<p>The LG app exposes a generic, model-agnostic REST API (under <code>/api/method/lg.api.master_api.*</code>) that lets
+an external client (typically a mobile app) create and read records for any doctype by name, without a dedicated
+endpoint per doctype:</p>
+<table>
+<tr><th>Endpoint</th><th>Purpose</th></tr>
+<tr><td><span class="field">create_record</span></td><td>Create a new record of any model, given a JSON body with a <strong>Model</strong> name and a <strong>Data</strong> object of field values.</td></tr>
+<tr><td><span class="field">get_model_detail</span></td><td>Returns the field metadata (labels, types, mandatory flags, options) for a given model — used by the mobile client to build its forms dynamically.</td></tr>
+<tr><td><span class="field">get_record_by_name</span></td><td>Fetch one record by its ID.</td></tr>
+<tr><td><span class="field">get_all_records</span></td><td>Fetch all records of a model (name + display field).</td></tr>
+</table>
+<p><strong>CRM Deal creation is special-cased</strong> (an internal <span class="field">handle_crm_deal</span> path)
+with its own stricter, field-by-field validation — mandatory fields, foreign-key/link resolution, and child-table
+handling are all checked explicitly against a field-definition list, rather than relying purely on Frappe's own
+doctype-level validation. If a mobile-originated Deal creation fails, check this validation path first rather than
+assuming it's a generic doctype error.</p>
+<div class="callout note">
+<strong class="tag">Keep the API contract in sync</strong>
+The authoritative request/response contract for this API lives in <code>apps/lg/lg/api/api_document.md</code>. Any
+change to these endpoints should be reflected there at the same time — the mobile app team relies on that document,
+not on reading the server code.
+</div>
+
+<h3>The dedicated Contract API</h3>
+<p>Separate from the generic model API above, Contracts have their own purpose-built API used by field/mobile apps:
+<span class="field">get_contract</span>/<span class="field">get_contracts</span> (filtered, paginated lookups),
+<span class="field">create_contract</span>/<span class="field">update_contract</span>/<span class="field">delete_contract</span>,
+and — notably — <span class="field">submit_contract</span>/<span class="field">cancel_contract</span>, which let an
+external app drive a contract's submit/cancel workflow remotely rather than only through the desk UI. The same API
+also exposes <span class="field">get_customer</span>, <span class="field">get_serial_numbers</span> (searchable), and
+<span class="field">get_serial_details</span> — so a field technician's app can look up a customer's equipment by serial
+number and see its warranty/AMC coverage on the spot during a site visit.</p>
+<p>Two further admin-only tools worth knowing about: a <strong>bulk Deal export</strong> (System Manager role only)
+runs as a background job and lets an administrator download the entire Deals list as a file instead of paging through
+it on screen; and a small <strong>per-user list-column preference</strong> store remembers each user's chosen list-view
+columns between logins.</p>
+
+<!-- 16 -->
+<h1 id="s16"><span class="section-num">16.</span> Known Quirks &amp; Troubleshooting</h1>
+<p>These behaviours have been confirmed in the live system. None of them are things you did wrong — they are
+documented here so you recognise them and know the right response.</p>
+
+<table>
+<tr><th>#</th><th>What you'll see</th><th>What's actually happening</th><th>What to do</th></tr>
+<tr>
+<td>1</td>
+<td>A Quotation already sent to the customer generates <em>another</em> copy of the quote email after an unrelated edit.</td>
+<td>The customer-notification email fires on every save while the quotation is in "Customer Approval Pending", not just the first time it enters that state.</td>
+<td>Avoid non-essential saves on a quotation once it's been sent; batch any small corrections together.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>An expired contract never automatically produces a renewal Deal, despite this being described in older notes.</td>
+<td>The automatic renewal-on-submit logic is dead code and does not run.</td>
+<td>Use the manual "Renew" button (Section 9) and track expiries proactively via the dashboard.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>A Quotation's own overdue-advance-payment breach appears to change the status of a same-named <em>Contract</em> instead of the Quotation.</td>
+<td>A known copy-paste issue in the underlying reminder logic. If you notice a Contract's status change without an obvious contract-side cause, check whether a same-named Quotation had an overdue advance payment.</td>
+<td>Report the mismatch to your administrator if it causes confusion; don't manually "fix" the Contract status without checking the source Quotation first.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>A Project's displayed status seems to jump backwards after someone edits an old, unrelated Deal.</td>
+<td>Every Deal save pushes its own status/expiry onto its linked Project, regardless of whether it's the customer's current deal.</td>
+<td>Re-save the actual current/latest Deal for that project to correct the Project's display.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Saving a Deal fails with an error about HP.</td>
+<td>Every row in Product Details must have a numeric HP value — the system sums this column immediately after every save.</td>
+<td>Check every equipment row for a valid number in HP, not just the row you were editing.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>A bulk Uploader (Invoice or Payment) fails partway through.</td>
+<td>All rows in one Uploader save are processed as a single operation; a bad row can abort the batch after some earlier rows already wrote data.</td>
+<td>Verify your source data before saving; after a failure, check what was actually created before re-running.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>A Contract seems stuck in a pending state even though the customer has clearly agreed.</td>
+<td>Contract acceptance also requires each listed Dealer to click Accept on their own email — the contract can be waiting on a dealer, not the customer.</td>
+<td>Check the Dealer table's individual statuses before escalating a "stuck" contract.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>A Contract Billing Schedule row behaves in a way that doesn't match what you can see/edit on the form.</td>
+<td>A handful of billing-schedule fields used by the reminder/billing automation (payment date, advance flag, discontinue flag, amount received, portion, outstanding amount, exchange rate, USD amount, "is free") are not exposed as editable fields on the visible form.</td>
+<td>Ask an administrator to check the record directly rather than assuming the visible fields are the complete picture.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Clicking "Create AMC Opportunity" on a Project opens a Deal, not something in the Opportunities list.</td>
+<td>The button's name is misleading — it maps the Project onto a new <strong>CRM Deal</strong> pre-filled with the customer, branch, region and the correct Lost AMC/Warranty Conversion type. It does not create a record in the separate Opportunity feature (Section 9.1).</td>
+<td>Look for the new record in the Deals list, not Opportunities.</td>
+</tr>
+</table>
+
+<!-- 17 -->
+<h1 id="s17"><span class="section-num">17.</span> Glossary</h1>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>AMC</td><td>Annual Maintenance Contract — a recurring service agreement covering equipment upkeep.</td></tr>
+<tr><td>Deal Category</td><td>Service (AMC/warranty-driven) or Sales (new equipment) classification on a Deal.</td></tr>
+<tr><td>Zone (Quotation)</td><td>Green/Yellow/Orange/Red risk-and-approval tier applied to a quotation based on industry and total HP.</td></tr>
+<tr><td>HP</td><td>Horsepower — the standard sizing unit for AC equipment used throughout the system for pricing tiers and totals.</td></tr>
+<tr><td>Billing Schedule</td><td>The instalment plan (dates and amounts) generated from a Pay Term and Payment Frequency, shared by Quotations, Contracts and AMC Terms.</td></tr>
+<tr><td>Pay Term</td><td>Master record defining how a bill is split into portions (percentages) and their due-date offsets.</td></tr>
+<tr><td>Uploader</td><td>A one-shot batch tool that turns billing-schedule rows into Invoices, or applies a batch of Payments — see Section 8.</td></tr>
+<tr><td>Dealer</td><td>Channel partner earning commission on contracts; interacts with the system mainly via email accept/reject links.</td></tr>
+<tr><td>Technician</td><td>Field service engineer assigned to installations, repairs and AMC visits.</td></tr>
+<tr><td>Contract Type — AMC Renewable</td><td>A contract renewing an existing relationship in good standing.</td></tr>
+<tr><td>Contract Type — Lost AMC Conversion</td><td>A contract won back from a customer whose previous AMC had already lapsed more than 3 months earlier.</td></tr>
+<tr><td>AMC Term</td><td>The short-lived staging document used specifically to capture new terms during a contract renewal (Section 9) — not a general AMC record.</td></tr>
+<tr><td>Ticket Management</td><td>The single-screen call-centre record covering a support interaction end-to-end (caller, dealer/technician assignment, defect, parts, escalation, feedback).</td></tr>
+<tr><td>VOC</td><td>Voice of Customer — free-text notes capturing the customer's own words about an issue.</td></tr>
+<tr><td>Region Head</td><td>The person responsible for a Region Master territory; automatically notified when a dealer accepts a contract in their region.</td></tr>
+<tr><td>Opportunity</td><td>A pre-sales record for proactively tracking warranty-to-AMC conversions and AMC renewals, separate from the reactive Contract "Renew" button — see Section 9.1.</td></tr>
+<tr><td>Serial No</td><td>The unique identifier of a specific installed unit; used by field/mobile apps to look up a customer's equipment and its live warranty/AMC coverage on site.</td></tr>
+<tr><td>Purchase Order</td><td>The procurement document raised against a Supplier for spares/equipment — see Section 14.</td></tr>
+<tr><td>Project</td><td>A record tracking one customer site/installation's live warranty/AMC status and expiry date, kept in sync from that site's Deals — see Section 4.1. Not to be confused with the "project" text field on CRM Organization.</td></tr>
+<tr><td>Create AMC Opportunity (button)</td><td>The button on an expired Project that generates a new renewal/reconversion <strong>Deal</strong> — despite its name, it does not create an Opportunity record.</td></tr>
+</table>
+
+<p class="small" style="margin-top:40px;text-align:center;">— End of Manual —</p>
+
+</body>
+</html>
