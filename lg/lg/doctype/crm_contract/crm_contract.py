@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import getdate, now_datetime, add_months, date_diff,today,add_days
+from frappe.utils import getdate, now_datetime, add_months, date_diff,today,add_days, flt, fmt_money, formatdate, get_first_day
 import json
 from frappe import _
 from frappe.desk.form.assign_to import add as assign
@@ -613,7 +613,7 @@ def check_advance_payment_reminders():
     quotations = frappe.get_all(
         "CRM Contract",
         filters={"docstatus": 0},
-        fields=["name", "advance_amount", "customer", "owner", "advance_end_date", "is_govt"]
+        fields=["name", "advance_amount", "customer", "owner", "advance_end_date"]
     )
 
     for q in quotations:
@@ -635,16 +635,11 @@ def check_advance_payment_reminders():
         first_due_row = unpaid_rows[0]
         days_due = date_diff(today, first_due_row.payment_date)
 
-        # Govt or non-govt reminder logic
-        if (q.is_govt == 0 and days_due in [1, 20, 25, 30]) or \
-           (q.is_govt == 1 and days_due in [1, 20, 25, 30, 60]):
-
+        if days_due in [1, 20, 25, 30, 60]:
             send_advance_reminder(doc.name, doc.owner, days_due, first_due_row.payment_date)
 
         # Discontinuation check
-        if (q.is_govt == 0 and days_due >= 30) or \
-           (q.is_govt == 1 and days_due >= 60):
-
+        if days_due >= 60:
             mark_or_notify_discontinuation(doc)
 
 
@@ -955,14 +950,14 @@ def check_billing_schedule_and_notify():
 	contracts = frappe.get_all(
 		"CRM Contract",
 		filters={"custom_contract_status": ["!=", "Discontinue"]},
-		fields=["name", "owner", "is_govt"]
+		fields=["name", "owner"]
 	)
 
 	print(f"Total Active Contracts Found: {len(contracts)}")
 
 	for contract in contracts:
 		doc = frappe.get_doc("CRM Contract", contract.name)
-		print(f"\n📑 Checking Contract: {doc.name}, Owner: {doc.owner}, Govt: {doc.is_govt}")
+		print(f"\n📑 Checking Contract: {doc.name}, Owner: {doc.owner}")
 
 		for row in doc.billing_schedule:
 			if not row.billing_date:
@@ -974,34 +969,15 @@ def check_billing_schedule_and_notify():
 				days_passed = date_diff(today(), getdate(row.billing_date))
 				print(f"➡️ Row Billing Date: {row.billing_date}, Days Passed: {days_passed}, is_discountinue: {row.is_discountinue}")
 
-				# Govt vs Non-Govt logic
-				if doc.is_govt == 0:
-					# Non-Govt: 30-day mail, 60+ discontinue
-					if days_passed == 30 and row.is_discountinue == 0:
-						print(f"📧 Sending 30-day reminder mail for Contract {doc.name}")
-						send_overdue_email(doc, row, days_passed)
-						row.db_set("is_discountinue", 1)
+				# 30-day mail, 60+ discontinue
+				if days_passed == 30 and row.is_discountinue == 0:
+					print(f"📧 Sending 30-day reminder mail for Contract {doc.name}")
+					send_overdue_email(doc, row, days_passed)
+					row.db_set("is_discountinue", 1)
 
-					if days_passed >= 60:
-						print(f"⚠️ Marking Contract {doc.name} as Discontinue (Non-Govt, 60+ days)")
-						mark_contract_discontinue(doc)
-
-				elif doc.is_govt == 1:
-					# Govt: 60-day mail, 60+ discontinue
-					if days_passed == 60 and row.is_discountinue == 0:
-						print(f"📧 Sending 60-day reminder mail for Contract {doc.name}")
-						send_overdue_email(doc, row, days_passed)
-						frappe.db.set_value(
-							"Contract Billing Schedule",
-							row.name,
-							"is_discountinue",
-							1
-						)
-
-
-					if days_passed > 60:
-						print(f"⚠️ Marking Contract {doc.name} as Discontinue (Govt, >60 days)")
-						mark_contract_discontinue(doc)
+				if days_passed >= 60:
+					print(f"⚠️ Marking Contract {doc.name} as Discontinue (60+ days)")
+					mark_contract_discontinue(doc)
 
 
 def send_overdue_email(contract_doc, row, days_passed):
@@ -1043,6 +1019,130 @@ def mark_contract_discontinue(contract_doc):
 	except Exception:
 		print(f"❌ Error while marking Contract {contract_doc.name} as Discontinue")
 		frappe.log_error(frappe.get_traceback(), "Contract Discontinue Error")
+
+
+def send_monthly_branch_head_reminders():
+	"""Monthly job: mail every branch head the pending billing and pending payments of the
+	contracts in their branch(es)."""
+	for branch_head, reminder in get_branch_head_reminders().items():
+		send_branch_head_reminder(branch_head, reminder)
+
+
+def get_branch_head_reminders(as_on=None):
+	"""Return {branch_head: {"billing": [...], "payments": [...]}} where
+	billing  = billing rows dated this month whose invoice is not raised yet, and
+	payments = invoice payment portions due this month or earlier that are unpaid or
+	           partially paid (so they keep coming back every month until fully paid)."""
+	month_start = get_first_day(as_on or today())
+	values = {"month_start": month_start, "next_month_start": get_first_day(add_months(month_start, 1))}
+
+	pending_billing = frappe.db.sql(
+		"""
+		SELECT c.name AS contract, c.customer, c.branch, b.billing_term, b.billing_date, b.amount
+		FROM `tabContract Billing Schedule` b
+		JOIN `tabCRM Contract` c ON c.name = b.parent AND b.parenttype = 'CRM Contract'
+		WHERE b.status = 'Pending'
+			AND b.billing_date >= %(month_start)s AND b.billing_date < %(next_month_start)s
+			AND c.docstatus < 2
+			AND IFNULL(c.custom_contract_status, '') NOT IN ('Discontinue', 'Rejected')
+		ORDER BY b.billing_date, c.name
+		""",
+		values,
+		as_dict=True,
+	)
+
+	pending_payments = frappe.db.sql(
+		"""
+		SELECT c.name AS contract, c.customer, c.branch, i.invoice AS invoice_no, t.due_date,
+			IFNULL(t.portion_amount, 0) AS portion_amount,
+			IFNULL(t.amount_received, 0) AS amount_received
+		FROM `tabInvoice Payment Term` t
+		JOIN `tabInvoice` i ON i.name = t.parent AND t.parenttype = 'Invoice'
+		JOIN `tabCRM Contract` c ON c.name = i.amc_contract_id
+		WHERE t.due_date < %(next_month_start)s
+			AND IFNULL(t.portion_amount, 0) > IFNULL(t.amount_received, 0)
+		ORDER BY t.due_date, c.name
+		""",
+		values,
+		as_dict=True,
+	)
+	for row in pending_payments:
+		row.outstanding = flt(row.portion_amount) - flt(row.amount_received)
+		if flt(row.amount_received) > 0:
+			row.payment_status = "Partially Paid"
+		elif getdate(row.due_date) < month_start:
+			row.payment_status = "Overdue"
+		else:
+			row.payment_status = "Due This Month"
+
+	branch_heads = dict(frappe.get_all("Region Branches", fields=["name", "branch_head"], as_list=True))
+	reminders = {}
+	for key, rows in (("billing", pending_billing), ("payments", pending_payments)):
+		for row in rows:
+			branch_head = branch_heads.get(row.branch)
+			if not branch_head:
+				frappe.log_error(
+					f"Contract {row.contract}: branch '{row.branch}' has no Branch Head, reminder skipped",
+					"Branch Head Reminder",
+				)
+				continue
+			reminders.setdefault(branch_head, {"billing": [], "payments": []})[key].append(row)
+
+	return reminders
+
+
+def send_branch_head_reminder(branch_head, reminder):
+	def table(headers, rows):
+		head = "".join(f"<th style='border:1px solid #ccc;padding:4px 8px'>{h}</th>" for h in headers)
+		body = "".join(
+			"<tr>" + "".join(f"<td style='border:1px solid #ccc;padding:4px 8px'>{cell}</td>" for cell in row) + "</tr>"
+			for row in rows
+		)
+		return f"<table style='border-collapse:collapse'><tr>{head}</tr>{body}</table>"
+
+	sections = []
+	if reminder["billing"]:
+		sections.append(
+			"<p><b>Billing due this month – invoice not raised yet</b></p>"
+			+ table(
+				["Contract", "Customer", "Branch", "Billing Term", "Billing Date", "Amount"],
+				[
+					[r.contract, r.customer or "", r.branch, r.billing_term or "", formatdate(r.billing_date), fmt_money(r.amount)]
+					for r in reminder["billing"]
+				],
+			)
+		)
+	if reminder["payments"]:
+		sections.append(
+			"<p><b>Payments pending (due this month, overdue or partially paid)</b></p>"
+			+ table(
+				["Contract", "Customer", "Branch", "Invoice No", "Due Date", "Due Amount", "Received", "Outstanding", "Status"],
+				[
+					[
+						r.contract, r.customer or "", r.branch, r.invoice_no or "", formatdate(r.due_date),
+						fmt_money(r.portion_amount), fmt_money(r.amount_received), fmt_money(r.outstanding), r.payment_status,
+					]
+					for r in reminder["payments"]
+				],
+			)
+		)
+
+	message = f"""
+		<p>Hello,</p>
+		<p>Please find below the pending billing and payments for the contracts of your branch.</p>
+		{"<br>".join(sections)}
+		<br>
+		<p>Regards,<br>Hi-M Tech Solutek Pvt. Ltd.</p>
+	"""
+	try:
+		frappe.sendmail(
+			recipients=[frappe.db.get_value("User", branch_head, "email") or branch_head],
+			sender="notify.himsolutek@lgepartner.com",
+			subject=f"[Reminder] Pending Billing & Payments – {getdate(today()).strftime('%B %Y')}",
+			message=message,
+		)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Branch Head Reminder Email Error")
 
 
 

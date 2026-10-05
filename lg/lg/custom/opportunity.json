@@ -1,0 +1,238 @@
+{
+ "custom_fields": [
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Opportunity No.",
+   "fieldname": "custom_opportunity_no",
+   "fieldtype": "Data",
+   "insert_after": "new_amc_under_name_of_hi_m",
+   "translatable": 1,
+   "name": "Opportunity-custom_opportunity_no",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Opportunity Name",
+   "fieldname": "custom_opportunity_name",
+   "fieldtype": "Data",
+   "insert_after": "opportunity_status",
+   "translatable": 1,
+   "name": "Opportunity-custom_opportunity_name",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Status",
+   "fieldname": "custom_status",
+   "fieldtype": "Select",
+   "insert_after": "custom_opportunity_name",
+   "options": "\nAward",
+   "translatable": 1,
+   "name": "Opportunity-custom_status",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Vertical",
+   "fieldname": "custom_vertical",
+   "fieldtype": "Select",
+   "insert_after": "opportunity_type",
+   "options": "\nRetail\nHospitality\nResidential\nCorporate\nEducation\nPublic Facility\nGovernment",
+   "translatable": 1,
+   "name": "Opportunity-custom_vertical",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Possibility",
+   "fieldname": "custom_possibility",
+   "fieldtype": "Select",
+   "insert_after": "custom_vertical",
+   "options": "\nCommit (90-100%)",
+   "translatable": 1,
+   "name": "Opportunity-custom_possibility",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "PO Received ",
+   "fieldname": "custom_po_received_",
+   "fieldtype": "Check",
+   "insert_after": "custom_possibility",
+   "name": "Opportunity-custom_po_received_",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Creation Date",
+   "fieldname": "custom_creation_date",
+   "fieldtype": "Date",
+   "insert_after": "custom_po_received_",
+   "name": "Opportunity-custom_creation_date",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Subsidiary",
+   "fieldname": "custom_subsidiary",
+   "fieldtype": "Select",
+   "insert_after": "custom_creation_date",
+   "options": "LJSAN",
+   "translatable": 1,
+   "name": "Opportunity-custom_subsidiary",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Center",
+   "fieldname": "custom_center",
+   "fieldtype": "Select",
+   "insert_after": "custom_subsidiary",
+   "options": "\nNorth-1\nNorth-2\nSouth\nWest",
+   "translatable": 1,
+   "name": "Opportunity-custom_center",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Branch",
+   "fieldname": "custom_branch",
+   "fieldtype": "Select",
+   "insert_after": "custom_center",
+   "options": "\nAHM\nAUR\nBAN\nBHO",
+   "translatable": 1,
+   "name": "Opportunity-custom_branch",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Item Details",
+   "fieldname": "custom_product_details",
+   "fieldtype": "Section Break",
+   "insert_after": "custom_branch",
+   "name": "Opportunity-custom_product_details",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Item",
+   "fieldname": "custom_item",
+   "fieldtype": "Table",
+   "insert_after": "custom_product_details",
+   "options": "Opportunity Item",
+   "name": "Opportunity-custom_item",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Contract Details",
+   "fieldname": "custom_contract_details",
+   "fieldtype": "Section Break",
+   "insert_after": "custom_item",
+   "name": "Opportunity-custom_contract_details",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Contract Start",
+   "fieldname": "custom_contract_start",
+   "fieldtype": "Date",
+   "insert_after": "custom_contract_details",
+   "name": "Opportunity-custom_contract_start",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Contract Period (Month)",
+   "fieldname": "custom_contract_period_month",
+   "fieldtype": "Data",
+   "insert_after": "custom_contract_start",
+   "translatable": 1,
+   "name": "Opportunity-custom_contract_period_month",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "fieldname": "custom_column_break_93vzb",
+   "fieldtype": "Column Break",
+   "insert_after": "custom_contract_period_month",
+   "name": "Opportunity-custom_column_break_93vzb",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "Opportunity",
+   "label": "Contract End",
+   "fieldname": "custom_contrat_end",
+   "fieldtype": "Date",
+   "insert_after": "custom_column_break_93vzb",
+   "name": "Opportunity-custom_contrat_end",
+   "module": "Lg"
+  }
+ ],
+ "custom_perms": [],
+ "doctype": "Opportunity",
+ "links": [],
+ "property_setters": [
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Opportunity",
+   "doctype_or_field": "DocField",
+   "field_name": "status",
+   "property": "options",
+   "property_type": "Select",
+   "value": "Won\nLost\nClosed",
+   "name": "Opportunity-status-options",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Opportunity",
+   "doctype_or_field": "DocField",
+   "field_name": "customer_name",
+   "property": "options",
+   "property_type": "link",
+   "value": "CRM Organization",
+   "name": "Opportunity-customer_name-options",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Opportunity",
+   "doctype_or_field": "DocField",
+   "field_name": "product",
+   "property": "hidden",
+   "property_type": "Check",
+   "value": "1",
+   "name": "Opportunity-product-hidden",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "Opportunity",
+   "doctype_or_field": "DocType",
+   "property": "field_order",
+   "property_type": "Data",
+   "value": "[\"opportunity_information_section\", \"customer_name\", \"stage\", \"owner_se_name\", \"new_amc_under_name_of_hi_m\", \"custom_opportunity_no\", \"expected_value\", \"opportunity_status\", \"custom_opportunity_name\", \"custom_status\", \"column_break_tkee\", \"customer_id\", \"opportunity_type\", \"custom_vertical\", \"custom_possibility\", \"custom_po_received_\", \"custom_creation_date\", \"custom_subsidiary\", \"custom_center\", \"custom_branch\", \"custom_product_details\", \"custom_item\", \"custom_contract_details\", \"custom_contract_start\", \"custom_contract_period_month\", \"custom_column_break_93vzb\", \"custom_contrat_end\"]",
+   "name": "Opportunity-main-field_order",
+   "module": "Lg"
+  }
+ ],
+ "sync_on_migrate": 1
+}

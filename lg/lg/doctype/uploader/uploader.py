@@ -1,9 +1,9 @@
 import frappe
 from frappe.model.document import Document
+from frappe.utils import getdate, nowdate, get_first_day, flt,add_months,today,add_days
 
 
 
-from frappe.utils import today, add_days, flt,nowdate
 
 
 class Uploader(Document):
@@ -65,6 +65,7 @@ class Uploader(Document):
                                     "portion": invoice_portion,
                                     "due_date": due_date,
                                     "portion_amount": portion_amount,
+                                    "outstanding_as_per_portion": portion_amount,
                                 })
 
                         payment_doc.insert(ignore_permissions=True)
@@ -101,8 +102,8 @@ class Uploader(Document):
                     for payment_row in doc.get("payment_uploader") or []:
                         invoice_id = payment_row.invoice_id
                         payment_received_date = payment_row.payment_received_date
-                        received_amount = payment_row.amount_received
-                        total_amount = payment_row.amount
+                        received_amount = flt(payment_row.amount_received)
+                        total_amount = flt(payment_row.amount)
                         frappe.log_error("total amount of uploader",total_amount)
                         frappe.log_error("Amount recive in uplodaer",received_amount)
                         payment_id = payment_row.payment_id
@@ -113,37 +114,47 @@ class Uploader(Document):
                             frappe.log_error(message="Skipping payment_row with no invoice_id", title="Uploader Log")
                             continue
 
-                        invoice_doc = frappe.get_all("Invoice", filters={"name": invoice_id}, limit=1)
-                        if not invoice_doc:
+                        # invoice_id holds the Invoice number (Invoice.invoice), which may differ from the doc name
+                        invoice_name = frappe.db.exists("Invoice", invoice_id) or frappe.db.get_value("Invoice", {"invoice": invoice_id}, "name")
+                        if not invoice_name:
                             frappe.log_error(message=f"No Invoice found with name: {invoice_id}", title="Uploader Log")
                             continue
 
-                        inv = frappe.get_doc("Invoice", invoice_doc[0].name)
+                        inv = frappe.get_doc("Invoice", invoice_name)
+                        invoice_status = inv.status
+                        # Same window as get_payment_upload_data: terms due up to the end of the current month
+                        next_month_start = get_first_day(add_months(today, 1))
 
                         try:
                             # Update child rows explicitly and save parent doc
                             for term in inv.get("invoice_payment_term") or []:
                                 due_date = term.due_date
                                 frappe.log_error("due date",due_date)
-                                invoice_total_amount = term.portion_amount
+                                invoice_total_amount = flt(term.portion_amount)
                                 frappe.log_error("invoice portiaon amout",invoice_total_amount)
-                                if due_date and getdate(due_date) <= today and total_amount ==  invoice_total_amount:
+                                if (
+                                    # due_date
+                                    # and getdate(due_date) < next_month_start
+                                    total_amount == invoice_total_amount
+                                    and flt(term.amount_received) < invoice_total_amount
+                                ):
                                     frappe.log_error("working under invoice")
-                                    term.amount_received = (term.amount_received or 0) + received_amount
+                                    term.amount_received = flt(term.amount_received) + received_amount
                                     term.amount_received_date = payment_received_date
                                     term.payment_id = payment_id
-                                    term.outstanding_as_per_portion = term.portion_amount - term.amount_received
+                                    term.outstanding_as_per_portion = invoice_total_amount - term.amount_received
                                     term.db_update()  # persist child row update
+                                    payment_row.db_set("outstanding_amount", term.outstanding_as_per_portion)
                                     frappe.log_error(message=f"Updated payment in invoice_payment_term row: {term.name} with amount {term.amount_received}", title="Uploader Debug")
                             # *** Update parent Invoice fields here based on child rows ***
-                            total_received = sum(term.amount_received or 0 for term in inv.get("invoice_payment_term") or [])
+                            total_received = sum(flt(term.amount_received) for term in inv.get("invoice_payment_term") or [])
 
                             inv.total_paid = total_received
-                            total_outstanding = inv.amount_invoiced - total_received
+                            total_outstanding = flt(inv.amount_invoiced) - total_received
                             inv.total_outstanding = total_outstanding
-                            if inv.amount_invoiced  == total_received:
+                            if total_received and flt(inv.amount_invoiced) == total_received:
                                 inv.status = "Paid"
-                            else:
+                            elif total_received:
                                 inv.status = "Partially Paid"
 
                             invoice_status = inv.status  # save for later use
@@ -237,6 +248,8 @@ def get_payment_upload_data():
     import frappe
 
     today = getdate(nowdate())
+    current_month_start = get_first_day(today)
+
     payment_data = []
 
     # Fetch all invoices (parent fields only)
@@ -252,12 +265,17 @@ def get_payment_upload_data():
         for term in inv_doc.get("invoice_payment_term") or []:
             due_date = term.get("due_date")
             portion_amount=term.get("portion_amount")
-            outstanding_amount =term.get("outstanding_as_per_portion")
             payment_id = term.get("payment_id")
             amount_received = flt(term.get("amount_received") or 0)
+            outstanding_amount = flt(portion_amount) - amount_received
 
             # ✅ Match if due date is today or earlier
-            if due_date and getdate(due_date) <= today and portion_amount!= amount_received:
+            # if due_date and getdate(due_date) <= today and portion_amount!= amount_received:
+            if (
+                due_date
+                and getdate(due_date) < get_first_day(add_months(today, 1))
+                and portion_amount != amount_received
+            ):
                 customer = ""
                 bill_ship_code = ""
                 billing_term = ""

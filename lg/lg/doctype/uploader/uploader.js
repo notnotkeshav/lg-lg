@@ -46,6 +46,9 @@ frappe.ui.form.on('Uploader', {
                             row.contract_id = row_data.contract_id;      // 🔹 from amc_contract_id
                             row.amount = row_data.amount;                // 🔹 from amount_invoiced
                             row.outstanding_amount = row_data.outstanding_amount
+                            // remember the pre-payment outstanding so it can be recalculated when amount_received changes
+                            frm._outstanding_before_payment = frm._outstanding_before_payment || {};
+                            frm._outstanding_before_payment[row.name] = row_data.outstanding_amount;
                             row.status = row_data.status;                // 🔹 from status
                             row.customer = row_data.customer,
                                 row.bill_ship_code = row_data.bill_ship_code,
@@ -59,5 +62,14 @@ frappe.ui.form.on('Uploader', {
                 }
             });
         }
+    }
+});
+
+frappe.ui.form.on('Payment Uploader', {
+    amount_received: function (frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        let before = (frm._outstanding_before_payment || {})[row.name];
+        if (before === undefined || before === null) before = row.amount;
+        frappe.model.set_value(cdt, cdn, "outstanding_amount", flt(before) - flt(row.amount_received));
     }
 });

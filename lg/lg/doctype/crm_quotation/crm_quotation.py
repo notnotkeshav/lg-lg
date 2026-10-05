@@ -761,7 +761,6 @@ def check_advance_payment_reminders():
             "customer",
             "owner",
             "advance_end_date",
-            "is_govt",
         ],
     )
 
@@ -788,8 +787,7 @@ def check_advance_payment_reminders():
         first_due_row = unpaid_rows[0]
         days_due = date_diff(today, first_due_row.payment_date)
 
-        # Govt or non-govt reminder logic
-        if (days_due in [1, 20, 25, 30]) or (days_due in [1, 20, 25, 30, 60]):
+        if days_due in [1, 20, 25, 30, 60]:
             send_advance_reminder(
                 doc.name, doc.owner, days_due, first_due_row.payment_date
             )

@@ -28,6 +28,17 @@
   {
    "doctype": "Property Setter",
    "doc_type": "CRM Deal",
+   "doctype_or_field": "DocField",
+   "field_name": "customer_address",
+   "property": "fetch_if_empty",
+   "property_type": "Check",
+   "value": "1",
+   "module": "Lg",
+   "name": "CRM Deal-customer_address-fetch_if_empty"
+  },
+  {
+   "doctype": "Property Setter",
+   "doc_type": "CRM Deal",
    "doctype_or_field": "DocType",
    "property": "default_view",
    "property_type": "Select",

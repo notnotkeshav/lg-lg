@@ -166,7 +166,13 @@ scheduler_events = {
 
 
 
-    ]
+    ],
+    "cron": {
+        # 1st of every month, 9 AM
+        "0 9 1 * *": [
+            "lg.lg.doctype.crm_contract.crm_contract.send_monthly_branch_head_reminders",
+        ],
+    },
 }
 
 # scheduler_events = {
