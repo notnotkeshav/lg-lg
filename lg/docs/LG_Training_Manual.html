@@ -64,7 +64,7 @@
     the management dashboard, and bulk data tools.
   </p>
   <div class="meta">
-    Site: <strong>lg.local</strong> &nbsp;|&nbsp; Version 1.0 &nbsp;|&nbsp; Issued: September 2026
+    Site: <strong>lg.local</strong> &nbsp;|&nbsp; Version 1.1 &nbsp;|&nbsp; Issued: October 2026
   </div>
 </div>
 
@@ -73,6 +73,7 @@
 <h1 style="page-break-before:avoid;">Table of Contents</h1>
 <ul>
   <li><a href="#s1">1. Introduction &amp; How to Use This Manual</a><span></span></li>
+  <li class="sub"><a href="#s1-new">1.1 What's New in Version 1.1</a></li>
   <li><a href="#s2">2. Platform Overview</a><span></span></li>
   <li class="sub"><a href="#s2-1">2.1 What the System Is Built From</a></li>
   <li class="sub"><a href="#s2-2">2.2 The End-to-End Business Process</a></li>
@@ -95,8 +96,10 @@
   <li class="sub"><a href="#s10-5">10.5 Repair, Defect, Escalation &amp; Parts</a></li>
   <li class="sub"><a href="#s10-6">10.6 Serial No — Per-Unit Warranty/AMC Tracking</a></li>
   <li><a href="#s11">11. The Analytics Dashboard</a><span></span></li>
+  <li class="sub"><a href="#s11-reports">11.1 Desk Reports</a></li>
   <li><a href="#s12">12. Bulk Data Tools (Excel Import/Export)</a><span></span></li>
   <li><a href="#s13">13. Automated Jobs Running in the Background</a><span></span></li>
+  <li class="sub"><a href="#s13-reminders">13.1 Reminders &amp; Follow-ups You Will Receive</a></li>
   <li><a href="#s14">14. Purchasing &amp; Procurement (Spares/Equipment)</a><span></span></li>
   <li><a href="#s15">15. Mobile &amp; External API (for Administrators)</a><span></span></li>
   <li><a href="#s16">16. Known Quirks &amp; Troubleshooting</a><span></span></li>
@@ -132,6 +135,24 @@ correctly or a step that is easy to get wrong. <strong>Red boxes</strong> flag a
 something the system does that looks like it should work differently, documented so you aren't caught off guard.
 </div>
 
+<h2 id="s1-new">1.1 What's New in Version 1.1</h2>
+<p>If you trained on Version 1.0 of this manual, these are the changes in how the system behaves. Each one is
+explained in full in the section listed.</p>
+<table>
+<tr><th>Area</th><th>What changed</th><th>Section</th></tr>
+<tr><td>Customer ID</td><td>New customers are numbered <code>CUS-&lt;Region&gt;-&lt;Branch&gt;-00001</code>, with a separate counter per region and branch. Region and Branch are now required before a customer can be saved.</td><td>4</td></tr>
+<tr><td>Deal status</td><td>A Deal's status now moves forward automatically as its Quotation goes through the workflow, and Probability is set from the status. Status order is now Qualification → Proposal/Quotation → Negotiation → Spec-In → Won/Award.</td><td>5</td></tr>
+<tr><td>Warranty/AMC expiry follow-up</td><td>Starting 2 months before a contract's AMC or a deal's warranty expires, the AM, then the RSM, then HO get a task, a system notification and an email. Unengaged deals are marked Lost 3 months after expiry (this was 6 months before).</td><td>5, 13.1</td></tr>
+<tr><td>Multi-year quotations</td><td>Year-wise breakup table, a dedicated multi-year print format, corrected per-year pricing, and Payment Term is now optional.</td><td>6</td></tr>
+<tr><td>Quotation email</td><td>The quote is emailed to the customer <strong>once</strong>, when it moves to Customer Approval Pending. It no longer re-sends on every save.</td><td>6</td></tr>
+<tr><td>Government customers</td><td>The extra grace period for government customers has been removed from the advance-payment and billing follow-ups. All customers now follow the same 30/60-day rules.</td><td>6, 7</td></tr>
+<tr><td>Work Order</td><td>New <strong>Work Order</strong> tab on the Contract and a <strong>Send Work Order</strong> button that emails the SSD WO PDF to the branch head.</td><td>7</td></tr>
+<tr><td>Payment Uploader</td><td>Picks up instalments due up to the end of the current month, accepts the Invoice No., and recalculates Outstanding as you edit Amount Received.</td><td>8</td></tr>
+<tr><td>Visit forms</td><td>Dealer visits are now logged row-by-row (Dealer Visit Form), and a new <strong>Other Visit</strong> record covers visits that are not to a customer or dealer.</td><td>10.4</td></tr>
+<tr><td>Reports</td><td>New <strong>Gross Revenue</strong>, <strong>Net Revenue</strong> (with pro-rata revenue) and <strong>Get Contract Count By ASM</strong> reports. The old Pipeline / AMC Pipeline reports have been removed.</td><td>11.1</td></tr>
+<tr><td>Branch head reminders</td><td>A monthly email of pending billing and payments, and a weekly email + notification listing contracts and customers with mandatory information missing.</td><td>13.1</td></tr>
+</table>
+
 <!-- 2 -->
 <h1 id="s2"><span class="section-num">2.</span> Platform Overview</h1>
 
@@ -155,8 +176,8 @@ box in this diagram:</p>
 CUSTOMER  (CRM Organization)
     │
     ▼
-DEAL  (CRM Deal) ─── Qualification → Spec-In → Proposal/Quotation → Negotiation
-    │                 → Won/Award → Ready to Close   (or Lost / Lost by AM / Lost by RSM)
+DEAL  (CRM Deal) ─── Qualification → Proposal/Quotation → Negotiation → Spec-In
+    │                 → Won/Award   (moved forward by the Quotation; or Lost / Lost by AM / Lost by RSM)
     ▼
 QUOTATION  (CRM Quotation)  ── internal Zone approval matrix → customer approval → PO received
     │
@@ -187,6 +208,9 @@ and spare parts consumed — see Section 10.</p>
 <tr><td>Dealer</td><td>Channel partner who earns commission on contracts; receives Accept/Reject emails, doesn't need to log in to respond.</td></tr>
 <tr><td>Technician</td><td>Field service staff; assigned to visits/repairs; tracked as a master record with rates, category and territory.</td></tr>
 <tr><td>Branch / Regional / National Manager</td><td>Primary users of the Analytics Dashboard (Section 11).</td></tr>
+<tr><td>Branch Head</td><td>The user set as <strong>Branch Head</strong> on a Region Branches record. Receives the monthly pending billing &amp; payments email and the weekly missing-information reminder for their branch(es), receives Work Orders sent from contracts in their branch, and can mark a Service deal "Not Interested" (first level, "Lost by AM") (Sections 5, 7, 13.1).</td></tr>
+<tr><td>ASM</td><td>The <strong>User</strong> (ASM) set on each Contract. Treated as the AM for that contract's expiry follow-up, and the person the ASM-wise reports group by (Section 11.1).</td></tr>
+<tr><td>HO</td><td>Head-office users holding the HO role (named <strong>Alok</strong> in the system). They take over a Warranty/AMC expiry follow-up 1.5 months after the first notice, and give the final "Interested / Not Interested" decision on a deal already marked "Lost by RSM" (Section 5).</td></tr>
 </table>
 <p>What you can see and do is controlled by the <strong>Role(s)</strong> your administrator has assigned you — some
 people can only view records, others can create/edit them, and some can also Submit or cancel them. A user needs the
@@ -281,8 +305,10 @@ Organization</strong> record.</p>
 <table>
 <tr><th>Field</th><th>What it's for</th></tr>
 <tr><td><strong>Organization Name</strong></td><td>Customer/company name.</td></tr>
-<tr><td><strong>Naming Series</strong></td><td>A human-readable customer code, built automatically from the first 3 letters of the name + city + creation date (e.g. <code>abc-delhi-2026-07-08</code>). You do not fill this in — it's generated on save.</td></tr>
-<tr><td><strong>Site Location City</strong>, <strong>Project</strong>, <strong>Branch</strong></td><td>Site and territory details. <strong>Project</strong> is free text here (not a link to the Project record).</td></tr>
+<tr><td><strong>Customer ID</strong> (Naming Series)</td><td>The customer's code, generated automatically on first save as <code>CUS-&lt;Region&gt;-&lt;Branch&gt;-#####</code> (e.g. <code>CUS-WEST-MUM-00001</code>). Each region + branch combination has its own running number. You do not fill this in, and it does not change if the customer's branch is edited later.</td></tr>
+<tr><td><strong>Region</strong>, <strong>Branch</strong></td><td><strong>Required</strong> — the Customer ID is built from them, so a new customer cannot be saved without both. The Branch also decides which Branch Head is reminded about this customer's missing information (Section 13.1).</td></tr>
+<tr><td><strong>Customer HC</strong>, <strong>Vertical</strong></td><td>The customer's HC code and industry vertical. Together with <strong>Warranty Expiry Date</strong>, these are treated as mandatory information: customers missing any of them are listed in the weekly reminder to the branch head.</td></tr>
+<tr><td><strong>Site Location City</strong>, <strong>Project</strong></td><td>Site details. <strong>Project</strong> is free text here (not a link to the Project record).</td></tr>
 <tr><td><strong>Expected HP</strong>, <strong>Expected Ton</strong></td><td>Sizing estimates used during early qualification.</td></tr>
 <tr><td><strong>Warranty Expiry Date</strong></td><td>Customer-level warranty tracking field (separate from the equipment-level dates on individual product lines).</td></tr>
 <tr><td><strong>Contracts Information</strong></td><td>Read-only history table — automatically gets a new row every time a Contract against this customer is submitted (contract id, start date, expiry date, status). You never edit this by hand.</td></tr>
@@ -294,11 +320,27 @@ Organization</strong> record.</p>
 <li>Search first. Because the system blocks you from saving a duplicate — <strong>the same organisation name + project +
 branch combination cannot exist twice</strong> — always search before creating a new record, even if the name looks
 slightly different from what you expect.</li>
-<li>Fill in <strong>Organization Name</strong>, city, project, and branch.</li>
-<li>Save. The customer code (<strong>Naming Series</strong>) is generated automatically.</li>
+<li>Fill in <strong>Organization Name</strong>, city, project, <strong>Region</strong> and <strong>Branch</strong>.
+Also fill in <strong>Customer HC</strong>, <strong>Vertical</strong> and <strong>Warranty Expiry Date</strong> if you
+have them; otherwise the customer will appear on your branch head's weekly missing-information list.</li>
+<li>Save. The <strong>Customer ID</strong> (<code>CUS-&lt;Region&gt;-&lt;Branch&gt;-#####</code>) is generated automatically.</li>
 <li>Add contacts, addresses, and any Customer Visit Form entries as the relationship develops.</li>
 </ol>
 </div>
+
+<div class="callout note">
+<strong class="tag">Existing customers were renumbered</strong>
+Customers created before Version 1.1 carried codes such as <code>abc-delhi-2026-07-08</code>. These have been
+renamed to the new <code>CUS-&lt;Region&gt;-&lt;Branch&gt;-#####</code> format, and the contracts and other records
+pointing at them were updated at the same time. If you have an old customer code written down somewhere, search by
+customer name instead.
+</div>
+
+<h3>Creating a Deal from a customer</h3>
+<p>On a saved customer, the <strong>Create AMC Opportunity</strong> button opens a new Deal of type "Warranty AMC
+Conversion" for that customer. The Deal's <strong>Customer Address</strong> is filled in automatically: the customer's
+primary address if one is set, otherwise their first billing address, otherwise any address linked to the customer.
+(As with the Project button in Section 4.1, this creates a <em>Deal</em>, not an Opportunity record.)</p>
 
 <div class="callout warn">
 <strong class="tag">Duplicate check</strong>
@@ -377,7 +419,8 @@ contract or a lost cause. This is the screen sales staff live in day to day.</p>
 <h3>Key fields</h3>
 <table>
 <tr><th>Field</th><th>What it's for</th></tr>
-<tr><td><strong>Status</strong></td><td>Qualification → Spec-In → Proposal/Quotation → Negotiation → Won/Award → Ready to Close, or Lost / Lost by AM / Lost by RSM.</td></tr>
+<tr><td><strong>Status</strong></td><td>Qualification → Proposal/Quotation → Negotiation → Spec-In → Won/Award (plus Ready to Close, set by hand), or Lost / Lost by AM / Lost by RSM / Sales. Most moves now happen <strong>automatically from the linked Quotation</strong> (see the table below).</td></tr>
+<tr><td><strong>Probability</strong></td><td>Set automatically from the Status every time the Deal is saved (Qualification 10%, Proposal/Quotation 40%, Negotiation 60%, Spec-In and Ready to Close 80%, Won/Award 100%, Lost/Sales 0%). You cannot set it by hand.</td></tr>
 <tr><td><strong>Deal Category</strong></td><td><strong>Service</strong> (AMC/warranty-driven; the default) or <strong>Sales</strong> (new equipment). This choice affects which expiry date matters and which emails/renewal logic apply later — set it correctly at creation.</td></tr>
 <tr><td><strong>AMC Expiry Date</strong> / <strong>Warranty Expiry Date</strong></td><td>The dates the whole AMC/warranty status calculation is built on.</td></tr>
 <tr><td><strong>Warranty / AMC Status</strong></td><td><strong>Calculated automatically</strong> — you cannot set this directly. If an AMC expiry date is present: shows "AMC Active" or "AMC Expired". Otherwise, if a warranty expiry date is present: shows "IN Warranty" or "OUT Warranty".</td></tr>
@@ -393,11 +436,38 @@ contract or a lost cause. This is the screen sales staff live in day to day.</p>
 <li>Create the Deal from (or linked to) the Customer record.</li>
 <li>Choose <strong>Deal Category</strong> — Service or Sales — first; this is not easily changed later.</li>
 <li>Add every piece of equipment involved under <strong>Product Details</strong>, with serial number, model, and HP/tons filled in for each row.</li>
-<li>Move <strong>Status</strong> forward as the opportunity progresses: Qualification → Spec-In → Proposal/Quotation.</li>
-<li>At Proposal/Quotation stage, create a linked <strong>CRM Quotation</strong> (Section 6).</li>
+<li>When you are ready to quote, click <strong>Create Quotation</strong> and build the <strong>CRM Quotation</strong>
+(Section 6). A Deal still at Qualification moves to Proposal/Quotation.</li>
+<li>From here you do not need to move the Status yourself — it follows the Quotation's workflow (table below).</li>
 <li>Once a Contract is created and submitted from the quotation, the Deal is <strong>automatically</strong> updated with the final HP, AMC expiry date and annual revenue — you do not need to re-enter these.</li>
 </ol>
 </div>
+
+<h3>How the Quotation moves the Deal's status</h3>
+<table>
+<tr><th>Quotation workflow state</th><th>Deal status becomes</th></tr>
+<tr><td>Open, any approval stage, Approved</td><td>Proposal/Quotation</td></tr>
+<tr><td>Customer Approval Pending (quote sent to customer)</td><td>Negotiation</td></tr>
+<tr><td>PO Pending / PO Received (customer accepted)</td><td>Spec-In</td></tr>
+<tr><td>Quote Won (PO received, quotation submitted)</td><td>Won/Award</td></tr>
+</table>
+<div class="callout note">
+<strong class="tag">Forward only</strong>
+The status only ever moves <em>forward</em>. Clicking "Revise Quote", or creating a second quotation for the same
+Deal, never moves the Deal backwards. A Rejected or cancelled quotation changes nothing, and Deals that are Lost,
+Lost by AM, Lost by RSM or Sales are never touched by a quotation.
+</div>
+
+<h3>Not Interested / Interested (Service deals)</h3>
+<p>When a customer does not want to go ahead with a <strong>Service</strong> deal, it is closed through three levels.
+Each level is asked for a reason:</p>
+<table>
+<tr><th>Who</th><th>When the button shows</th><th>Result</th></tr>
+<tr><td>Branch Head of the deal's branch</td><td>Any status other than Lost / Lost by AM / Lost by RSM</td><td><strong>Not Interested</strong> → status "Lost by AM"</td></tr>
+<tr><td>Region Head of the deal's region</td><td>Status is "Lost by AM"</td><td><strong>Not Interested</strong> → "Lost by RSM"; <strong>Interested</strong> → back to Qualification</td></tr>
+<tr><td>HO (Mr Alok)</td><td>Status is "Lost by RSM"</td><td><strong>Not Interested</strong> → "Lost"; <strong>Interested</strong> → back to Qualification</td></tr>
+</table>
+<p>A deal left at "Lost by AM" or "Lost by RSM" is finalised as Lost automatically 3 months after expiry (see below).</p>
 
 <div class="callout danger">
 <strong class="tag">Gotcha — HP must be a number</strong>
@@ -416,10 +486,13 @@ project, not to hand-edit the Project.
 </div>
 
 <div class="callout note">
-<strong class="tag">Automatic "Lost" clean-up</strong>
-Every night, the system automatically marks a Deal as <strong>Lost</strong> if it has sat for more than 6 months past
-its warranty/AMC expiry date without reaching Proposal/Quotation or Won/Award. This is expected housekeeping, not a
-sign that someone closed your deal — check the activity log if you need to confirm when/why.
+<strong class="tag">Automatic "Lost" clean-up — now 3 months</strong>
+Every night, the system marks a Deal as <strong>Lost</strong> once <strong>3 months</strong> have passed since its
+warranty/AMC expiry (or the expiry of the contract it renews), unless the Deal is engaged — i.e. at
+Proposal/Quotation, Negotiation, Spec-In, Ready to Close or Won/Award. Pending "Lost by AM" / "Lost by RSM" deals are
+finalised as Lost at the same point. The Lost reason keeps the AM/RSM reason if one was given; otherwise an automatic
+reason is recorded. This replaces the old 6-month rule and is the only automatic Lost rule. Before this happens,
+the AM, RSM and HO are reminded in turn — see Section 13.1.
 </div>
 
 <!-- 6 -->
@@ -433,7 +506,12 @@ process before it can be sent to the customer, followed by tracking of the custo
 <tr><td><strong>Zone</strong></td><td>Green / Yellow / Orange / Red — a risk/discount tier. Auto-suggested from the deal's industry (via Vertical Master) and total HP against the HP &amp; Zone Details table; you can override it if pricing genuinely differs.</td></tr>
 <tr><td><strong>Required Approval</strong></td><td>Which approvers must sign off — AM only, AM+RSM, AM+RSM+Mr Alok, or AM+RSM+Mr Alok+MD — driven by the zone.</td></tr>
 <tr><td><strong>Start Date</strong>, <strong>End Date</strong>, <strong>Payment Term</strong>, <strong>Payment Frequency</strong>, <strong>Billing Terms</strong></td><td>Contract period and billing cadence. Changing <em>any</em> of these automatically rebuilds the whole billing schedule (see below) — always set these before fine-tuning individual billing rows, not after.</td></tr>
-<tr><td><strong>Price Rate Per Year</strong></td><td>A comma-separated list of per-year rates for multi-year contracts with escalating pricing. Year 1 uses the main <strong>Amount</strong> field; year 2 onward pulls the next value from this list in order. If you don't supply enough values for every year, the remaining years simply reuse the base amount — so for an escalating contract, always supply one rate per year.</td></tr>
+<tr><td><strong>Payment Term</strong></td><td><strong>Optional</strong> on a quotation (it used to be mandatory) — you can save a quotation before the payment terms are agreed. Fill it in before the billing schedule is finalised, since due dates come from it.</td></tr>
+<tr><td><strong>AMC Term (in Years)</strong>, <strong>AMC Term (in Months)</strong>, <strong>Is Multi Year</strong></td><td>Read-only, worked out from the Start and End Dates. A quotation longer than one year is automatically flagged <strong>Is Multi Year</strong>.</td></tr>
+<tr><td><strong>Price Rate as per HP</strong></td><td>The year-1 rate per HP. Year 1's charge = Total HP × this rate.</td></tr>
+<tr><td><strong>Price Rate as Per Year</strong></td><td>For multi-year quotations with escalating pricing: a comma-separated list of the <strong>total charge for each year from year 2 onward</strong> (first value = year 2, second = year 3, and so on). If you give fewer values than there are years, the <strong>last value is carried forward</strong> to the remaining years. A partial final year is charged pro-rata.</td></tr>
+<tr><td><strong>Year Wise Breakup</strong></td><td>Filled in automatically for multi-year quotations: one row per year with its period, months, rate per HP and amount. The quotation total and taxes are the sum of these years. Don't edit the rates here — change the price fields above and save.</td></tr>
+<tr><td><strong>Contact Email</strong></td><td>Where the quotation email goes. If empty, the customer's email on the Organization is used.</td></tr>
 <tr><td><strong>Uploaded</strong></td><td>Tick this once the customer's PO document is attached — the system will not let the quotation move on from "PO Pending" until this is checked.</td></tr>
 </table>
 
@@ -466,19 +544,29 @@ field first (general <strong>Remarks</strong>, or the zone-specific
 button — the click itself will fail with an error until the remark is present.
 </div>
 
-<div class="callout danger">
-<strong class="tag">Gotcha — re-saving a sent quote resends the customer email</strong>
-As soon as a quotation's status becomes "Customer Approval Pending", the system automatically emails the customer a PDF
-of the quote. This check runs on <em>every save</em> while the quote sits in that state — not just the moment it first
-gets there. If you need to make an unrelated internal edit to a quotation that's already been sent, be aware the
-customer will receive another copy of the quote email when you save.
-</div>
+<h3>Multi-year quotations</h3>
+<p>For a quotation running more than one year, the billing schedule splits each year's charge across exactly the
+instalments that fall inside that year — an <strong>Advance</strong> instalment is counted in the period it starts,
+a <strong>Post</strong> instalment in the period it closes. The quotation prints with the
+<strong>AMC Offer Quote Multi Year</strong> format (one row per year with period, months, rate per HP, basic and
+GST), which is chosen automatically in the print view and in the emails. Single-year quotations keep the
+<strong>AMC Offer quote</strong> format. In both formats the rate column now shows the <strong>Rate/HP</strong>, and
+the Annexure-C terms printed match the quotation's <strong>AMC Type</strong> (an unrecognised type prints the
+Comprehensive terms).</p>
+
+<h3>The quotation email to the customer</h3>
+<p>When a quotation moves into <strong>Customer Approval Pending</strong>, the system emails the customer a covering
+letter with a summary of the quotation and the PDF attached. It goes to the <strong>Contact Email</strong> on the
+quotation, or the Organization's email if that is empty. The email is sent <strong>once</strong>, on that move —
+saving the quotation again later does not re-send it. If there is no email address, or the email fails, you are
+told so, but the workflow step still goes through: fix the address and send it again rather than re-doing the
+workflow step.</p>
 
 <h3>Advance-payment reminders</h3>
 <p>If a quotation carries an <strong>Advance Amount</strong> and hasn't been submitted yet, the system checks
-every night for unpaid advance instalments and emails the quotation's owner with escalating reminders at 1, 20, 25 and
-30 days overdue (government customers get an extra 60 days' grace). Ignoring these reminders long enough can flip the
-related contract's status to "Discontinue" automatically — see the caution under Section 15.</p>
+every night for unpaid advance instalments and emails the quotation's owner reminders at <strong>1, 20, 25, 30 and 60
+days</strong> overdue. This is the same for all customers — the extra grace period for government customers has been
+removed. At 60 days overdue the status is set to "Discontinue" automatically — see quirk #3 in Section 16.</p>
 
 <h3>Turning a won quotation into a contract</h3>
 <p>Once a quotation is submitted (typically after "PO Receive" moves it to Quote Won), a <strong>"Create Sub
@@ -499,8 +587,25 @@ and service obligations — nothing before this point commits the company to any
 <tr><td><strong>Dealer</strong> (table)</td><td>Each dealer sharing commission on this contract, with their commission/contribution rate and their own accept/reject status.</td></tr>
 <tr><td><strong>Billing Schedule</strong></td><td>The full instalment plan carried over from the quotation (or regenerated the same way).</td></tr>
 <tr><td><strong>Product Details</strong></td><td>Equipment covered by the contract; has its own bulk Download/Upload CSV template buttons for editing many rows at once.</td></tr>
-<tr><td><strong>Customer PO ID</strong></td><td>Used later to reconcile bulk invoice-Excel uploads against this contract.</td></tr>
+<tr><td><strong>Customer PO ID</strong>, <strong>Customer PO Date</strong></td><td>Used later to reconcile bulk invoice-Excel uploads against this contract. The PO Date is also the date the ASM report (Section 11.1) counts the contract under.</td></tr>
+<tr><td><strong>User</strong> (ASM), <strong>ASM Name</strong></td><td>Required. The ASM responsible for the contract; ASM Name is filled in from the user. This user is the AM for the contract's expiry follow-up (Section 13.1).</td></tr>
+<tr><td><strong>Customer HC</strong>, <strong>AMC Type</strong>, <strong>Contract Type</strong>, <strong>Bill To Code</strong>, <strong>Amount</strong>, <strong>Billing Schedule</strong></td><td>Mandatory information. Any <strong>Active</strong> contract missing one of these is listed in the branch head's weekly reminder (Section 13.1) until it is filled in.</td></tr>
 </table>
+
+<h3>The Work Order tab</h3>
+<p>Work-order details have their own <strong>Work Order</strong> tab on the contract:</p>
+<table>
+<tr><th>Field</th><th>What it's for</th></tr>
+<tr><td><strong>Work Order No.</strong>, <strong>Work order issue date</strong></td><td>The work order's number and date. The number is used in the email subject and as the PDF's file name when the work order is sent.</td></tr>
+<tr><td><strong>SSD Name (Dealer)</strong>, <strong>SSD Category</strong>, <strong>SSD Bill to code</strong></td><td>The service dealer (SSD) carrying out the work; the SSD Name is printed on the work order.</td></tr>
+<tr><td><strong>Additional Terms and Conditions</strong></td><td>Free-text terms printed on the work order in addition to the standard ones.</td></tr>
+<tr><td><strong>Upload Signature</strong></td><td>An image of the authorising signature, printed on the work order.</td></tr>
+<tr><td><strong>Work Order Additional Emails</strong></td><td>Extra recipients for the work order, separated by commas.</td></tr>
+</table>
+<p>Click <strong>Send Work Order</strong> (available on any saved contract that is not cancelled) to email the work order
+as a PDF in the <strong>SSD WO</strong> print format. It goes to the <strong>Branch Head</strong> of the contract's branch
+plus any Work Order Additional Emails. The contract must have a Branch, and that branch must have a Branch Head, or
+the button stops with a message telling you which is missing.</p>
 
 <h3>What happens automatically when you submit a contract</h3>
 <div class="steps">
@@ -534,8 +639,9 @@ report) rather than waiting for an automatic prompt.
 <table>
 <tr><th>Job</th><th>What it does</th></tr>
 <tr><td>Expire contracts</td><td>Any contract past its expiry date that isn't already Expired/Discontinue is automatically set to Expired.</td></tr>
-<tr><td>Billing follow-up</td><td>Chases overdue, non-advance billing rows; sends an overdue-payment email at 30 days (60 for government customers) to the finance team, and automatically discontinues the contract past 60 days for either customer type.</td></tr>
-<tr><td>Advance-payment reminders</td><td>Same escalation pattern as the quotation version (Section 6), applied to the contract itself.</td></tr>
+<tr><td>Billing follow-up</td><td>Chases overdue, non-advance billing rows; sends an overdue-payment email to the finance team at 30 days, and automatically discontinues the contract at 60 days. The same rule now applies to government and non-government customers.</td></tr>
+<tr><td>Advance-payment reminders</td><td>Same pattern as the quotation version (Section 6) — reminders at 1, 20, 25, 30 and 60 days, Discontinue at 60 days — applied to the contract itself.</td></tr>
+<tr><td>Expiry follow-up</td><td>From 2 months before the contract expires, the ASM, then RSM, then HO are given a task, a notification and an email to follow up the renewal (Section 13.1).</td></tr>
 </table>
 
 <!-- 8 -->
@@ -563,10 +669,14 @@ date), and marks the originating billing-schedule row as "Invoice Raised", linke
 <div class="steps">
 <ol>
 <li>Create a new Uploader record and set its type to <strong>Payment</strong>.</li>
-<li>The Payment Uploader table fills automatically from the source payment data.</li>
-<li><strong>Save the Uploader.</strong> For each row, the system finds the matching invoice, applies the received
-amount to whichever instalment is due today-or-earlier and matches the portion amount, and recalculates the invoice's
-total paid/outstanding balance and status (Paid, or Partially Paid).</li>
+<li>The Payment Uploader table fills automatically with every invoice instalment that is <strong>due up to the end of
+the current month</strong> and not yet fully paid (including partly-paid ones), showing what is still outstanding on each.</li>
+<li>Enter the <strong>Amount Received</strong> on each row. <strong>Outstanding Amount</strong> is recalculated as you
+type, so you can see what will be left on that instalment.</li>
+<li><strong>Save the Uploader.</strong> For each row, the system finds the matching invoice — by its record ID or by its
+<strong>Invoice No.</strong> — applies the received amount to the matching instalment that is not yet fully paid, and
+recalculates the invoice's total paid/outstanding balance and status (Paid, or Partially Paid). A partly-paid
+instalment comes back on the next Payment Uploader until it is fully paid.</li>
 <li>The matching Contract Billing Schedule row is updated to reflect the same status, so the contract's payment
 history and the invoice always agree.</li>
 </ol>
@@ -606,10 +716,12 @@ frequency and billing terms entered on the AMC Term.</li>
 </div>
 
 <div class="callout warn">
-<strong class="tag">This is a manual process</strong>
-As noted in Section 7, there is no automatic renewal reminder built into the Contract itself. Use the dashboard or a
-saved report of upcoming expiry dates to identify contracts needing renewal, and action the Renew button proactively —
-don't wait for the system to prompt you.
+<strong class="tag">Renewal itself is a manual process</strong>
+The system does not create the renewal contract or renewal Deal for you. From 2 months before expiry, the
+<strong>expiry follow-up</strong> (Section 13.1) gives the ASM, then the RSM, then HO a task, a notification and an
+email to chase the renewal, but someone still has to act on it. Use those reminders, the dashboard or the
+<strong>To Be Expired Contracts</strong> / <strong>Contract Expiry Report</strong> reports to find contracts due for
+renewal, and use the Renew button.
 </div>
 
 <h3 id="s9-opp">Tracking renewal &amp; upsell opportunities (Opportunity)</h3>
@@ -701,10 +813,16 @@ route for the relevant approval (dealer, ASM, or technician sign-off).</li>
 <h2 id="s10-4">10.4 Technicians, Dealers &amp; Field Visits</h2>
 <p>Technicians and Dealers are master records (Section 3) referenced throughout the service flow. <strong>Visit</strong>
 is a small summary record (first visit, most recent visit, number of chats/visits, average time spent, days
-visited) used to log a dealer's or technician's engagement history — it appears as the <strong>Dealer Visits</strong>
-table on the Dealer master. The <strong>Customer Visit Form</strong> is the customer-facing equivalent, recording
-a site visit's date, purpose (linked to the same Deal Type list used elsewhere), who accompanied it, and remarks — these
-rows are what the Organization bulk-import tool (Section 4) can also populate from a spreadsheet.</p>
+visited) of a dealer's or technician's engagement history.</p>
+<p>Individual visits are logged in three places, all with the same fields — visit date, <strong>Purpose of Visit</strong>
+(from the same Deal Type list used elsewhere), <strong>Other Purpose of Visit</strong> (free text when none of the listed
+purposes fits), remarks, the visitor, and who accompanied them:</p>
+<table>
+<tr><th>Where</th><th>Use it for</th></tr>
+<tr><td><strong>Customer Visit Form</strong> (table on the customer)</td><td>Visits to a customer. <strong>Visited By</strong> is filled in automatically and is read-only. These rows can also be loaded by the Organization bulk-import tool (Section 4).</td></tr>
+<tr><td><strong>Dealer Visit Form</strong> (the <strong>Dealer Visits</strong> table on the Dealer master)</td><td>Visits to a dealer — one row per visit.</td></tr>
+<tr><td><strong>Other Visit</strong> (its own record)</td><td>Any visit that is not to a specific customer or dealer.</td></tr>
+</table>
 
 <h2 id="s10-5">10.5 Repair, Defect, Escalation &amp; Parts</h2>
 <p>These four areas exist as their own record types with dedicated fields — for example, <strong>Repair</strong> tracks a
@@ -778,6 +896,62 @@ directly onto the <strong>Contract Type</strong> field described in Section 7 �
 customer lapsed before renewing and this contract represents winning them back, not a failed contract.
 </div>
 
+<h2 id="s11-reports">11.1 Desk Reports</h2>
+<p>Alongside the Dashboard, a set of reports is available on the Desk (search for the report's name). Each one has a
+filter bar at the top and can be exported to Excel from the report's menu. Region, Branch and Category filters on the
+revenue reports accept several values at once. The three reports below are new in Version 1.1 and are available to
+the <strong>System Manager</strong>, <strong>Area Manager</strong> and <strong>Region Master</strong> roles.</p>
+
+<h3>Gross Revenue — what is owed on raised invoices</h3>
+<p>Lists every invoice instalment that still has money outstanding as on the <strong>As On Date</strong>, one row per
+instalment, with the contract, customer, region, branch, ASM, billing details, invoice no., due date, due / received /
+outstanding amounts, days overdue and an ageing bucket (1–30, 31–60, 61–90, 90+ days). Each row falls into one
+<strong>Category</strong>:</p>
+<ul>
+<li><strong>Overdue</strong> — due date has passed and nothing has been received.</li>
+<li><strong>Partially Paid</strong> — some money has been received but a balance remains.</li>
+<li><strong>Due This Month</strong> — due later this month and nothing received yet.</li>
+</ul>
+<p>Instalments due in a later month with nothing received are not shown. The summary cards show Total Outstanding,
+Overdue, Partially Paid balance, Due This Month, Overdue 90+ Days, the % collected on these dues, and the number of
+contracts. Use <strong>Chart By</strong> to chart the outstanding amount by Ageing, Category, Customer, Region, Branch
+or Due Month.</p>
+
+<h3>Net Revenue — billing position and pro-rata revenue by month</h3>
+<p>Choose a <strong>From Date</strong> and <strong>To Date</strong>. The report shows one group per month, and inside each
+month the contracts under three cases (filter by <strong>Case</strong> to see just one):</p>
+<table>
+<tr><th>Case</th><th>What it shows</th></tr>
+<tr><td><strong>Billed</strong></td><td>Billing terms that have been invoiced by the end of that month but are not yet fully paid — billed value, received, collected %, and what is left to collect.</td></tr>
+<tr><td><strong>Non-Billed</strong></td><td>Billing terms whose billing date has arrived (this month or earlier) but whose invoice has not been raised yet.</td></tr>
+<tr><td><strong>Revenue</strong></td><td>Every contract active in that month with its <strong>Active Days</strong> and <strong>Revenue (Pro-rata)</strong>: each billing term's amount spread evenly over the days it covers, so a contract starting on the 12th of a 31-day month earns 20 days' worth, whether or not it has been billed or paid. Contracts without a billing schedule spread their contract value from start to expiry. Revenue stops at the discontinue date, and rejected contracts earn nothing.</td></tr>
+</table>
+<p>Pending amounts carry forward month to month, so the summary cards (Total To Collect, Billed – Awaiting Payment,
+Due – Not Yet Billed, Collected on Billed, Overdue 90+ Days) show the position at the <em>end</em> of the range, while
+Revenue (Pro-rata) is the total across all months in the range.</p>
+
+<h3>Get Contract Count By ASM</h3>
+<p>Counts <strong>Active</strong> contracts and their revenue per ASM, split by Contract Type (AMC Renewal, Warranty
+AMC Conversion, Lost Warranty Conversion, Lost AMC Conversion), for each month, quarter or year (<strong>Group By</strong>)
+of the selected <strong>Year</strong>. Filter by Region, Branch, ASM or Contract Type. An ASM who has contracts in
+several branches gets one row per branch. Every enabled user with the <strong>Area Manager</strong> role is listed,
+even with no contracts in the year (as a zero row with no region/branch); those zero rows are left out when a Region
+or Branch filter is set.</p>
+<div class="callout warn">
+<strong class="tag">Counted by Customer PO Date</strong>
+This report uses each contract's <strong>Customer PO Date</strong> (not its creation date) to decide which period it
+belongs to, and it uses the contract's <strong>User</strong> (ASM) field, not the ASM Name text. A contract with no
+Customer PO Date, or no ASM user, does not appear — fill those in on the contract if a contract seems to be missing.
+</div>
+
+<div class="callout note">
+<strong class="tag">Reports that have been removed</strong>
+The old <strong>Pipeline Report</strong>, <strong>Pipeline Report 1</strong>, <strong>2</strong> and <strong>3</strong>,
+and the <strong>AMC Pipeline Report</strong> (including its USD versions) have been removed. Use Net Revenue and Gross Revenue instead. Other existing reports — for example
+Contract Status Report, Contract Expiry Report, To be Expired Contracts, Overdue Billing Report, AR Ageing Report and
+ASM Wise Contract Comparison Report — are unchanged.
+</div>
+
 <!-- 12 -->
 <h1 id="s12"><span class="section-num">12.</span> Bulk Data Tools (Excel Import/Export)</h1>
 <p>Several screens support spreadsheet-based bulk operations so staff don't have to hand-enter large volumes of data:</p>
@@ -797,17 +971,75 @@ didn't go through rather than re-uploading the entire file.
 
 <!-- 13 -->
 <h1 id="s13"><span class="section-num">13.</span> Automated Jobs Running in the Background</h1>
-<p>The following happen automatically, every night, without anyone triggering them. Knowing this list helps you tell
+<p>The following happen automatically, without anyone triggering them. Knowing this list helps you tell
 "the system did this on its own" apart from "someone changed this manually."</p>
+<h3>Every night</h3>
 <table>
 <tr><th>Job</th><th>Effect</th></tr>
-<tr><td>Mark stale deals as Lost</td><td>Deals stuck outside Proposal/Quotation/Won/Award for 6+ months past expiry are force-set to Lost.</td></tr>
-<tr><td>Quotation advance-payment reminders</td><td>Escalating emails to the quote owner at 1/20/25/30 days overdue on an unpaid advance (govt customers: +60 days grace).</td></tr>
-<tr><td>Contract advance-payment reminders</td><td>Same pattern, applied directly to submitted contracts.</td></tr>
-<tr><td>Contract billing follow-up</td><td>Overdue-payment emails to the finance team at 30 (60 for govt) days; auto-discontinues the contract past 60 days.</td></tr>
+<tr><td>Warranty/AMC expiry follow-up</td><td>Creates follow-up tasks, notifications and emails as contracts and warranties approach expiry, and marks unengaged deals Lost 3 months after expiry (details in 13.1). This replaces the old "Lost after 6 months" job.</td></tr>
+<tr><td>Warranty out / Lost conversion type</td><td>A Deal whose warranty has expired (and has no AMC expiry date) is set to "OUT Warranty". On the same 3-month boundary as above, a Deal's or Contract's <em>type</em> becomes "Lost … Conversion" — this changes the category only, not the status.</td></tr>
+<tr><td>Quotation advance-payment reminders</td><td>Emails to the quote owner at 1/20/25/30/60 days overdue on an unpaid advance; Discontinue at 60 days. Same for all customers.</td></tr>
+<tr><td>Contract advance-payment reminders</td><td>Same pattern, applied directly to contracts.</td></tr>
+<tr><td>Contract billing follow-up</td><td>Overdue-payment email to the finance team at 30 days; auto-discontinues the contract at 60 days. Same for all customers.</td></tr>
+<tr><td>Invoice outstanding refresh</td><td>Recalculates the outstanding amount on each invoice instalment.</td></tr>
 <tr><td>Contract auto-expiry</td><td>Any contract past its expiry date is automatically set to Expired (unless already Expired/Discontinue).</td></tr>
 <tr><td>Deal status refresh</td><td>General daily pass keeping deal status current across the pipeline.</td></tr>
 </table>
+<h3>Weekly and monthly</h3>
+<table>
+<tr><th>When</th><th>Job</th><th>Effect</th></tr>
+<tr><td>Every Monday, 9:00 AM</td><td>Missing-information reminder</td><td>Each branch head gets a notification and an email listing the records in their branch(es) with mandatory information missing (details in 13.1).</td></tr>
+<tr><td>1st of every month, 9:00 AM</td><td>Pending billing &amp; payments</td><td>Each branch head gets an email of the billing due this month and the payments still pending in their branch(es) (details in 13.1).</td></tr>
+</table>
+<div class="callout note">
+<strong class="tag">No automatic renewal deals</strong>
+The system no longer creates duplicate/renewal Deals automatically for expired deals. Renewals are chased through the
+expiry follow-up below and created by hand (Section 9).
+</div>
+
+<h2 id="s13-reminders">13.1 Reminders &amp; Follow-ups You Will Receive</h2>
+<p>These reminders are addressed to specific people. Emails come from <code>notify.himsolutek@lgepartner.com</code>; a
+system notification appears under the bell icon on the Desk. They go to whoever is set on the records, so keep the
+<strong>Branch Head</strong> on each Region Branches record, the <strong>Region Head</strong> on each Region Master, and
+the <strong>User</strong> (ASM) on each contract up to date. If a branch has no Branch Head, its reminders are skipped
+and an error is logged for the administrator.</p>
+
+<h3>Warranty/AMC expiry follow-up (daily)</h3>
+<p>Covers AMC <strong>Contracts</strong> (not Discontinued or Rejected) and warranty <strong>Deals</strong> linked to a
+Project that have a Warranty Expiry Date but no AMC yet. Responsibility moves up as the expiry date gets closer and
+then passes:</p>
+<table>
+<tr><th>Stage</th><th>When</th><th>Who is responsible</th></tr>
+<tr><td>AM</td><td>From 2 months before expiry, for 1 month</td><td>The contract's <strong>User</strong> (ASM), or the deal's owner — or the branch head if neither is set.</td></tr>
+<tr><td>RSM</td><td>The next 15 days</td><td>The <strong>Region Head</strong> of the record's region.</td></tr>
+<tr><td>HO</td><td>From then until 3 months after expiry</td><td>Users with the HO role.</td></tr>
+<tr><td>Lost</td><td>3 months after expiry</td><td>Unengaged deals are marked Lost automatically (Section 5).</td></tr>
+</table>
+<p>At the start of each stage, the responsible person gets a <strong>CRM Task</strong> (priority High, due at the end
+of their stage), a system notification, and an email saying when the cover expires, until when they are responsible,
+and what happens next. Notices are only sent in the first 7 days of a stage, so nobody is flooded with old stages.
+The follow-up stops as soon as the renewal deal is Won/Award or Lost.</p>
+
+<h3>Pending billing &amp; payments (monthly, 1st at 9:00 AM)</h3>
+<p>Each branch head receives one email covering all their branches, with two tables:</p>
+<ul>
+<li><strong>Billing due this month – invoice not raised yet:</strong> billing-schedule rows dated this month that are
+still Pending, for contracts that are not Discontinued or Rejected.</li>
+<li><strong>Payments pending:</strong> invoice instalments due this month or earlier that are unpaid or only partly paid,
+marked Due This Month, Overdue or Partially Paid. These keep appearing every month until fully paid.</li>
+</ul>
+
+<h3>Mandatory information missing (weekly, Monday 9:00 AM)</h3>
+<p>Each branch head receives one system notification with the totals and one email with a clickable list of the
+records in their branch(es) that are missing mandatory information. Each row shows exactly which fields are
+missing:</p>
+<table>
+<tr><th>Records checked</th><th>Fields that must be filled</th></tr>
+<tr><td><strong>Active</strong> AMC Contracts (CRM Contract)</td><td>Customer HC, AMC Type, Contract Type, Bill To Code, Amount (0 counts as missing), Billing Schedule (at least one row)</td></tr>
+<tr><td><strong>All</strong> Customers (CRM Organization)</td><td>Customer HC, Vertical, Warranty Expiry Date</td></tr>
+</table>
+<p>A record drops off the list as soon as its fields are filled in. The aim is to get the list for your branch to
+zero.</p>
 
 <!-- 14 -->
 <h1 id="s14"><span class="section-num">14.</span> Purchasing &amp; Procurement (Spares/Equipment)</h1>
@@ -874,9 +1106,9 @@ documented here so you recognise them and know the right response.</p>
 <tr><th>#</th><th>What you'll see</th><th>What's actually happening</th><th>What to do</th></tr>
 <tr>
 <td>1</td>
-<td>A Quotation already sent to the customer generates <em>another</em> copy of the quote email after an unrelated edit.</td>
-<td>The customer-notification email fires on every save while the quotation is in "Customer Approval Pending", not just the first time it enters that state.</td>
-<td>Avoid non-essential saves on a quotation once it's been sent; batch any small corrections together.</td>
+<td>A quotation moved to "Customer Approval Pending", but the customer says they never got the email.</td>
+<td>The email is sent once, on that move, to the quotation's Contact Email (or the Organization's email). If neither is set, or sending fails, you are told so but the workflow step is kept. (Fixed in 1.1: re-saving no longer re-sends the email.)</td>
+<td>Fill in the Contact Email and send the quotation again; don't revise and re-approve the quote just to re-send it.</td>
 </tr>
 <tr>
 <td>2</td>
@@ -926,6 +1158,36 @@ documented here so you recognise them and know the right response.</p>
 <td>The button's name is misleading — it maps the Project onto a new <strong>CRM Deal</strong> pre-filled with the customer, branch, region and the correct Lost AMC/Warranty Conversion type. It does not create a record in the separate Opportunity feature (Section 9.1).</td>
 <td>Look for the new record in the Deals list, not Opportunities.</td>
 </tr>
+<tr>
+<td>10</td>
+<td>Saving a new customer fails with "Region and Branch are required to generate the Customer ID".</td>
+<td>The Customer ID (<code>CUS-&lt;Region&gt;-&lt;Branch&gt;-#####</code>) is built from the Region and Branch.</td>
+<td>Select both, then save.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>"Send Work Order" stops with "Please select a Branch first" or "Branch Head is not set for this Branch".</td>
+<td>The work order is always sent to the branch head of the contract's branch.</td>
+<td>Set the contract's Branch, or ask an administrator to set the Branch Head on that Region Branches record.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>A Deal's status changed to Negotiation, Spec-In or Won/Award without anyone editing the Deal.</td>
+<td>Since Version 1.1 the Deal follows its Quotation's workflow automatically (Section 5).</td>
+<td>Nothing — this is expected. Check the linked Quotation's workflow state.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>A contract or customer keeps appearing on the Monday missing-information reminder.</td>
+<td>One of its mandatory fields is still empty — for contracts this is often the Billing Schedule (no rows) or an Amount of 0.</td>
+<td>Check the "Missing Information" column in the email and fill in exactly those fields.</td>
+</tr>
+<tr>
+<td>14</td>
+<td>A contract is missing from the Get Contract Count By ASM report.</td>
+<td>The report only counts Active contracts that have a Customer PO Date in the selected year and an ASM in the User field.</td>
+<td>Fill in Customer PO Date and User on the contract.</td>
+</tr>
 </table>
 
 <!-- 17 -->
@@ -951,7 +1213,13 @@ documented here so you recognise them and know the right response.</p>
 <tr><td>Serial No</td><td>The unique identifier of a specific installed unit; used by field/mobile apps to look up a customer's equipment and its live warranty/AMC coverage on site.</td></tr>
 <tr><td>Purchase Order</td><td>The procurement document raised against a Supplier for spares/equipment — see Section 14.</td></tr>
 <tr><td>Project</td><td>A record tracking one customer site/installation's live warranty/AMC status and expiry date, kept in sync from that site's Deals — see Section 4.1. Not to be confused with the "project" text field on CRM Organization.</td></tr>
-<tr><td>Create AMC Opportunity (button)</td><td>The button on an expired Project that generates a new renewal/reconversion <strong>Deal</strong> — despite its name, it does not create an Opportunity record.</td></tr>
+<tr><td>Customer ID</td><td>The customer's code, <code>CUS-&lt;Region&gt;-&lt;Branch&gt;-#####</code>, generated on first save — see Section 4.</td></tr>
+<tr><td>Branch Head</td><td>The person set on a Region Branches record; receives the branch's work orders and the monthly and weekly reminders — see Section 13.1.</td></tr>
+<tr><td>ASM</td><td>Area Sales Manager — the User set on a contract; the AM for that contract's expiry follow-up and the person ASM-wise reports group by.</td></tr>
+<tr><td>Expiry follow-up</td><td>The daily AM → RSM → HO escalation that starts 2 months before a contract or warranty expires — see Section 13.1.</td></tr>
+<tr><td>Work Order (SSD WO)</td><td>The work order PDF emailed from a contract with the Send Work Order button — see Section 7.</td></tr>
+<tr><td>Pro-rata revenue</td><td>Revenue counted day by day over the period a billing term covers, whether billed or not — used in the Net Revenue report (Section 11.1).</td></tr>
+<tr><td>Create AMC Opportunity (button)</td><td>The button on a customer, or on an expired Project, that generates a new renewal/reconversion <strong>Deal</strong> — despite its name, it does not create an Opportunity record.</td></tr>
 </table>
 
 <p class="small" style="margin-top:40px;text-align:center;">— End of Manual —</p>
