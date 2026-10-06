@@ -26,7 +26,8 @@ def execute(filters=None):
 def get_columns():
 	return [
 		{"label": _("Contract"), "fieldname": "contract", "fieldtype": "Link", "options": "CRM Contract", "width": 160},
-		{"label": _("Customer"), "fieldname": "customer", "fieldtype": "Link", "options": "CRM Organization", "width": 200},
+		{"label": _("Customer Name"), "fieldname": "customer_name", "fieldtype": "Data", "width": 220},
+		{"label": _("Bill To Code"), "fieldname": "bill_to_code", "fieldtype": "Data", "width": 120},
 		{"label": _("Region"), "fieldname": "region", "fieldtype": "Link", "options": "Region Master", "width": 110},
 		{"label": _("Branch"), "fieldname": "branch", "fieldtype": "Link", "options": "Region Branches", "width": 110},
 		{"label": _("Start Date"), "fieldname": "start_date", "fieldtype": "Date", "width": 110},
@@ -55,9 +56,12 @@ def get_data(filters):
 
 	contracts = frappe.db.sql(
 		f"""
-		SELECT c.name AS contract, c.customer, c.region, c.branch,
+		SELECT c.name AS contract, c.customer,
+			IFNULL(NULLIF(o.organization_name, ''), c.customer_name) AS customer_name,
+			c.bill_ship_code AS bill_to_code, c.region, c.branch,
 			c.start_date, c.expiry_date, c.amount
 		FROM `tabCRM Contract` c
+		LEFT JOIN `tabCRM Organization` o ON o.name = c.customer
 		WHERE {" AND ".join(conditions)}
 		ORDER BY c.start_date, c.name
 		""",
