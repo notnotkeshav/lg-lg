@@ -135,7 +135,8 @@ app_include_js = [
 # Override standard doctype classes
 
 override_doctype_class = {
-    "CRM Deal": "lg.lg.doctype.crm_deal.crm_deal.CRMDeal"
+    "CRM Deal": "lg.lg.doctype.crm_deal.crm_deal.CRMDeal",
+    "CRM Organization": "lg.lg.doctype.crm_organization.crm_organization.CRMOrganization",
 }
 
     # apps/lg/lg/lg/doctype/crm_deal/crm_deal.py
