@@ -173,6 +173,10 @@ scheduler_events = {
         "0 9 1 * *": [
             "lg.lg.doctype.crm_contract.crm_contract.send_monthly_branch_head_reminders",
         ],
+        # Every Monday, 9 AM
+        "0 9 * * 1": [
+            "lg.lg.missing_info_reminder.send_weekly_missing_info_reminders",
+        ],
     },
 }
 
