@@ -40,9 +40,8 @@ def get_columns():
 
 def get_data(filters):
 	"""
-	Contracts running at any point in the selected month. Net revenue is the per-day amount
-	times 30 for a contract active the whole month, or times its active days when it starts or
-	expires mid-month.
+	Contracts running at any point in the selected month. Net revenue is the per-day amount times
+	the contract's active days in the month (all of the month's days when active throughout).
 	"""
 	conditions = [
 		"c.docstatus < 2",
@@ -70,9 +69,6 @@ def get_data(filters):
 		# Start and expiry dates are both inclusive
 		start, expiry = getdate(row.start_date), getdate(row.expiry_date)
 		row.contract_days = (expiry - start).days + 1
-		if start <= filters.month_start and expiry >= filters.month_end:
-			row.active_days = 30
-		else:
-			row.active_days = (min(expiry, filters.month_end) - max(start, filters.month_start)).days + 1
+		row.active_days = (min(expiry, filters.month_end) - max(start, filters.month_start)).days + 1
 		row.net_revenue = flt(row.amount) / row.contract_days * row.active_days
 	return contracts
