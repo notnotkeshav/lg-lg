@@ -63,11 +63,21 @@ def get_data(filters):
 		FROM `tabCRM Contract` c
 		LEFT JOIN `tabCRM Organization` o ON o.name = c.customer
 		WHERE {" AND ".join(conditions)}
-		ORDER BY c.start_date, c.name
+		ORDER BY c.creation DESC
 		""",
 		filters,
 		as_dict=True,
 	)
+
+	# The same contract is often entered more than once: keep only the latest created of each
+	seen = set()
+	unique = []
+	for row in contracts:
+		key = (row.start_date, row.expiry_date, row.branch, row.region, flt(row.amount, 2))
+		if key not in seen:
+			seen.add(key)
+			unique.append(row)
+	contracts = sorted(unique, key=lambda r: (r.start_date, r.contract))
 
 	for row in contracts:
 		# Start and expiry dates are both inclusive
