@@ -9,7 +9,9 @@ from frappe.utils import (
     get_last_day,
     nowdate,
     getdate,
-    today
+    today,
+    cint,
+    flt,
 )
 
 STATUS_PROBABILITY = {
@@ -63,8 +65,9 @@ class CRMDeal(Document):
             if self.has_value_changed("status"):
                 add_status_change_log(self)
 
-        # Keep in sync with the "Update Probability on deal status update" Client Script
+        # Keep in sync with DEAL_STATUS_PROBABILITY in lg/public/js/crm_deal.js
         self.probability = STATUS_PROBABILITY.get(self.status, 0)
+        self.set_total_hp()
 
         current_date = getdate(today())
         if self.amc_expiry_date:
@@ -100,17 +103,9 @@ class CRMDeal(Document):
 
 
         
-    def after_save(self):
-        frappe.logger().info("✅ CRMDeal after_save triggered")
-        total = 0
-        if self.product_details:
-            for row in self.product_details:
-                if row.hp is not None:
-                    try:
-                        total += int(row.hp)
-                    except ValueError:
-                        frappe.throw(f"Invalid HP value in row {row.idx}")
-        frappe.db.set_value(self.doctype, self.name, "total_hp", total)
+    def set_total_hp(self):
+        """Same formula as update_total_hp() in lg/public/js/crm_deal.js."""
+        self.total_hp = cint(sum(flt(row.hp) for row in self.product_details or []))
 
 
             
