@@ -3,6 +3,17 @@
   {
    "doctype": "Custom Field",
    "dt": "CRM Organization",
+   "label": "Connections",
+   "fieldname": "custom_connections_tab",
+   "fieldtype": "Tab Break",
+   "insert_after": "project_info",
+   "show_dashboard": 1,
+   "name": "CRM Organization-custom_connections_tab",
+   "module": "Lg"
+  },
+  {
+   "doctype": "Custom Field",
+   "dt": "CRM Organization",
    "fieldname": "custom_section_break_oizht",
    "fieldtype": "Section Break",
    "insert_after": "contracts_information",

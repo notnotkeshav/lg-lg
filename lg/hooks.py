@@ -217,6 +217,9 @@ scheduler_events = {
 # override_doctype_dashboards = {
 # 	"Task": "lg.task.get_dashboard_data"
 # }
+override_doctype_dashboards = {
+	"CRM Organization": "lg.lg.doctype.crm_organization.crm_organization_dashboard.get_data"
+}
 
 # exempt linked doctypes from being automatically cancelled
 #
