@@ -122,8 +122,6 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_global_search": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Customer",
    "options": "CRM Organization",
    "reqd": 1,
@@ -146,6 +144,8 @@
    "fetch_from": "customer.region",
    "fieldname": "region",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Region",
    "options": "Region Master",
    "read_only": 1,
@@ -155,6 +155,8 @@
    "fetch_from": "customer.branch",
    "fieldname": "branch",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Branch",
    "options": "Region Branches",
    "read_only": 1,
@@ -168,8 +170,6 @@
    "default": "Today",
    "fieldname": "date",
    "fieldtype": "Date",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Date",
    "reqd": 1,
    "search_index": 1,
@@ -226,6 +226,8 @@
    "fetch_from": "from_quote.deal_type",
    "fieldname": "deal_type",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Contract Type",
    "options": "\nAMC Renewal\nWarranty AMC Conversion\nLost AMC Conversion\nLost Warranty Conversion",
    "reqd": 1
@@ -239,8 +241,6 @@
   {
    "fieldname": "expiry_date",
    "fieldtype": "Date",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Expiry Date",
    "reqd": 1
   },
@@ -288,6 +288,7 @@
    "fieldname": "custom_contract_status",
    "fieldtype": "Select",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Contract Status",
    "options": "Active\nExpired\nDiscontinue\nAccepted\nRejected",
    "translatable": 1
@@ -474,7 +475,7 @@
   {
    "fieldname": "customer_po_id",
    "fieldtype": "Data",
-   "label": "Customer PO ID "
+   "label": "Customer PO No"
   },
   {
    "fieldname": "customer_po_date",
@@ -580,7 +581,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-10-03 15:31:10.690056",
+ "modified": "2026-10-07 16:06:43.827842",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "CRM Contract",
@@ -606,7 +607,7 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "customer",
+ "title_field": "customer_name",
  "track_changes": 1,
  "track_views": 1
 }

@@ -10,6 +10,7 @@ from frappe.desk.form.assign_to import add as assign
 from frappe.model.mapper import get_mapped_doc
 from frappe.utils import now_datetime,getdate,nowdate
 
+from lg.api.exchange_rate import get_exchange_rate
 from crm.fcrm.doctype.crm_service_level_agreement.utils import get_sla
 from crm.fcrm.doctype.crm_status_change_log.crm_status_change_log import add_status_change_log
 from dateutil.relativedelta import relativedelta
@@ -383,14 +384,27 @@ class CRMContract(Document):
 
 	
 	def validate_currency(self):
-		if self.currency and self.price_list_currency:
+		# Contracts are created from a quotation: the rate and USD amount are mapped
+		# from it, never re-fetched, so the contract keeps the quotation's rate.
+		if self.from_quote:
+			q = frappe.db.get_value(
+				"CRM Quotation", self.from_quote, ["conversion_rate", "total_usd"], as_dict=True
+			)
+			if q:
+				if not flt(self.conversion_rate):
+					self.conversion_rate = q.conversion_rate
+				if not flt(self.total_usd):
+					self.total_usd = q.total_usd
+			return
+
+		# Standalone contract (no source quotation): fall back to the Currency Exchange list
+		if self.currency and self.price_list_currency and not flt(self.conversion_rate):
 			if self.currency == self.price_list_currency:
 				self.conversion_rate = 1.0
-				self.price_list_exchange_rate = 1.0
 			else:
-				# Get exchange rates
-				self.conversion_rate = get_exchange_rate(self.currency, self.company_currency)
-				self.price_list_exchange_rate = get_exchange_rate(self.price_list_currency, self.currency)
+				self.conversion_rate = get_exchange_rate(
+					self.currency, frappe.db.get_default("currency") or "INR", self.start_date
+				)
 
 
 @frappe.whitelist()
@@ -1152,81 +1166,81 @@ import openpyxl
 from frappe.utils import nowdate
 import datetime
 
-@frappe.whitelist()
-def process_invoice_excel(file_url):
-    """Process uploaded Excel and update Billing Schedule using Customer PO ID"""
-    try:
-        file_doc = frappe.get_doc("File", {"file_url": file_url})
-        file_path = file_doc.get_full_path()
+# @frappe.whitelist()
+# def process_invoice_excel(file_url):
+#     """Process uploaded Excel and update Billing Schedule using Customer PO ID"""
+#     try:
+#         file_doc = frappe.get_doc("File", {"file_url": file_url})
+#         file_path = file_doc.get_full_path()
 
-        wb = openpyxl.load_workbook(file_path)
-        sheet = wb.active
+#         wb = openpyxl.load_workbook(file_path)
+#         sheet = wb.active
 
-        error_log = []
+#         error_log = []
 
-        for idx, row in enumerate(sheet.iter_rows(values_only=True)):
-            if idx == 0:
-                continue
+#         for idx, row in enumerate(sheet.iter_rows(values_only=True)):
+#             if idx == 0:
+#                 continue
 
-            customer_po_id, amount_received, invoice_id, payment_received_date = row
+#             customer_po_id, amount_received, invoice_id, payment_received_date = row
 
-            if not customer_po_id:
-                error_log.append(f"Row {idx+1}: Missing Customer PO ID")
-                continue
+#             if not customer_po_id:
+#                 error_log.append(f"Row {idx+1}: Missing Customer PO ID")
+#                 continue
 
-            # --- Normalize PO ID ---
-            customer_po_id = str(customer_po_id).strip()
-            if customer_po_id.replace('.', '', 1).isdigit():
-                if '.' in customer_po_id:
-                    customer_po_id = str(int(float(customer_po_id)))
-            # If your PO IDs are fixed length like 001, then:
-            customer_po_id = customer_po_id.zfill(3)
+#             # --- Normalize PO ID ---
+#             customer_po_id = str(customer_po_id).strip()
+#             if customer_po_id.replace('.', '', 1).isdigit():
+#                 if '.' in customer_po_id:
+#                     customer_po_id = str(int(float(customer_po_id)))
+#             # If your PO IDs are fixed length like 001, then:
+#             customer_po_id = customer_po_id.zfill(3)
 
-            # --- Normalize Payment Date ---
-            payment_received_date = parse_excel_date(payment_received_date)
+#             # --- Normalize Payment Date ---
+#             payment_received_date = parse_excel_date(payment_received_date)
 
-            contracts = frappe.get_all(
-                "CRM Contract",
-                filters={"customer_po_id": customer_po_id},
-                pluck="name"
-            )
+#             contracts = frappe.get_all(
+#                 "CRM Contract",
+#                 filters={"customer_po_id": customer_po_id},
+#                 pluck="name"
+#             )
 
-            if not contracts:
-                error_log.append(f"Row {idx+1}: No contract found for PO ID {customer_po_id}")
-                continue
+#             if not contracts:
+#                 error_log.append(f"Row {idx+1}: No contract found for PO ID {customer_po_id}")
+#                 continue
 
-            for contract_name in contracts:
-                contract = frappe.get_doc("CRM Contract", contract_name)
+#             for contract_name in contracts:
+#                 contract = frappe.get_doc("CRM Contract", contract_name)
 
-                # Get unpaid billing rows sorted by payment_date
-                unpaid_rows = sorted(
-                    [bs for bs in contract.billing_schedule if bs.status != "Paid"],
-                    key=lambda x: x.payment_date or nowdate()
-                )
+#                 # Get unpaid billing rows sorted by payment_date
+#                 unpaid_rows = sorted(
+#                     [bs for bs in contract.billing_schedule if bs.status != "Paid"],
+#                     key=lambda x: x.payment_date or nowdate()
+#                 )
 
-                if not unpaid_rows:
-                    error_log.append(f"Row {idx+1}: No unpaid rows found for contract {contract_name}")
-                    continue
+#                 if not unpaid_rows:
+#                     error_log.append(f"Row {idx+1}: No unpaid rows found for contract {contract_name}")
+#                     continue
 
-                # Fill only the first unpaid row
-                first_unpaid = unpaid_rows[0]
-                first_unpaid.amount_received = amount_received
-                first_unpaid.invoice_id = invoice_id
-                first_unpaid.status = "Paid"
-                first_unpaid.payment_received_date = payment_received_date
+#                 # Fill only the first unpaid row
+#                 first_unpaid = unpaid_rows[0]
+#                 first_unpaid.amount_received = amount_received
+#                 first_unpaid.invoice_id = invoice_id
+#                 first_unpaid.status = "Paid"
+#                 first_unpaid.payment_received_date = payment_received_date
 
-                contract.save(ignore_permissions=True)
+#                 contract.save(ignore_permissions=True)
 
-        frappe.db.commit()
+#         frappe.db.commit()
 
-        if error_log:
-            frappe.log_error("\n".join(error_log), "Invoice Excel Processing Issues")
+#         if error_log:
+#             frappe.log_error("\n".join(error_log), "Invoice Excel Processing Issues")
 
-        return {"status": "success", "message": "Invoices updated successfully"}
+#         return {"status": "success", "message": "Invoices updated successfully"}
 
-    except Exception:
-        frappe.log_error(frappe.get_traceback(), "Invoice Excel Processing Error")
-        frappe.throw("Error while processing invoice Excel. Please check error logs.")
+#     except Exception:
+#         frappe.log_error(frappe.get_traceback(), "Invoice Excel Processing Error")
+#         frappe.throw("Error while processing invoice Excel. Please check error logs.")
 
 
 def parse_excel_date(value):
