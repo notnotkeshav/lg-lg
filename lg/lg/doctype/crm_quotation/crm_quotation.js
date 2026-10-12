@@ -2,10 +2,29 @@
 // For license information, please see license.txt
 let auto_price_rate = false;
 
+// Only Pay Terms matching the Payment Frequency (billing_terms: Advance/Post) can be picked
+function set_payment_term_query(frm) {
+    frm.set_query("payment_term", () => {
+        if (frm.doc.billing_terms) {
+            return { filters: { payment_frequency: frm.doc.billing_terms } };
+        }
+        return {};
+    });
+}
+
+async function clear_mismatched_payment_term(frm) {
+    if (!frm.doc.billing_terms || !frm.doc.payment_term) return;
+    const { message } = await frappe.db.get_value("Pay Term", frm.doc.payment_term, "payment_frequency");
+    if (message && message.payment_frequency !== frm.doc.billing_terms) {
+        await frm.set_value("payment_term", "");
+    }
+}
+
 frappe.ui.form.on("CRM Quotation", {
     refresh(frm) {
 
         set_default_print_format(frm);
+        set_payment_term_query(frm);
         frm.set_df_property("total_hp", "read_only", 1);
         if (frm.doc.total_hp && frm.doc.industry) {
             show_filtered_zone_rates(frm);
@@ -36,102 +55,20 @@ frappe.ui.form.on("CRM Quotation", {
 
         // Add the attachment functionality
         if (frm.doc.__islocal) return;
-        const wrapper = $(frm.fields_dict["attachments"].wrapper);
-        wrapper.empty();
-
-
-        wrapper.append(`
-                <div>
-                    <button class="btn btn-sm btn-primary" id="upload-pdf-btn">Upload PDF</button>
-                    <div id="pdf-tabs" class="mt-3 nav nav-tabs"></div>
-                    <div id="pdf-preview" class="mt-3" style="border: 1px solid #ccc; height: 400px;"></div>
-                </div>
-                `);
-
-        const renderPreview = (file_url) => {
-            $('#pdf-preview').html(`
-                <p><a href="${file_url}" class="link-primary">Open In New Tab</a></p>
-                <embed src="${file_url}" width="100%" height="100%" type="application/pdf">
-            `);
-        };
-
-        const renderTabs = (files) => {
-            const $tabs = $('#pdf-tabs');
-            $tabs.empty();
-
-            files.forEach((file, index) => {
-                const tabId = `tab-${index}`;
-                const activeClass = index === 0 ? 'active' : '';
-                $tabs.append(`
-                    <a class="nav-link ${activeClass}" data-url="${file.file_url}" data-tab-id="${tabId}" href="#">${file.file_name}</a>
-                `);
-            });
-
-            // Initial preview
-            if (files.length > 0) {
-                renderPreview(files[0].file_url);
-            }
-
-            // Tab click handler
-            $tabs.find('a').on('click', function (e) {
-                e.preventDefault();
-                $tabs.find('a').removeClass('active');
-                $(this).addClass('active');
-
-                const url = $(this).data('url');
-                renderPreview(url);
-            });
-        };
-
-        const fetchAndRenderFiles = () => {
-            frappe.call({
-                method: 'frappe.client.get_list',
-                args: {
-                    doctype: 'File',
-                    filters: {
-                        attached_to_doctype: frm.doctype,
-                        attached_to_name: frm.doc.name,
-                        is_folder: 0,
-                    },
-                    fields: ['file_url', 'file_name'],
-                    limit_page_length: 100
-                },
-                callback: function (r) {
-                    renderTabs(r.message || []);
-                }
-            });
-        };
-
-        const updateTheStatus = () => {
-            const statusNeedsUpdate = frm.doc.status !== "PO Received";
-            const workflowNeedsUpdate = frm.doc.workflow_state !== "PO Received";
-
-            if (statusNeedsUpdate || workflowNeedsUpdate) {
-                frm.set_value("uploaded", 1);
-                frm.save();
-            }
-        };
-
-
-        // Attach upload button handler
-        $('#upload-pdf-btn').on('click', function () {
-            new frappe.ui.FileUploader({
-                allow_multiple: true,
-                doctype: frm.doctype,
-                docname: frm.doc.name,
-
-                on_success: () => {
-                    updateTheStatus();
-                    fetchAndRenderFiles()
-                }
-            });
-        });
-
-        fetchAndRenderFiles(); // Initial load
+        render_attachments(frm);
 
     },
     // Workflow validation
     before_workflow_action(frm, workflow_action) {
+        // "Send Quote to Customer" only moves the workflow once the email is sent:
+        // open the email dialog instead and apply the action from its success callback
+        if (frm.selected_workflow_action === SEND_QUOTE_ACTION) {
+            frappe.dom.unfreeze();
+            open_quotation_email_dialog(frm);
+            // never resolves, so Frappe does not apply the action now
+            return new Promise(() => {});
+        }
+
         if (frm.doc.workflow_state === "PO Pending") {
 
             let uploaded = frm.doc.uploaded;
@@ -197,7 +134,8 @@ frappe.ui.form.on("CRM Quotation", {
             show_filtered_zone_rates(frm);
         }
     },
-    billing_terms: function (frm) {
+    billing_terms: async function (frm) {
+        await clear_mismatched_payment_term(frm);
         generate_billing_schedule(frm)
     },
 
@@ -242,6 +180,60 @@ frappe.ui.form.on("CRM Quotation", {
 
 
 });
+
+
+const SEND_QUOTE_ACTION = "Send Quote to Customer";
+
+// Standard email dialog prefilled with the customer's email, a covering note and
+// the quotation PDF. The workflow moves to Customer Approval Pending only after the
+// email is sent; closing the dialog leaves the quotation as it is.
+function open_quotation_email_dialog(frm) {
+    frappe.call({
+        method: "lg.lg.doctype.crm_quotation.crm_quotation.get_quotation_email_defaults",
+        args: { docname: frm.doc.name },
+    }).then((r) => {
+        const defaults = r.message || {};
+        const composer = new frappe.views.CommunicationComposer({
+            doc: frm.doc,
+            frm: frm,
+            recipients: defaults.recipients || "",
+            subject: defaults.subject,
+            message: defaults.message,
+            attach_document_print: true,
+            success: () => apply_send_quote_action(frm),
+        });
+
+        // attach the quotation's own print format, not just the first one listed
+        if (defaults.print_format) {
+            composer.dialog.fields_dict.select_print_format.$input.val(defaults.print_format);
+        }
+
+        if (!defaults.recipients) {
+            frappe.show_alert({
+                message: __("No customer email found on the quotation or the customer"),
+                indicator: "orange",
+            });
+        }
+    });
+}
+
+
+function apply_send_quote_action(frm) {
+    frappe.xcall("frappe.model.workflow.apply_workflow", {
+        doc: frm.doc,
+        action: SEND_QUOTE_ACTION,
+    }).then((doc) => {
+        frappe.model.sync(doc);
+        // the composer reloads the doc after sending; reload again so the form
+        // shows the new workflow state, not the one fetched before it changed
+        frm.reload_doc();
+    }).catch(() => {
+        // retrying the action would open the dialog and email the customer again
+        frappe.msgprint(
+            __("The email was sent, but the quotation could not be moved to Customer Approval Pending. Please ask your administrator to update the workflow state.")
+        );
+    });
+}
 
 
 // ============================================================================
@@ -642,11 +634,7 @@ function fetch_price_rate_from_zone(frm) {
         }
     });
 
-    // if (found && rate > 0) {
-    //     frm.set_value("price_rate", rate);
-    // } else {
-    //     frm.set_value("price_rate", 0);
-    // }
+
 }
 
 
@@ -764,62 +752,7 @@ function priceRate(frm) {
 
 
 
-// function fetch_zone_from_price_rate(frm) {
-//     if (!frm.doc.industry || !frm.doc.total_hp || !frm.doc.price_rate) return;
 
-//     // 🔹 Step 1: First fetch CRM Industry to get parent_vertical
-//     frappe.db.get_list('CRM Industry', {
-//         filters: { name: frm.doc.industry },
-//         fields: ['parent_vertical'],
-//         limit: 1
-//     }).then(indRes => {
-//         if (!indRes.length || !indRes[0].parent_vertical) return;
-
-//         let parent_vertical = indRes[0].parent_vertical;
-
-//         // 🔹 Step 2: Now check if Vertical Master exists with this parent_vertical
-//         frappe.db.get_list('Vertical Master', {
-//             filters: { name: parent_vertical },
-//             fields: ['name'],
-//             limit: 1
-//         }).then(res => {
-//             if (!res.length) return;
-
-//             // 🔹 Step 3: Fetch Vertical Master doc
-//             frappe.db.get_doc('Vertical Master', res[0].name).then(doc => {
-//                 let total_hp = parseFloat(frm.doc.total_hp);
-//                 let rate = parseFloat(frm.doc.price_rate);
-//                 let matched_zone = "";
-
-//                 (doc.hp_and_zone_details || []).forEach(row => {
-//                     let range = row.hp?.replace("HP", "").trim();
-//                     let matched = false;
-
-//                     try {
-//                         if (range.includes("~")) {
-//                             const [min, max] = range.split("~").map(p => parseFloat(p.trim()));
-//                             if (total_hp >= min && total_hp <= max) matched = true;
-//                         } else {
-//                             const total_hp_val = parseFloat(range);
-//                             if (total_hp === total_hp_val) matched = true;
-//                         }
-
-//                         let min_rate = parseFloat(row.minimum_rate) || 0;
-//                         let max_rate = parseFloat(row.maximum_rate) || 0;
-
-//                         if (matched && rate >= min_rate && rate <= max_rate) {
-//                             matched_zone = row.zone;
-//                         }
-//                     } catch (e) {
-//                         console.warn("HP parse error", e);
-//                     }
-//                 });
-
-//                 frm.set_value("zone", matched_zone || "");
-//             });
-//         });
-//     });
-// }
 async function fetch_zone_from_price_rate(frm) {
 
     if (!frm.doc.industry || !frm.doc.total_hp || !frm.doc.price_rate) return;
@@ -1124,4 +1057,149 @@ function calculate_payment_due_date(frm, cdt, cdn) {
             frappe.model.set_value(cdt, cdn, "payment_date", payment_date);
         }
     });
+}
+
+
+// ============================================================================
+// Attachments tab: upload PDFs and preview them below the button.
+//
+// Every lookup is scoped to this form's own wrapper. Frappe keeps previously
+// opened quotations in the DOM (hidden), so page-wide ids like #pdf-preview
+// would render the preview into another, hidden form.
+// ============================================================================
+
+function render_attachments(frm) {
+    const $wrapper = $(frm.fields_dict.attachments.wrapper).empty();
+
+    $wrapper.append(`
+        <div>
+            <button class="btn btn-sm btn-primary upload-pdf-btn">${__("Upload PDF")}</button>
+            <div class="pdf-tabs mt-3 nav nav-tabs"></div>
+            <div class="pdf-preview mt-3"></div>
+        </div>
+    `);
+
+    const $tabs = $wrapper.find(".pdf-tabs");
+    const $preview = $wrapper.find(".pdf-preview");
+
+    const render_preview = (file_url) => {
+        const url = encodeURI(file_url);
+        $preview.html(`
+            <p><a href="${url}" target="_blank" class="link-primary">${__("Open In New Tab")}</a></p>
+            <iframe src="${url}" style="width: 100%; height: 600px; border: 1px solid #ccc;"></iframe>
+        `);
+    };
+
+    const render_tabs = (files) => {
+        $tabs.empty();
+        $preview.empty();
+
+        const can_delete = frm.attachments && frm.attachments.can_delete_attachment();
+
+        files.forEach((file, index) => {
+            const $tab = $(`<a class="nav-link ${index === 0 ? "active" : ""}" href="#"></a>`)
+                .attr("data-url", file.file_url)
+                .append($("<span>").text(file.file_name))
+                .appendTo($tabs);
+
+            if (can_delete) {
+                $(`<span class="remove-pdf ml-2 text-muted" title="${__("Remove")}">&times;</span>`)
+                    .css({ cursor: "pointer", "font-size": "16px", "line-height": 1 })
+                    .on("click", (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        remove_file(file);
+                    })
+                    .appendTo($tab);
+            }
+        });
+
+        if (files.length) {
+            render_preview(files[0].file_url);
+        } else {
+            $preview.html(`<p class="text-muted">${__("No PDF uploaded yet.")}</p>`);
+        }
+
+        $tabs.find("a").on("click", function (e) {
+            e.preventDefault();
+            $tabs.find("a").removeClass("active");
+            $(this).addClass("active");
+            render_preview($(this).attr("data-url"));
+        });
+    };
+
+    const fetch_and_render_files = () => {
+        frappe.call({
+            method: "frappe.client.get_list",
+            args: {
+                doctype: "File",
+                filters: {
+                    attached_to_doctype: frm.doctype,
+                    attached_to_name: frm.doc.name,
+                    is_folder: 0,
+                    file_url: ["like", "%.pdf"],
+                },
+                fields: ["name", "file_url", "file_name"],
+                order_by: "creation desc",
+                limit_page_length: 100,
+            },
+            callback: (r) => render_tabs(r.message || []),
+        });
+    };
+
+    const remove_file = (file) => {
+        frappe.confirm(
+            __("Remove {0} from this quotation?", [frappe.utils.escape_html(file.file_name)]),
+            () => {
+                // also refreshes the attachment list in the form sidebar
+                frm.attachments.remove_attachment(file.name, () => {
+                    fetch_and_render_files();
+                    unmark_uploaded_if_empty();
+                });
+            }
+        );
+    };
+
+    // With every PDF removed, "PO Pending" must ask for an upload again
+    const unmark_uploaded_if_empty = () => {
+        if (!frm.doc.uploaded || frm.doc.docstatus !== 0) return;
+        frappe.db.count("File", {
+            filters: {
+                attached_to_doctype: frm.doctype,
+                attached_to_name: frm.doc.name,
+                is_folder: 0,
+                file_url: ["like", "%.pdf"],
+            },
+        }).then((count) => {
+            if (!count) {
+                frm.set_value("uploaded", 0);
+                frm.save();
+            }
+        });
+    };
+
+    // Mark the quotation as having a PDF (checked before "PO Pending" can move on).
+    // Saved once: on_success fires per file, and parallel saves of the same
+    // document fail with "Document has been modified".
+    const mark_uploaded = () => {
+        if (frm.doc.uploaded || frm.doc.docstatus !== 0 || frm._saving_uploaded) return;
+        frm._saving_uploaded = true;
+        frm.set_value("uploaded", 1);
+        frm.save().finally(() => { frm._saving_uploaded = false; });
+    };
+
+    $wrapper.find(".upload-pdf-btn").on("click", () => {
+        new frappe.ui.FileUploader({
+            allow_multiple: true,
+            doctype: frm.doctype,
+            docname: frm.doc.name,
+            restrictions: { allowed_file_types: [".pdf"] },
+            on_success: () => {
+                fetch_and_render_files();
+                mark_uploaded();
+            },
+        });
+    });
+
+    fetch_and_render_files();
 }

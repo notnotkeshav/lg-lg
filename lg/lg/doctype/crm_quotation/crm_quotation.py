@@ -31,24 +31,28 @@ class CRMQuotation(Document):
         if not self.customer:
             frappe.throw(_("Customer is required"))
 
+        self.validate_payment_term()
         self.set_amc_duration()
         self.set_multi_year_details()
+
+    def validate_payment_term(self):
+        """The Pay Term must match the Payment Frequency (billing_terms: Advance/Post)."""
+        if not self.billing_terms or not self.payment_term:
+            return
+        if frappe.db.get_value("Pay Term", self.payment_term, "payment_frequency") != self.billing_terms:
+            frappe.throw(
+                _("Payment Term {0} is not a {1} Pay Term").format(
+                    frappe.bold(self.payment_term), self.billing_terms
+                )
+            )
 
     def get_print_format(self):
         """Multi year quotations print year wise."""
         return "AMC Offer Quote Multi Year" if self.is_multi_year else "AMC Offer quote"
 
     def on_update(self):
-        """Mail the quotation out the moment it moves to Customer Approval Pending."""
-        previous = self.get_doc_before_save()
-        was = previous.workflow_state if previous else None
-
-        if (
-            self.workflow_state == "Customer Approval Pending"
-            and was != self.workflow_state
-        ):
-            self.email_quotation_to_customer()
-
+        # The quotation is no longer mailed automatically on "Send Quote to Customer";
+        # the form opens the email dialog prefilled from get_quotation_email_defaults()
         update_deal_status_from_quotation(self)
 
     def on_submit(self):
@@ -85,8 +89,12 @@ class CRMQuotation(Document):
             self.name, amc_type, customer
         )
 
-    def get_quotation_email_body(self):
-        """Covering note that goes with the quotation PDF."""
+    def get_quotation_email_body(self, auto_generated=True):
+        """Covering note that goes with the quotation PDF.
+
+        auto_generated adds the "auto-generated email" footer; leave it off when a
+        user sends the note from the email dialog.
+        """
         currency = self.price_list_currency or "INR"
         total = (
             flt(self.rounded_total_inr) or flt(self.grand_total_inr) or flt(self.amount)
@@ -126,6 +134,18 @@ class CRMQuotation(Document):
                     frappe.utils.formatdate(self.valid_till, "dd MMMM yyyy"),
                 )
             )
+
+        footer = (
+            """
+				<hr style="border:none;border-top:1px solid #ddd;margin:24px 0 12px;">
+				<p style="font-size:11px;color:#888;line-height:1.5;">
+					This is an auto-generated email from the Hi-M. Solutek CRM system and does not require a
+					signature. Please do not reply to this mailbox for any queries other than the acceptance of
+					this quotation.
+				</p>"""
+            if auto_generated
+            else ""
+        )
 
         summary = "".join(
             f"""<tr>
@@ -169,13 +189,7 @@ class CRMQuotation(Document):
 					<b>Customer Support Team</b><br>
 					Hi-M. Solutek India Pvt. Ltd.
 				</p>
-
-				<hr style="border:none;border-top:1px solid #ddd;margin:24px 0 12px;">
-				<p style="font-size:11px;color:#888;line-height:1.5;">
-					This is an auto-generated email from the Hi-M. Solutek CRM system and does not require a
-					signature. Please do not reply to this mailbox for any queries other than the acceptance of
-					this quotation.
-				</p>
+				{footer}
 			</div>
 		"""
 
@@ -1057,6 +1071,20 @@ def update_workflow_to_sent(docname):
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Update Workflow Error")
         return {"success": False, "message": f"Error: {str(e)}"}
+
+
+@frappe.whitelist()
+def get_quotation_email_defaults(docname):
+    """Recipient, subject, covering note and print format for the quotation email dialog."""
+    doc = frappe.get_doc("CRM Quotation", docname)
+    doc.check_permission("read")
+
+    return {
+        "recipients": doc.get_customer_email() or "",
+        "subject": doc.get_quotation_email_subject(),
+        "message": doc.get_quotation_email_body(auto_generated=False),
+        "print_format": doc.get_print_format(),
+    }
 
 
 @frappe.whitelist()

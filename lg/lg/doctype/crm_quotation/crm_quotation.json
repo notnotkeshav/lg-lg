@@ -59,6 +59,7 @@
   "price_rate_usd",
   "conversion_rate",
   "price_rate_as_tonusd",
+  "conversion_date",
   "section_break_cpfv",
   "amount",
   "total_usd",
@@ -162,6 +163,7 @@
    "default": "QT-.YYYY.-",
    "fieldname": "naming_series",
    "fieldtype": "Select",
+   "hidden": 1,
    "label": "Naming Series",
    "options": "QT-.YYYY.-"
   },
@@ -176,12 +178,10 @@
    "print_hide": 1
   },
   {
+   "bold": 1,
    "fetch_from": "customer.organization_name",
    "fieldname": "customer_name",
    "fieldtype": "Data",
-   "in_global_search": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Customer Name",
    "print_hide": 1,
    "read_only": 1
@@ -212,6 +212,7 @@
    "fetch_from": "customer.parent_vertical",
    "fieldname": "parent_vertical",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Parent Vertical",
    "read_only": 1
   },
@@ -231,6 +232,8 @@
    "fetch_if_empty": 1,
    "fieldname": "region",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Region",
    "options": "Region Master"
   },
@@ -239,6 +242,8 @@
    "fetch_if_empty": 1,
    "fieldname": "branch",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Branch",
    "options": "Region Branches"
   },
@@ -251,8 +256,6 @@
    "fieldname": "date",
    "fieldtype": "Date",
    "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Date"
   },
   {
@@ -784,7 +787,7 @@
    "depends_on": "eval:doc.workflow_state ==\"PO Pending\" || doc.workflow_state ==\"Quote Won\"",
    "fieldname": "customer_po_id",
    "fieldtype": "Data",
-   "label": "Customer PO ID",
+   "label": "Customer PO No",
    "mandatory_depends_on": "eval:doc.workflow_state==\"PO Received\" || doc.workflow_state==\"PO Pending\" || doc.workflow_state==\"Quote Won\""
   },
   {
@@ -876,12 +879,18 @@
    "fieldname": "price_rate__as_per_year",
    "fieldtype": "Data",
    "label": "Price Rate  as Per Year"
+  },
+  {
+   "fieldname": "conversion_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Conversion Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-09-15 15:12:15.115151",
+ "modified": "2026-10-09 09:56:47.693663",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "CRM Quotation",
