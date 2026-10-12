@@ -27,7 +27,6 @@
    "columns": 2,
    "fieldname": "branch_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Branch Name",
    "reqd": 1
   },
@@ -43,14 +42,12 @@
    "fetch_if_empty": 1,
    "fieldname": "branch_head_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Branch Head Name"
   },
   {
    "columns": 2,
    "fieldname": "branch_id",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Branch ID",
    "options": "eval:doc.branch_name",
    "unique": 1
@@ -59,6 +56,7 @@
    "fieldname": "region",
    "fieldtype": "Link",
    "ignore_user_permissions": 1,
+   "in_list_view": 1,
    "label": "Region",
    "options": "Region Master"
   },
@@ -75,7 +73,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-15 02:00:00.000000",
+ "modified": "2026-10-08 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Region Branches",
@@ -98,5 +96,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "branch_code"
 }

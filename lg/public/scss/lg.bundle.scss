@@ -54,6 +54,12 @@
         color: var(--accent-color);
     }
 
+    // Navbar breadcrumbs (e.g. Home > Quotation): accent hover blends into the pink header
+    #navbar-breadcrumbs a:hover,
+    #navbar-breadcrumbs a:focus {
+        color: #000000;
+    }
+
     button:hover {
         background-color: var(--button-hover-background);
         border-color: var(--button-hover-background);

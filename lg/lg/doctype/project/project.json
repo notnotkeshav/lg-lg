@@ -36,15 +36,12 @@
   },
   {
    "fieldname": "customer_info_section",
-   "fieldtype": "Section Break",
-   "label": "Customer Info"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "project_name",
    "fieldtype": "Data",
    "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Project ID (IL)",
    "unique": 1
   },
@@ -52,9 +49,7 @@
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Customer Reference No.",
+   "label": "Customer ID",
    "options": "CRM Organization"
   },
   {
@@ -72,8 +67,7 @@
    "hidden": 1,
    "label": "Current Opportunity",
    "options": "CRM Deal",
-   "read_only": 1,
-   "in_list_view": 0
+   "read_only": 1
   },
   {
    "fieldname": "status",
@@ -89,8 +83,6 @@
    "fieldname": "expiry_date",
    "fieldtype": "Date",
    "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Expiry Date"
   },
   {
@@ -105,23 +97,27 @@
   },
   {
    "fetch_from": "industry.parent_vertical",
+   "fetch_if_empty": 1,
    "fieldname": "parent_vertical",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_filter": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Parent Vertical",
    "read_only": 1
   },
   {
    "fieldname": "region",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Region",
    "options": "Region Master"
   },
   {
    "fieldname": "branch",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Branch",
    "options": "Region Branches"
   },
@@ -174,7 +170,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-15 02:00:00.000000",
+ "modified": "2026-10-07 15:33:33.041617",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Project",
@@ -198,5 +194,6 @@
  "search_fields": "customer,status,expiry_date",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "project_name"
 }
