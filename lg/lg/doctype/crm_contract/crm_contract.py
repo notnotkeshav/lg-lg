@@ -17,6 +17,10 @@ from dateutil.relativedelta import relativedelta
 
 
 class CRMContract(Document):
+	def on_trash(self):
+		# Unlink from Customer (CRM Organization) so Frappe's link check doesn't block deletion
+		frappe.db.delete("Customer Contracts", {"contract_id": self.name})
+
 	def on_submit(self):
 		self.schedule_renewal_deal()
 		self.update_serial_no()
