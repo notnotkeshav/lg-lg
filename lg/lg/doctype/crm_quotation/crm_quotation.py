@@ -95,6 +95,10 @@ class CRMQuotation(Document):
         auto_generated adds the "auto-generated email" footer; leave it off when a
         user sends the note from the email dialog.
         """
+        sender_name = (
+            self.branch
+            and frappe.db.get_value("Region Branches", self.branch, "branch_head_name")
+        ) or _("Customer Support Team")
         currency = self.price_list_currency or "INR"
         total = (
             flt(self.rounded_total_inr) or flt(self.grand_total_inr) or flt(self.amount)
@@ -161,13 +165,14 @@ class CRMQuotation(Document):
 
 				<p>
 					Thank you for your interest in the after-sales support services of
-					<b>Hi-M. Solutek India Pvt. Ltd.</b>, authorised service partner for LG air conditioning systems.
+					<b>Hi-M.Solutek India Pvt. Ltd.</b>, authorised service partner for LG air conditioning systems.
 				</p>
 
 				<p>
-					Please find attached our quotation for the Annual Maintenance Contract of the LG air
-					conditioning units installed at your premises. The scope of work, commercial terms and the
-					applicable terms &amp; conditions are detailed in the attached document.
+					Please find attached our quotation for the Annual Maintenance Contract of the LG air conditioning units 
+                    installed at your premises. The scope of work, commercial terms and the applicable terms & conditions are
+                    detailed in the attached document.
+
 				</p>
 
 				<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:18px 0;">
@@ -175,18 +180,17 @@ class CRMQuotation(Document):
 				</table>
 
 				<p>
-					Kindly review the attached quotation. To confirm your acceptance, please approve the
-					quotation in the portal or revert to this email with your confirmation and Purchase Order.
+					Kindly review the attached quotation.
 				</p>
 
 				<p>
-					Should you need any clarification on the coverage, pricing or contract period, please feel
+					Should you need any clarification on the branch, pricing or contract period, please feel
 					free to contact our service team.
 				</p>
 
 				<p>
 					Warm regards,<br>
-					<b>Customer Support Team</b><br>
+					<b>{sender_name}</b><br>
 					Hi-M. Solutek India Pvt. Ltd.
 				</p>
 				{footer}
