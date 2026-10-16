@@ -7,8 +7,10 @@
 // 	},
 // });
 
+
 frappe.ui.form.on("CRM Contract", {
 	refresh(frm) {
+            set_payment_term_query(frm);
             console.log("script calling")
             frm.add_custom_button("Download Product Template", function () {
 
@@ -128,6 +130,23 @@ frappe.ui.form.on("CRM Contract", {
 	
 	expiry_date: function (frm) {
 		set_status(frm)
+		generate_billing_schedule(frm)
+	},
+	start_date: function (frm) {
+		generate_billing_schedule(frm)
+	},
+	payment_frequency: function (frm) {
+		generate_billing_schedule(frm)
+	},
+	payment_term: function (frm) {
+		generate_billing_schedule(frm)
+	},
+	amount: function (frm) {
+		generate_billing_schedule(frm)
+	},
+	billing_terms: async function (frm) {
+		await clear_mismatched_payment_term(frm);
+		generate_billing_schedule(frm)
 	},
 
 	validate: function(frm) {
@@ -521,3 +540,106 @@ frappe.ui.form.on('Contract Billing Schedule', {
 });
 
 
+
+
+// ============================================================================
+// Billing schedule auto-generation (same behaviour as CRM Quotation)
+// ============================================================================
+
+// Only Pay Terms matching the Payment Frequency (billing_terms: Advance/Post) can be picked
+function set_payment_term_query(frm) {
+	frm.set_query("payment_term", () => {
+		if (frm.doc.billing_terms) {
+			return { filters: { payment_frequency: frm.doc.billing_terms } };
+		}
+		return {};
+	});
+}
+
+async function clear_mismatched_payment_term(frm) {
+	if (!frm.doc.billing_terms || !frm.doc.payment_term) return;
+	const { message } = await frappe.db.get_value("Pay Term", frm.doc.payment_term, "payment_frequency");
+	if (message && message.payment_frequency !== frm.doc.billing_terms) {
+		await frm.set_value("payment_term", "");
+	}
+}
+
+function get_ordinal(n) {
+	const s = ["th", "st", "nd", "rd"], v = n % 100;
+	return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+async function generate_billing_schedule(frm) {
+	const { start_date, expiry_date, payment_frequency, payment_term, amount: total_amount } = frm.doc;
+	const billing_terms = frm.doc.billing_terms || "Post";
+
+	if (!start_date || !expiry_date || !payment_frequency || !total_amount) return;
+
+	// never overwrite a schedule that is already being billed / paid
+	if (frm.doc.docstatus === 1) return;
+	if ((frm.doc.billing_schedule || []).some(r => (r.status && r.status !== "Pending") || r.invoice_id || r.invoice_link)) return;
+
+	// min days / portion from the Pay Term
+	let min_days = 0;
+	let min_invoice_portion = 100;
+	if (payment_term) {
+		const doc = await frappe.db.get_doc("Pay Term", payment_term);
+		if (doc && doc.payment_term_portions?.length > 0) {
+			const min_row = doc.payment_term_portions.reduce((prev, curr) =>
+				(curr.days || 0) < (prev.days || 0) ? curr : prev);
+			min_days = min_row.days || 0;
+			min_invoice_portion = min_row.invoice_portion || 100;
+		}
+	}
+
+	const add_row = (billing_date, amount, term, portion) => {
+		const row = frm.add_child("billing_schedule");
+		row.billing_date = frappe.datetime.obj_to_str(billing_date);
+		const pay = new Date(billing_date.getTime());
+		pay.setDate(pay.getDate() + min_days);
+		row.payment_date = frappe.datetime.obj_to_str(pay);
+		row.amount = amount;
+		row.billing_term = term;
+		row.status = "Pending";
+		row.invoice_portion = portion;
+	};
+
+	frm.clear_table("billing_schedule");
+
+	if (payment_frequency === "100% for Partial Contract") {
+		const d = frappe.datetime.str_to_obj(billing_terms === "Advance" ? start_date : expiry_date);
+		add_row(d, flt(total_amount), "Full Payment", 100);
+		frm.refresh_field("billing_schedule");
+		return;
+	}
+
+	const months_to_add = { "Monthly": 1, "Quarterly": 3, "Semi-Annually": 6, "Annually": 12 }[payment_frequency];
+	if (!months_to_add) return;
+
+	const end_obj = frappe.datetime.str_to_obj(expiry_date);
+	const dates = [];
+	if (billing_terms === "Advance") dates.push(frappe.datetime.str_to_obj(start_date));
+
+	let current = frappe.datetime.str_to_obj(start_date);
+	while (true) {
+		const next = new Date(current.getTime());
+		next.setMonth(next.getMonth() + months_to_add);
+		if (next > end_obj) {
+			dates.push(end_obj);
+			break;
+		}
+		dates.push(next);
+		current = next;
+	}
+	// remove duplicate end date in Advance case
+	if (billing_terms === "Advance" && dates.length > 1) dates.pop();
+
+	// equal split; the last row absorbs the rounding difference
+	const each = flt(flt(total_amount) / dates.length, 2);
+	dates.forEach((d, i) => {
+		const amt = i === dates.length - 1 ? flt(flt(total_amount) - each * (dates.length - 1), 2) : each;
+		add_row(d, amt, get_ordinal(i + 1) + " Term", min_invoice_portion);
+	});
+
+	frm.refresh_field("billing_schedule");
+}
