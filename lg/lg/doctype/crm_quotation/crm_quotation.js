@@ -671,6 +671,13 @@ frappe.ui.form.on('Product Details', {
     },
     tonnes(frm, cdt, cdn) {
         calculate_total_ton_hp_for_quotation(frm);
+    },
+    // tonnes is fetched from model_no, which does not fire the tonnes event
+    model_no(frm, cdt, cdn) {
+        setTimeout(() => calculate_total_ton_hp_for_quotation(frm), 500);
+    },
+    product_details_remove(frm) {
+        calculate_total_ton_hp_for_quotation(frm);
     }
 });
 

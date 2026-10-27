@@ -5,27 +5,7 @@ from frappe.model.document import Document
 from frappe.model.mapper import get_mapped_doc
 
 class Project(Document):
-    def validate(self):
-        if not self.customer:
-            return
-
-        customer = frappe.get_doc("CRM Organization", self.customer)
-
-        # Check if project already exists in child table
-        exists = False
-        for row in customer.project_info:
-            if row.project == self.name:
-                exists = True
-                break
-
-        if not exists:
-            customer.append("project_info", {
-                "project": self.name,
-                "status": self.status,
-                "expiry_date": self.expiry_date,
-            })
-            customer.save(ignore_permissions=True)
-            frappe.db.commit()
+    pass
 
 
 @frappe.whitelist()

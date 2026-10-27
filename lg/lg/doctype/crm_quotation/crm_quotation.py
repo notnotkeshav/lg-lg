@@ -32,8 +32,13 @@ class CRMQuotation(Document):
             frappe.throw(_("Customer is required"))
 
         self.validate_payment_term()
+        self.set_total_tonne()
         self.set_amc_duration()
         self.set_multi_year_details()
+
+    def set_total_tonne(self):
+        """Total Ton is the sum of the tonnes on the product rows."""
+        self.total_tonne = sum(flt(row.tonnes) for row in self.product_details or [])
 
     def validate_payment_term(self):
         """The Pay Term must match the Payment Frequency (billing_terms: Advance/Post)."""
