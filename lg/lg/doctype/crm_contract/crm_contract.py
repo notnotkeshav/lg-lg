@@ -5,6 +5,8 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import getdate, now_datetime, add_months, date_diff,today,add_days, flt, fmt_money, formatdate, get_first_day
 import json
+import re
+import datetime
 from frappe import _
 from frappe.desk.form.assign_to import add as assign
 from frappe.model.mapper import get_mapped_doc
@@ -47,7 +49,6 @@ class CRMContract(Document):
 		deal = frappe.new_doc("CRM Deal")
 		# Set required fields as per CRM Deal JSON schema
 		deal.naming_series = "CRM-DEAL-.YYYY.-"
-		deal.register_date = now_datetime().date()
 		deal.status = "Qualification"
 		deal.from_contract = self.name
 		deal.customer = self.customer
@@ -258,25 +259,6 @@ class CRMContract(Document):
 	def on_submit(self):
 		self.set_hp_in_deal_and_expiry_date()
 		self.send_contract_email_on_submit()
-		self.set_contract_in_customer()
-	
-	def set_contract_in_customer(self):
-		if not self.customer:
-			frappe.throw("Please select a Customer before submitting the Contract")
-
-		customer = frappe.get_doc("CRM Organization", self.customer)
-		print(customer,"customer")
-		# Add new row in child table
-		customer.append("contracts_information", {
-			"contract_id": self.name,
-			"start_date": self.start_date,
-			"expiry_date": self.expiry_date,
-			"status": self.custom_contract_status
-		})
-
-		# Save customer record
-		customer.save(ignore_permissions=True)
-		frappe.db.commit()
 
 	def before_validate(self):
 		self.set_status()
@@ -294,7 +276,6 @@ class CRMContract(Document):
 		if self.from_deal and self.expiry_date:
 			expiry_date = getdate(self.expiry_date)  # Convert string to date
 			deal_doc = frappe.get_doc("CRM Deal", self.from_deal)
-			deal_doc.hp_under_amc = self.total_hp
 			deal_doc.amc_expiry_date = self.expiry_date
 			deal_doc.annual_revenue = self.amount
 			deal_doc.duplicate_trigger_date = add_months(expiry_date, -1)
@@ -1440,3 +1421,607 @@ def send_work_order(name):
 	
 
     return "Work Order sent successfully."
+
+# ---- Upload Billing (list view button) ----------------------------------------------------
+# Excel column -> accepted header spellings (headers are lower-cased, non-alphanumerics -> "_")
+BILLING_UPLOAD_COLUMNS = {
+	"customer_name": ["customer_name", "customer"],
+	"start_date": ["start_date"],
+	"bill_ship_code": ["bill_to_code", "bill_ship_code", "bill_to_ship_to_code", "bill_ship_to_code"],
+	"expiry_date": ["expiry_date", "end_date"],
+	"region": ["region"],
+	"branch": ["branch"],
+	"amount": ["amount", "contract_amount"],
+	"billing_terms": ["billing_terms", "billing_term", "payment_frequency"],
+	"billed_date": ["billed_date", "billing_date", "invoice_date"],
+	"invoice_id": ["invoice_id", "invoice_no", "invoice_number"],
+}
+BILLING_UPLOAD_OPTIONAL = {"billing_terms", "billed_date", "invoice_id"}
+
+
+def _billing_header_key(value):
+	return re.sub(r"[^a-z0-9]+", "_", str(value or "").strip().lower()).strip("_")
+
+
+def _billing_cell_date(value):
+	if value in (None, ""):
+		return None
+	if isinstance(value, (datetime.datetime, datetime.date)):
+		return getdate(value)
+	text = str(value).strip()
+	for fmt in ("%d-%m-%Y", "%d/%m/%Y", "%d.%m.%Y", "%Y-%m-%d", "%Y/%m/%d"):
+		try:
+			return datetime.datetime.strptime(text, fmt).date()
+		except ValueError:
+			pass
+	return getdate(text)
+
+
+def _billing_ordinal(n):
+	suffix = "th" if 10 <= n % 100 <= 20 else {1: "st", 2: "nd", 3: "rd"}.get(n % 10, "th")
+	return f"{n}{suffix} Term"
+
+
+def _billing_cell_text(value):
+	if value is None:
+		return ""
+	if isinstance(value, float) and value.is_integer():
+		value = int(value)
+	return str(value).strip()
+
+
+@frappe.whitelist()
+def upload_billing(file_url):
+	"""Update CRM Contract billing_schedule rows from an uploaded Billing Template (.xlsx).
+
+	Each Excel row is matched to exactly one contract on customer name, start date, bill/ship
+	code, expiry date, region, branch and amount. Each Excel row (the 1st, 2nd, ... for a
+	contract) fills the first billing_schedule row whose Invoice Number and Billed Date are both
+	blank; already billed rows are passed over. If no such row is left, that Excel row is skipped
+	with a reason naming the contract. Each filled row gets billed_date, invoice_id and status
+	"Invoice Raised"; the contract's payment_frequency is set from the billing terms column.
+	"""
+	import openpyxl
+
+	frappe.has_permission("CRM Contract", "write", throw=True)
+	path = frappe.get_doc("File", {"file_url": file_url}).get_full_path()
+	ws = openpyxl.load_workbook(path, data_only=True, read_only=True).active
+
+	rows = ws.iter_rows(values_only=True)
+	headers = [_billing_header_key(h) for h in next(rows, [])]
+	index, missing = {}, []
+	for field, aliases in BILLING_UPLOAD_COLUMNS.items():
+		pos = next((headers.index(a) for a in aliases if a in headers), None)
+		if pos is None:
+			if field not in BILLING_UPLOAD_OPTIONAL or field == "billing_terms":
+				missing.append(field)
+		else:
+			index[field] = pos
+	if missing:
+		frappe.throw(_("Missing column(s) in Excel: {0}").format(", ".join(missing)))
+
+	frequencies = {
+		re.sub(r"[^a-z]", "", f.lower()): f
+		for f in frappe.get_meta("CRM Contract").get_field("payment_frequency").options.split("\n") if f
+	}
+	frequencies.update({"quaterly": "Quarterly", "yearly": "Annually", "annual": "Annually",
+		"halfyearly": "Semi-Annually", "semiannually": "Semi-Annually"})
+
+	key_fields = ["customer_name", "start_date", "bill_ship_code", "expiry_date", "region", "branch", "amount"]
+	docs, errors, filled, used, current = {}, [], {}, {}, None
+	for line, row in enumerate(rows, start=2):
+		cell = lambda f: row[index[f]] if f in index else None
+		# a row with only a billed date / invoice (+ terms) is the next term of the previous contract
+		is_key_row = any(_billing_cell_text(cell(f)) for f in key_fields)
+		if not is_key_row and not (_billing_cell_text(cell("billed_date")) or _billing_cell_text(cell("invoice_id"))):
+			continue
+		try:
+			if is_key_row:
+				current = None
+				filters = {
+					"customer_name": _billing_cell_text(cell("customer_name")),
+					"start_date": _billing_cell_date(cell("start_date")),
+					"bill_ship_code": _billing_cell_text(cell("bill_ship_code")),
+					"expiry_date": _billing_cell_date(cell("expiry_date")),
+					"region": _billing_cell_text(cell("region")),
+					"branch": _billing_cell_text(cell("branch")),
+					"amount": flt(cell("amount")),
+				}
+				matches = frappe.get_all("CRM Contract", filters=filters, pluck="name")
+				if not matches:
+					errors.append(_("Row {0}: no matching contract").format(line))
+					continue
+				if len(matches) > 1:
+					errors.append(_("Row {0}: {1} contracts match ({2})").format(line, len(matches), ", ".join(matches)))
+					continue
+
+				if matches[0] not in docs:
+					doc = frappe.get_doc("CRM Contract", matches[0])
+					terms = re.sub(r"[^a-z]", "", _billing_cell_text(cell("billing_terms")).lower())
+					if terms:
+						frequency = frequencies.get(terms)
+						if not frequency:
+							errors.append(_("Row {0}: unknown billing terms '{1}'").format(line, cell("billing_terms")))
+							continue
+						doc.payment_frequency = frequency
+					docs[doc.name] = doc
+					filled[doc.name] = 0
+					used[doc.name] = set()
+				current = matches[0]
+			elif not current:
+				errors.append(_("Row {0}: previous contract was not matched, row skipped").format(line))
+				continue
+
+			doc = docs[current]
+			billed = _billing_cell_date(cell("billed_date"))
+			# first schedule row not yet billed (Invoice Number and Billed Date blank) and not
+			# already filled by an earlier Excel row; rows already billed are skipped
+			sched = next(
+				(s for s in doc.billing_schedule
+					if not s.invoice_id and not s.billed_date and s.name not in used[current]),
+				None,
+			)
+			if not sched:
+				errors.append(_(
+					"Row {0}: contract {1} skipped - no billing schedule row with blank Invoice Number and Billed Date"
+				).format(line, doc.name))
+				continue
+			used[current].add(sched.name)
+			sched.billed_date = billed
+			if not sched.billing_date:
+				sched.billing_date = billed
+			sched.invoice_id = _billing_cell_text(cell("invoice_id"))
+			sched.status = "Invoice Raised"
+			filled[current] += 1
+		except Exception as e:
+			errors.append(_("Row {0}: {1}").format(line, str(e)))
+
+	updated = []
+	for doc in docs.values():
+		if not filled[doc.name]:
+			continue
+		doc.flags.ignore_validate_update_after_submit = True
+		doc.flags.ignore_mandatory = True
+		try:
+			doc.save()
+			updated.append(doc.name)
+		except Exception as e:
+			errors.append(_("{0}: could not save - {1}").format(doc.name, str(e)))
+	return {"updated": sorted(updated), "errors": errors}
+
+
+# ---- Upload Payment (list view button) ----------------------------------------------------
+PAYMENT_UPLOAD_COLUMNS = {
+	"customer_name": ["customer_name", "customer"],
+	"invoice_id": ["invoice_no", "invoice_id", "invoice_number"],
+	"amount": ["amount", "amount_loc"],
+	"overdue_amount": ["overdue_amount", "overdue_amount_loc", "overdue"],
+}
+
+
+def _billing_number_text(value):
+	return str(int(value)) if float(value).is_integer() else str(value)
+
+
+@frappe.whitelist()
+def upload_payment(file_url):
+	"""Update CRM Contract billing_schedule rows from an uploaded Payment sheet (.xlsx).
+
+	Only the Customer Name, Invoice No., Amount and Overdue Amount columns are read; every other
+	column is ignored. The contract is found on customer name and the billing_schedule row on
+	invoice_id = Invoice No. For a matched row:
+	- Overdue Amount is 0: received_amount = Excel Amount, overdue_amount = Excel Amount - received.
+	- Overdue Amount is not 0: overdue_amount = Excel Overdue Amount, received_amount = Excel Amount - overdue.
+	payment_date is set to today and status becomes "Paid" (nothing overdue) or "Partially Paid".
+	Rows that cannot be matched are reported with a reason.
+	"""
+	import openpyxl
+
+	frappe.has_permission("CRM Contract", "write", throw=True)
+	path = frappe.get_doc("File", {"file_url": file_url}).get_full_path()
+	ws = openpyxl.load_workbook(path, data_only=True, read_only=True).active
+
+	rows = ws.iter_rows(values_only=True)
+	headers = [_billing_header_key(h) for h in next(rows, [])]
+	index, missing = {}, []
+	for field, aliases in PAYMENT_UPLOAD_COLUMNS.items():
+		pos = next((headers.index(a) for a in aliases if a in headers), None)
+		if pos is None:
+			missing.append(field)
+		else:
+			index[field] = pos
+	if missing:
+		frappe.throw(_("Missing column(s) in Excel: {0}").format(", ".join(missing)))
+
+	docs, errors, contracts_by_customer = {}, [], {}
+	for line, row in enumerate(rows, start=2):
+		cell = lambda f: row[index[f]] if index[f] < len(row) else None
+		customer_name = _billing_cell_text(cell("customer_name"))
+		invoice_id = _billing_cell_text(cell("invoice_id"))
+		if not (customer_name or invoice_id):
+			continue
+		try:
+			if not customer_name or not invoice_id:
+				errors.append(_("Row {0}: customer name and invoice number are required").format(line))
+				continue
+
+			key = customer_name.lower()
+			if key not in contracts_by_customer:
+				contracts_by_customer[key] = frappe.get_all(
+					"CRM Contract", filters={"customer_name": customer_name, "docstatus": ["<", 2]}, pluck="name")
+			contracts = contracts_by_customer[key]
+			if not contracts:
+				errors.append(_("Row {0}: no contract found for customer {1}").format(line, customer_name))
+				continue
+
+			matches = []
+			for name in contracts:
+				if name not in docs:
+					docs[name] = frappe.get_doc("CRM Contract", name)
+				sched = next((s for s in docs[name].billing_schedule if _billing_cell_text(s.invoice_id) == invoice_id), None)
+				if sched:
+					matches.append((docs[name], sched))
+			if not matches:
+				errors.append(_("Row {0}: no billing schedule row with invoice number {1} for customer {2}").format(
+					line, invoice_id, customer_name))
+				continue
+			if len(matches) > 1:
+				errors.append(_("Row {0}: invoice number {1} found in {2} contracts ({3})").format(
+					line, invoice_id, len(matches), ", ".join(d.name for d, _s in matches)))
+				continue
+
+			doc, sched = matches[0]
+			excel_amount = flt(cell("amount"), 2)
+			excel_overdue = flt(cell("overdue_amount"), 2)
+			if excel_overdue:
+				overdue = excel_overdue
+				received = flt(excel_amount - excel_overdue, 2)
+			else:
+				received = excel_amount
+				overdue = flt(excel_amount - received, 2)
+			if received < 0 or overdue < 0:
+				errors.append(_("Row {0}: contract {1}: invoice {2} gives a negative received/overdue amount "
+					"(Amount {3}, Overdue Amount {4}); row not updated").format(
+					line, doc.name, invoice_id, excel_amount, excel_overdue))
+				continue
+
+			sched.received_amount = _billing_number_text(received)
+			sched.overdue_amount = overdue
+			sched.payment_date = str(getdate(nowdate()))
+			sched.status = "Partially Paid" if overdue else "Paid"
+			doc.flags.payment_updated = True
+		except Exception as e:
+			errors.append(_("Row {0}: {1}").format(line, str(e)))
+
+	updated = []
+	for doc in docs.values():
+		if not doc.flags.payment_updated:
+			continue
+		doc.flags.ignore_validate_update_after_submit = True
+		doc.flags.ignore_mandatory = True
+		try:
+			doc.save()
+			updated.append(doc.name)
+		except Exception as e:
+			errors.append(_("{0}: could not save - {1}").format(doc.name, str(e)))
+	return {"updated": sorted(updated), "errors": errors}
+
+
+# ---- Upload AMC Billing (list view button) ------------------------------------------------
+# Customer's "AMC Raw data" sheet (.xlsb / .xlsx). One Excel row = one invoice = one billing term.
+AMC_BILLING_COLUMNS = {
+	"bill_to_code": ["customer_bill_to_code", "bill_to_code"],
+	"customer_name": ["customer_name"],
+	"invoice_no": ["invoice_no", "invoice_number"],
+	"invoice_date": ["invoice_date"],
+	"wty_start": ["wty_start_date"],
+	"wty_end": ["wty_end_date"],
+	"total": ["total", "amount"],
+	"ext_type": ["wty_ext_type"],
+	"branch": ["actual_branch", "branch"],
+}
+AMC_BILLING_OPTIONAL = {"bill_to_code", "ext_type", "wty_end", "branch"}
+
+
+def _amc_cell_date(value):
+	# .xlsb (and un-formatted .xlsx) dates arrive as Excel serial numbers
+	if isinstance(value, (int, float)) and not isinstance(value, bool):
+		return getdate(datetime.date(1899, 12, 30) + datetime.timedelta(days=int(value)))
+	return _billing_cell_date(value)
+
+
+def _amc_read_rows(path):
+	"""Yield the header-keyed rows of the first usable sheet ('Working' when present)."""
+	if path.lower().endswith(".xlsb"):
+		try:
+			from pyxlsb import open_workbook
+		except ImportError:
+			frappe.throw(_("Reading .xlsb needs the pyxlsb package (bench pip install pyxlsb), or upload the sheet as .xlsx"))
+		with open_workbook(path) as wb:
+			sheet = "Working" if "Working" in wb.sheets else wb.sheets[0]
+			with wb.get_sheet(sheet) as ws:
+				return [[c.v for c in row] for row in ws.rows()]
+	import openpyxl
+
+	wb = openpyxl.load_workbook(path, data_only=True, read_only=True)
+	ws = wb["Working"] if "Working" in wb.sheetnames else wb.active
+	return [list(row) for row in ws.iter_rows(values_only=True)]
+
+
+def _amc_frequency(ext_type):
+	"""Billing frequency from the 'WTY EXT Type' text: 'Quarterly  AMC' -> Quarterly, 'Half Yearly AMC' /
+	'Labor - Half Yearly AMC' -> Semi-Annually, any '1 Year' / '1Yr' plan -> Annually, else None."""
+	text = (ext_type or "").lower()
+	if "month" in text:
+		return "Monthly"
+	if "quarter" in text or "quater" in text:
+		return "Quarterly"
+	if "half" in text or "semi" in text:
+		return "Semi-Annually"
+	# '... 1 Year ...', 'Platinum Plan - 1Yr Normal AMC', 'Labor - 1yr AMC', 'Yearly', 'Annual'
+	if re.search(r"\d\s*-?\s*(yr|year)|\byear|\bannual|\byr", text):
+		return "Annually"
+	return None  # unreadable ('0x2a', 0, blank): try every frequency
+
+
+def _amc_billing_dates(start_date, expiry_date, frequency, billing_terms):
+	"""Billing dates of a contract, same rule as generate_billing_schedule() in crm_contract.js:
+	Advance bills at the start of every period, Post at the end of every period."""
+	months = {"Monthly": 1, "Quarterly": 3, "Semi-Annually": 6, "Annually": 12}.get(frequency)
+	if not months:
+		return []
+	start, end = getdate(start_date), getdate(expiry_date)
+	dates = [start] if billing_terms == "Advance" else []
+	current = start
+	while True:
+		nxt = add_months(current, months)
+		if nxt > end:
+			dates.append(end)
+			break
+		dates.append(nxt)
+		current = nxt
+	if billing_terms == "Advance" and len(dates) > 1:
+		dates.pop()
+	return dates
+
+
+def _amc_regenerate_schedule(doc, dates):
+	min_days = 0
+	if doc.payment_term and frappe.db.exists("Pay Term", doc.payment_term):
+		portions = frappe.get_doc("Pay Term", doc.payment_term).payment_term_portions
+		min_days = min([p.days or 0 for p in portions] or [0])
+	each = flt(flt(doc.amount) / len(dates), 2)
+	doc.set("billing_schedule", [])
+	for i, d in enumerate(dates):
+		doc.append("billing_schedule", {
+			"billing_date": d,
+			"payment_date": str(add_days(d, min_days)),
+			"amount": each if i < len(dates) - 1 else flt(flt(doc.amount) - each * (len(dates) - 1), 2),
+			"billing_term": _billing_ordinal(i + 1),
+			"status": "Pending",
+		})
+
+
+@frappe.whitelist()
+def upload_amc_billing(file_url, dry_run=0):
+	"""Fill the billing terms of saved CRM Contracts from the customer's AMC Raw data sheet.
+
+	A blank Invoice Date on a row that has an Invoice No takes the Invoice Date of the row above.
+	Every Excel row (customer bill-to code / name, WTY Start Date, WTY End Date, Invoice No,
+	Invoice Date, Total, WTY EXT Type) is one billing term of one contract:
+	- The contract is found on Bill To Code (Customer Name when either side has no code), Actual
+	  Branch = its Branch, Zone = its Region (or EAST for EAST-1 / EAST-2), and the WTY Start Date
+	  has to fall inside its Start / Expiry Date. No contract is ever created.
+	- WTY Start Date is the billing date of the billing term. It is checked against the contract's
+	  billing schedule dates under Advance and under Post (frequency = the contract's Billing
+	  Terms, else read from WTY EXT Type); the one that has a billing date on it becomes the
+	  contract's Payment Frequency (billing_terms). When both fit (every date but the first/last
+	  one does) Advance is taken.
+	- Total x the number of terms of that frequency (Semi-Annually: Total x 2) must equal the
+	  contract Amount (0.5% rounding allowed); this picks the right contract when a customer has
+	  several at the same branch. The contract Amount itself is never changed.
+	- The billing schedule is (re)generated for that frequency unless billing already started on
+	  it; the term is then filled with Amount = Total, Invoice Number, Billed Date and status
+	  "Invoice Raised" (a Paid / Partially Paid term keeps its status). A term missing from an
+	  already billed schedule is added.
+	With dry_run nothing is saved; the same report is returned.
+	"""
+	frappe.has_permission("CRM Contract", "write", throw=True)
+	dry_run = int(dry_run or 0)
+	path = frappe.get_doc("File", {"file_url": file_url}).get_full_path()
+	rows = _amc_read_rows(path)
+	headers = [_billing_header_key(h) for h in (rows[0] if rows else [])]
+	index, missing = {}, []
+	for field, aliases in AMC_BILLING_COLUMNS.items():
+		pos = next((headers.index(a) for a in aliases if a in headers), None)
+		if pos is None:
+			if field not in AMC_BILLING_OPTIONAL:
+				missing.append(field)
+		else:
+			index[field] = pos
+	if missing:
+		frappe.throw(_("Missing column(s) in Excel: {0}").format(", ".join(missing)))
+
+	contracts = frappe.get_all(
+		"CRM Contract",
+		filters={"docstatus": ["<", 2]},
+		fields=["name", "customer_name", "bill_ship_code", "start_date", "expiry_date", "payment_frequency", "billing_terms", "amount", "branch"],
+	)
+	norm = lambda v: re.sub(r"\s+", " ", _billing_cell_text(v)).lower()
+	by_code, by_name = {}, {}
+	for c in contracts:
+		if not (c.start_date and c.expiry_date):
+			continue
+		by_name.setdefault(norm(c.customer_name), []).append(c)
+		if c.bill_ship_code:
+			by_code.setdefault(norm(c.bill_ship_code), []).append(c)
+
+	last_invoice_date = None  # a blank Invoice Date takes the one of the row above
+	errors, failed, seen, assigned = [], [], set(), {}  # assigned: contract -> [(line, term_row, {terms that fit})]
+	for line, row in enumerate(rows[1:], start=2):
+		cell = lambda f: row[index[f]] if f in index and index[f] < len(row) else None
+		invoice_no = _billing_cell_text(cell("invoice_no"))
+		customer = _billing_cell_text(cell("customer_name"))
+		if not (invoice_no or customer):
+			continue
+		try:
+			total = flt(cell("total"), 2)
+			wty_start, invoice_date = _amc_cell_date(cell("wty_start")), _amc_cell_date(cell("invoice_date"))
+			if invoice_date:
+				last_invoice_date = invoice_date
+			elif invoice_no:
+				# only a row that has an Invoice No is a billed term; one without stays "not billed yet"
+				invoice_date = last_invoice_date
+			if not (invoice_no and invoice_date):
+				errors.append(_("Row {0}: {1} not billed yet (no Invoice No / Invoice Date), skipped").format(line, customer))
+				continue
+			if not wty_start:
+				errors.append(_("Row {0}: invoice {1} has no WTY Start Date, skipped").format(line, invoice_no))
+				continue
+			if total <= 0:
+				errors.append(_("Row {0}: invoice {1} has no positive Total, skipped").format(line, invoice_no))
+				continue
+			key = (norm(customer), invoice_no, wty_start)
+			if key in seen:
+				errors.append(_("Row {0}: invoice {1} repeated for the same term, skipped").format(line, invoice_no))
+				continue
+			seen.add(key)
+
+			code = norm(cell("bill_to_code"))
+			pool = by_code.get(code) or [] if code else []
+			named = by_name.get(norm(customer), [])
+			# a contract without a bill-to code can only be matched on the customer name
+			candidates = {c.name: c for c in pool + [c for c in named if not c.bill_ship_code or not code]}.values()
+			candidates = [c for c in candidates if getdate(c.start_date) <= wty_start <= getdate(c.expiry_date)]
+			# one customer has contracts at several locations: the sheet's Actual Branch is the
+			# contract's Branch (Zone is not compared, the system splits e.g. EAST into EAST-1 / EAST-2)
+			branch = norm(cell("branch"))
+			in_location = [c for c in candidates if not branch or norm(c.branch) == branch]
+			if candidates and not in_location:
+				errors.append(_("Row {0}: {1} has contract(s) {2} but not in branch {3}").format(
+					line, customer, ", ".join(c.name for c in candidates), _billing_cell_text(cell("branch"))))
+				continue
+			candidates = in_location
+			if not candidates:
+				errors.append(_("Row {0}: no saved contract for {1} ({2}) covering WTY Start {3}").format(
+					line, customer, _billing_cell_text(cell("bill_to_code")) or "no bill-to code", wty_start))
+				continue
+
+			frequency_hint = _amc_frequency(_billing_cell_text(cell("ext_type")))
+			hits, amount_mismatch = [], []
+			for c in candidates:
+				# the contract's own frequency first, then the one the sheet's plan name says, then the
+				# rest: Total x terms = Amount is what tells the real frequency (a contract saved
+				# as Quarterly can be billed monthly)
+				frequencies = [f for f in dict.fromkeys(
+					[c.payment_frequency, frequency_hint, "Quarterly", "Semi-Annually", "Annually", "Monthly"]) if f]
+				fits = {(f, t) for f in frequencies
+					for t in ([c.billing_terms] if c.billing_terms else ["Advance", "Post"])
+					if wty_start in _amc_billing_dates(c.start_date, c.expiry_date, f, t)}
+				# the invoice is one term: Total x number of terms = the contract Amount
+				# (Semi-Annually, 2 terms: Total x 2), allowing for rounding
+				amount_fits = {(f, t) for f, t in fits
+					if abs(total * len(_amc_billing_dates(c.start_date, c.expiry_date, f, t)) - flt(c.amount)) <= max(1, flt(c.amount) * 0.005)}
+				if amount_fits:
+					hits.append((c, amount_fits, frequencies))
+				elif fits:
+					amount_mismatch.append("{0} ({1})".format(c.name, flt(c.amount)))
+			if not hits and amount_mismatch:
+				errors.append(_("Row {0}: invoice {1} Total {2} x number of terms does not match the Amount of {3}").format(
+					line, invoice_no, total, ", ".join(amount_mismatch)))
+				continue
+			if not hits:
+				errors.append(_("Row {0}: WTY Start {1} is not a billing date (Advance or Post) of {2}").format(
+					line, wty_start, ", ".join(c.name for c in candidates)))
+				continue
+			if len(hits) > 1:
+				errors.append(_("Row {0}: WTY Start {1} fits {2} contracts ({3}), skipped").format(
+					line, wty_start, len(hits), ", ".join(h[0].name for h in hits)))
+				continue
+			contract, fits, frequencies = hits[0]
+			assigned.setdefault(contract.name, []).append((line, {
+				"wty_start": wty_start, "invoice_no": invoice_no, "invoice_date": invoice_date,
+				"total": total, "frequencies": frequencies,
+			}, fits))
+		except Exception as e:
+			errors.append(_("Row {0}: {1}").format(line, str(e)))
+			failed.append(errors[-1])
+
+	updated = []
+	for name, items in assigned.items():
+		try:
+			doc = frappe.get_doc("CRM Contract", name)
+			# a Payment Term that no longer exists makes the save fail ("Could not find Payment Term")
+			if doc.payment_term and not frappe.db.exists("Pay Term", doc.payment_term):
+				doc.payment_term = None
+			rows_text = ", ".join(str(item[0]) for item in items)
+			# every term of the contract has to agree on one frequency and on Advance / Post
+			terms_fit = set.intersection(*(item[2] for item in items))
+			if not terms_fit:
+				errors.append(_("Rows {1}: contract {0} skipped, its WTY Start Dates do not fit one frequency with Advance / Post").format(
+					name, rows_text))
+				continue
+			order = items[0][1]["frequencies"]
+			frequency, billing_terms = min(terms_fit, key=lambda ft: (ft[1] != "Advance", order.index(ft[0]) if ft[0] in order else 9))
+
+			started = any(s.invoice_id or s.billed_date or (s.status and s.status != "Pending") for s in doc.billing_schedule)
+			if not started and (not doc.billing_schedule or doc.billing_terms != billing_terms or doc.payment_frequency != frequency):
+				doc.billing_terms, doc.payment_frequency = billing_terms, frequency
+				_amc_regenerate_schedule(doc, _amc_billing_dates(doc.start_date, doc.expiry_date, frequency, billing_terms))
+			else:
+				doc.billing_terms, doc.payment_frequency = doc.billing_terms or billing_terms, frequency
+
+			filled = 0
+			for line, term, _fits in items:
+				sched = next((s for s in doc.billing_schedule if s.billing_date and getdate(s.billing_date) == term["wty_start"]), None)
+				if not sched:
+					sched = doc.append("billing_schedule", {
+						"billing_date": term["wty_start"],
+						"billing_term": _billing_ordinal(len(doc.billing_schedule) + 1),
+						"status": "Pending",
+					})
+				if sched.invoice_id and _billing_cell_text(sched.invoice_id) != term["invoice_no"]:
+					errors.append(_("Row {0}: contract {1} term {2} already has invoice {3}, skipped").format(
+						line, name, term["wty_start"], sched.invoice_id))
+					continue
+				sched.amount = term["total"]
+				sched.invoice_id = term["invoice_no"]
+				sched.billed_date = term["invoice_date"]
+				if not sched.status or sched.status == "Pending":
+					sched.status = "Invoice Raised"
+				filled += 1
+			if not filled:
+				continue
+			doc.billing_schedule.sort(key=lambda s: getdate(s.billing_date) if s.billing_date else datetime.date.max)
+			for i, s in enumerate(doc.billing_schedule, start=1):
+				s.idx = i
+			if not dry_run:
+				doc.flags.ignore_validate_update_after_submit = True
+				doc.flags.ignore_mandatory = True
+				try:
+					doc.save()
+				except Exception as e:
+					errors.append(_("Rows {2}: contract {0} could not save - {1}").format(name, str(e), rows_text))
+					failed.append(errors[-1])
+					continue
+			updated.append("{0} ({1}, {2}, {3} term(s))".format(name, billing_terms, frequency, filled))
+		except Exception as e:
+			errors.append(_("Rows {2}: contract {0}: {1}").format(name, str(e), ", ".join(str(i[0]) for i in items)))
+			failed.append(errors[-1])
+
+	if not dry_run:
+		_amc_log_upload(file_url, updated, [e for e in errors if e not in failed], failed)
+	return {"updated": sorted(updated), "errors": errors, "dry_run": dry_run}
+
+
+def _amc_log_upload(file_url, updated, skipped, failed):
+	"""Write the outcome of an Upload AMC Billing run to the Error Log list, one entry each for the
+	updated, the skipped and the failed rows, so they can be looked up (search "Upload AMC Billing")."""
+	run = "{0} by {1}".format(frappe.utils.now(), frappe.session.user)
+	for label, lines in (("Updated", updated), ("Skipped", skipped), ("Failed", failed)):
+		if lines:
+			frappe.log_error(
+				title="Upload AMC Billing - {0} ({1})".format(label, len(lines)),
+				message="File: {0}\nRun: {1}\n{2}: {3}\n\n{4}".format(
+					file_url, run, label, len(lines), "\n".join(lines)),
+			)

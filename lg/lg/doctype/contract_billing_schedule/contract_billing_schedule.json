@@ -9,11 +9,14 @@
   "billing_term",
   "billing_date",
   "billed_date",
+  "received_amount",
+  "payment_date",
   "invoice_link",
   "column_break_sjxt",
   "status",
   "amount",
   "invoice_id",
+  "overdue_amount",
   "section_break_iuwy",
   "invoice_information"
  ],
@@ -42,8 +45,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Pending\nInvoice Raised\nPartially Paid\nPaid",
-   "read_only": 1
+   "options": "Pending\nInvoice Raised\nPartially Paid\nPaid"
   },
   {
    "columns": 2,
@@ -79,6 +81,7 @@
    "depends_on": "eval:doc.parenttype==\"CRM Contract\"",
    "fieldname": "invoice_link",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Invoice Link",
    "options": "Invoice"
   },
@@ -92,12 +95,27 @@
    "fieldname": "invoice_information",
    "fieldtype": "HTML",
    "label": "Invoice Information"
+  },
+  {
+   "fieldname": "received_amount",
+   "fieldtype": "Data",
+   "label": "Received Amount"
+  },
+  {
+   "fieldname": "payment_date",
+   "fieldtype": "Data",
+   "label": "Payment Date"
+  },
+  {
+   "fieldname": "overdue_amount",
+   "fieldtype": "Currency",
+   "label": "Overdue Amount"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-11-07 11:46:01.725133",
+ "modified": "2026-10-21 14:51:52.079363",
  "modified_by": "Administrator",
  "module": "Lg",
  "name": "Contract Billing Schedule",

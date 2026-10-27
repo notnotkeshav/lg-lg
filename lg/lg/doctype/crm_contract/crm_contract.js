@@ -1,13 +1,3 @@
-// Copyright (c) 2024, extension and contributors
-// For license information, please see license.txt
-
-// frappe.ui.form.on("CRM Contract", {
-// 	refresh(frm) {
-
-// 	},
-// });
-
-
 frappe.ui.form.on("CRM Contract", {
 	refresh(frm) {
             set_payment_term_query(frm);
