@@ -268,7 +268,7 @@ def get_data(filters, month_years):
     deal_map = {}
     if deal_ids:
         deal_data = frappe.db.get_all("CRM Deal", filters={"name": ["in", deal_ids]},
-            fields=["name", "industry", "region", "branch", "hp_under_amc"])
+            fields=["name", "industry", "region", "branch", "total_hp"])
         deal_map = {d["name"]: d for d in deal_data}
 
     # Map quotes
@@ -305,8 +305,8 @@ def get_data(filters, month_years):
             "region": deal.get("region"),
             "branch": deal.get("branch"),
             "total_hp_contract": total_hp_contract,
-            "hp_deal": deal.get("hp_under_amc", 0) or 0,
-            "variance": total_hp_contract - (deal.get("hp_under_amc", 0) or 0),
+            "hp_deal": deal.get("total_hp", 0) or 0,
+            "variance": total_hp_contract - (deal.get("total_hp", 0) or 0),
             "spec_in_date": quote.get("spec_in_date"),
             "award_date": quote.get("award_date"),
             "amc_year": contract.amc_year,
