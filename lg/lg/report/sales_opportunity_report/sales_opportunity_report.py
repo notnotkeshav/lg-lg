@@ -27,7 +27,7 @@ def execute(filters=None):
 
     query = f"""
         SELECT 
-            o.name, o.region, o.branch, o.total_hp, o.project, o.register_date, o.commision_date,
+            o.name, o.region, o.branch, o.total_hp, o.project, DATE(o.creation) AS register_date,
             b.branch_head, r.region_head, o.warranty_expiry_date, p.expiry_date, p.current_deal,
             DATEDIFF(p.expiry_date, CURDATE()) AS days_to_expiry
         FROM `tabCRM Deal` AS o
@@ -47,7 +47,6 @@ def execute(filters=None):
         {"label": "Total HP", "fieldname": "total_hp", "fieldtype": "Float", "width": 100},
         {"label": "Project", "fieldname": "project", "fieldtype": "Link", "options": "Project", "width": 150},
         {"label": "Register Date", "fieldname": "register_date", "fieldtype": "Date", "width": 120},
-        {"label": "Commission Date", "fieldname": "commision_date", "fieldtype": "Date", "width": 120},
         {"label": "Branch Head", "fieldname": "branch_head", "fieldtype": "Data", "width": 120},
         {"label": "Region Head", "fieldname": "region_head", "fieldtype": "Data", "width": 120},
         {"label": "Warranty Expiry", "fieldname": "warranty_expiry_date", "fieldtype": "Date", "width": 120},

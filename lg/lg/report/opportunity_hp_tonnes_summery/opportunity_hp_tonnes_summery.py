@@ -35,15 +35,15 @@ def execute(filters=None):
     if filters.get("opportunity_category"):
         opp_filters["deal_category"] = filters.get("opportunity_category")
 
-    # date range on register_date
+    # date range on creation
     from_date = filters.get("from_date")
     to_date = filters.get("to_date")
     if from_date and to_date:
-        opp_filters["register_date"] = ["between", [from_date, to_date]]
+        opp_filters["creation"] = ["between", [from_date, to_date]]
     elif from_date:
-        opp_filters["register_date"] = [">=", from_date]
+        opp_filters["creation"] = [">=", from_date]
     elif to_date:
-        opp_filters["register_date"] = ["<=", to_date]
+        opp_filters["creation"] = ["<=", f"{to_date} 23:59:59"]
 
     # quick exact filters for project/branch/region (these are simple)
     if filters.get("project"):

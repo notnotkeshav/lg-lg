@@ -14,7 +14,7 @@ def execute(filters=None):
 
     # --- Date range logic ---
     from_date, to_date = get_date_range(filters)
-    where_clauses.append("cd.register_date BETWEEN %(from_date)s AND %(to_date)s")
+    where_clauses.append("DATE(cd.creation) BETWEEN %(from_date)s AND %(to_date)s")
     params["from_date"], params["to_date"] = from_date, to_date
 
     # --- Additional filters ---
@@ -54,7 +54,7 @@ def execute(filters=None):
             LEFT JOIN `tabRegion Master` rm ON rm.name = cd.region
             WHERE {where_sql}
             GROUP BY group_label, period_label
-            ORDER BY MIN(cd.register_date)
+            ORDER BY MIN(DATE(cd.creation))
         """
         results = frappe.db.sql(query, params, as_dict=True)
 
@@ -176,11 +176,11 @@ def get_date_range(filters):
 def get_time_group_field(date_range_type):
     if "Month" in date_range_type:
         # For current month → show day labels (e.g. 01-Oct)
-        return "DATE_FORMAT(cd.register_date, '%%d-%%b')"
+        return "DATE_FORMAT(DATE(cd.creation), '%%d-%%b')"
     elif "Quarter" in date_range_type:
         # For quarter → show Q1, Q2, etc.
-        return "CONCAT('Q', QUARTER(cd.register_date))"
+        return "CONCAT('Q', QUARTER(DATE(cd.creation)))"
     else:
         # For year or multi-month → show month labels (e.g. Jan, Feb)
-        return "DATE_FORMAT(cd.register_date, '%%b')"
+        return "DATE_FORMAT(DATE(cd.creation), '%%b')"
 
