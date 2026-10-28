@@ -19,6 +19,14 @@ from dateutil.relativedelta import relativedelta
 
 
 class CRMContract(Document):
+	def before_validate(self):
+		# The original (amended-from) contract may have been deleted; drop the dangling
+		# reference so Frappe's link validation doesn't block saving.
+		if self.amended_from and not frappe.db.exists("CRM Contract", self.amended_from):
+			self.amended_from = None
+			if not self.is_new():
+				frappe.db.set_value("CRM Contract", self.name, "amended_from", None, update_modified=False)
+
 	def on_trash(self):
 		# Unlink from Customer (CRM Organization) so Frappe's link check doesn't block deletion
 		frappe.db.delete("Customer Contracts", {"contract_id": self.name})
@@ -1529,10 +1537,10 @@ def upload_billing(file_url):
 				}
 				matches = frappe.get_all("CRM Contract", filters=filters, pluck="name")
 				if not matches:
-					errors.append(_("Row {0}: no matching contract").format(line))
+					errors.append(_("\n\nRow {0}: no matching contract").format(line))
 					continue
 				if len(matches) > 1:
-					errors.append(_("Row {0}: {1} contracts match ({2})").format(line, len(matches), ", ".join(matches)))
+					errors.append(_("\n\nRow {0}: {1} contracts match ({2})").format(line, len(matches), ", ".join(matches)))
 					continue
 
 				if matches[0] not in docs:
@@ -1541,7 +1549,7 @@ def upload_billing(file_url):
 					if terms:
 						frequency = frequencies.get(terms)
 						if not frequency:
-							errors.append(_("Row {0}: unknown billing terms '{1}'").format(line, cell("billing_terms")))
+							errors.append(_("\n\nRow {0}: unknown billing terms '{1}'").format(line, cell("billing_terms")))
 							continue
 						doc.payment_frequency = frequency
 					docs[doc.name] = doc
@@ -1549,7 +1557,7 @@ def upload_billing(file_url):
 					used[doc.name] = set()
 				current = matches[0]
 			elif not current:
-				errors.append(_("Row {0}: previous contract was not matched, row skipped").format(line))
+				errors.append(_("\n\nRow {0}: previous contract was not matched, row skipped").format(line))
 				continue
 
 			doc = docs[current]
@@ -1563,7 +1571,7 @@ def upload_billing(file_url):
 			)
 			if not sched:
 				errors.append(_(
-					"Row {0}: contract {1} skipped - no billing schedule row with blank Invoice Number and Billed Date"
+					"\n\nRow {0}: contract {1} skipped - no billing schedule row with blank Invoice Number and Billed Date"
 				).format(line, doc.name))
 				continue
 			used[current].add(sched.name)
@@ -1574,7 +1582,7 @@ def upload_billing(file_url):
 			sched.status = "Invoice Raised"
 			filled[current] += 1
 		except Exception as e:
-			errors.append(_("Row {0}: {1}").format(line, str(e)))
+			errors.append(_("\n\nRow {0}: {1}").format(line, str(e)))
 
 	updated = []
 	for doc in docs.values():
@@ -1642,7 +1650,7 @@ def upload_payment(file_url):
 			continue
 		try:
 			if not customer_name or not invoice_id:
-				errors.append(_("Row {0}: customer name and invoice number are required").format(line))
+				errors.append(_("\n\nRow {0}: customer name and invoice number are required").format(line))
 				continue
 
 			key = customer_name.lower()
@@ -1651,7 +1659,7 @@ def upload_payment(file_url):
 					"CRM Contract", filters={"customer_name": customer_name, "docstatus": ["<", 2]}, pluck="name")
 			contracts = contracts_by_customer[key]
 			if not contracts:
-				errors.append(_("Row {0}: no contract found for customer {1}").format(line, customer_name))
+				errors.append(_("\n\nRow {0}: no contract found for customer {1}").format(line, customer_name))
 				continue
 
 			matches = []
@@ -1662,11 +1670,11 @@ def upload_payment(file_url):
 				if sched:
 					matches.append((docs[name], sched))
 			if not matches:
-				errors.append(_("Row {0}: no billing schedule row with invoice number {1} for customer {2}").format(
+				errors.append(_("\n\nRow {0}: no billing schedule row with invoice number {1} for customer {2}").format(
 					line, invoice_id, customer_name))
 				continue
 			if len(matches) > 1:
-				errors.append(_("Row {0}: invoice number {1} found in {2} contracts ({3})").format(
+				errors.append(_("\n\nRow {0}: invoice number {1} found in {2} contracts ({3})").format(
 					line, invoice_id, len(matches), ", ".join(d.name for d, _s in matches)))
 				continue
 
@@ -1680,7 +1688,7 @@ def upload_payment(file_url):
 				received = excel_amount
 				overdue = flt(excel_amount - received, 2)
 			if received < 0 or overdue < 0:
-				errors.append(_("Row {0}: contract {1}: invoice {2} gives a negative received/overdue amount "
+				errors.append(_("\n\nRow {0}: contract {1}: invoice {2} gives a negative received/overdue amount "
 					"(Amount {3}, Overdue Amount {4}); row not updated").format(
 					line, doc.name, invoice_id, excel_amount, excel_overdue))
 				continue
@@ -1691,7 +1699,7 @@ def upload_payment(file_url):
 			sched.status = "Partially Paid" if overdue else "Paid"
 			doc.flags.payment_updated = True
 		except Exception as e:
-			errors.append(_("Row {0}: {1}").format(line, str(e)))
+			errors.append(_("\n\nRow {0}: {1}").format(line, str(e)))
 
 	updated = []
 	for doc in docs.values():
@@ -1711,6 +1719,7 @@ def upload_payment(file_url):
 # Customer's "AMC Raw data" sheet (.xlsb / .xlsx). One Excel row = one invoice = one billing term.
 AMC_BILLING_COLUMNS = {
 	"bill_to_code": ["customer_bill_to_code", "bill_to_code"],
+	"nerp_code": ["nerp_bill_to_code"],
 	"customer_name": ["customer_name"],
 	"invoice_no": ["invoice_no", "invoice_number"],
 	"invoice_date": ["invoice_date"],
@@ -1720,7 +1729,7 @@ AMC_BILLING_COLUMNS = {
 	"ext_type": ["wty_ext_type"],
 	"branch": ["actual_branch", "branch"],
 }
-AMC_BILLING_OPTIONAL = {"bill_to_code", "ext_type", "wty_end", "branch"}
+AMC_BILLING_OPTIONAL = {"bill_to_code", "nerp_code", "ext_type", "wty_end", "branch"}
 
 
 def _amc_cell_date(value):
@@ -1728,6 +1737,26 @@ def _amc_cell_date(value):
 	if isinstance(value, (int, float)) and not isinstance(value, bool):
 		return getdate(datetime.date(1899, 12, 30) + datetime.timedelta(days=int(value)))
 	return _billing_cell_date(value)
+
+
+def _amc_add_nerp(rows, other):
+	"""Append the 'NERP Bill to code' column of the other sheet to rows, matched on Invoice No."""
+	head = [_billing_header_key(h) for h in rows[0]]
+	head2 = [_billing_header_key(h) for h in (other[0] if other else [])]
+	if "nerp_bill_to_code" in head or "nerp_bill_to_code" not in head2 or "invoice_no" not in head or "invoice_no" not in head2:
+		return rows
+	i2, n2 = head2.index("invoice_no"), head2.index("nerp_bill_to_code")
+	by_invoice = {}
+	for r in other[1:]:
+		if len(r) > max(i2, n2) and r[i2] not in (None, "") and r[n2] not in (None, ""):
+			by_invoice[_billing_cell_text(r[i2])] = r[n2]
+	i1 = head.index("invoice_no")
+	width = max(len(r) for r in rows)
+	out = [[*r, *[None] * (width - len(r))] for r in rows]
+	out[0].append("NERP Bill to code")
+	for r in out[1:]:
+		r.append(by_invoice.get(_billing_cell_text(r[i1])))
+	return out
 
 
 def _amc_read_rows(path):
@@ -1740,7 +1769,13 @@ def _amc_read_rows(path):
 		with open_workbook(path) as wb:
 			sheet = "Working" if "Working" in wb.sheets else wb.sheets[0]
 			with wb.get_sheet(sheet) as ws:
-				return [[c.v for c in row] for row in ws.rows()]
+				rows = [[c.v for c in row] for row in ws.rows()]
+			# the NERP Bill to code lives on the "Working file" sheet: pick it up by Invoice No
+			other = next((n for n in wb.sheets if n != sheet and n.strip().lower() == "working file"), None)
+			if other and rows:
+				with wb.get_sheet(other) as ws:
+					return _amc_add_nerp(rows, [[c.v for c in row] for row in ws.rows()])
+			return rows
 	import openpyxl
 
 	wb = openpyxl.load_workbook(path, data_only=True, read_only=True)
@@ -1783,6 +1818,24 @@ def _amc_billing_dates(start_date, expiry_date, frequency, billing_terms):
 	if billing_terms == "Advance" and len(dates) > 1:
 		dates.pop()
 	return dates
+
+
+def _ym(d):
+	d = getdate(d)
+	return (d.year, d.month)
+
+
+def _amc_bill_date(start_date, expiry_date, frequency, billing_terms, period_start):
+	"""Billing date of the term whose period starts on period_start (the sheet's WTY Start Date):
+	that same date under Advance, the end of that period under Post. None when it starts no period."""
+	dates = _amc_billing_dates(start_date, expiry_date, frequency, billing_terms)
+	months = {"Monthly": 1, "Quarterly": 3, "Semi-Annually": 6, "Annually": 12}.get(frequency)
+	if not months:
+		return None
+	for k, d in enumerate(dates):
+		if _ym(add_months(getdate(start_date), k * months)) == _ym(period_start):
+			return d
+	return None
 
 
 def _amc_regenerate_schedule(doc, dates):
@@ -1847,7 +1900,9 @@ def upload_amc_billing(file_url, dry_run=0):
 		filters={"docstatus": ["<", 2]},
 		fields=["name", "customer_name", "bill_ship_code", "start_date", "expiry_date", "payment_frequency", "billing_terms", "amount", "branch"],
 	)
-	norm = lambda v: re.sub(r"\s+", " ", _billing_cell_text(v)).lower()
+	norm = lambda v: re.sub(r"\s+", " ", _billing_cell_text(v)).strip().lower()
+	# the sheet cuts Customer Name at 40 characters: a cut name matches the start of the full one
+	same_name = lambda sheet, full: sheet == full or (len(sheet) >= 40 and full.startswith(sheet))
 	by_code, by_name = {}, {}
 	for c in contracts:
 		if not (c.start_date and c.expiry_date):
@@ -1857,55 +1912,86 @@ def upload_amc_billing(file_url, dry_run=0):
 			by_code.setdefault(norm(c.bill_ship_code), []).append(c)
 
 	last_invoice_date = None  # a blank Invoice Date takes the one of the row above
+	last_fill = {}
 	errors, failed, seen, assigned = [], [], set(), {}  # assigned: contract -> [(line, term_row, {terms that fit})]
 	for line, row in enumerate(rows[1:], start=2):
-		cell = lambda f: row[index[f]] if f in index and index[f] < len(row) else None
+		carried = {}  # Bill To Code / Branch left blank take the one of the row above (never the Invoice No)
+		cell = lambda f: carried[f] if f in carried else (row[index[f]] if f in index and index[f] < len(row) else None)
 		invoice_no = _billing_cell_text(cell("invoice_no"))
 		customer = _billing_cell_text(cell("customer_name"))
 		if not (invoice_no or customer):
 			continue
+		same_customer = not customer or norm(customer) == norm(last_fill.get("customer_name"))
+		customer = customer or last_fill.get("customer_name") or ""
+		for f in ("bill_to_code", "nerp_code", "branch"):
+			# a blank NERP Bill To Code always takes the one of the row above, the others only for the same customer
+			if not _billing_cell_text(cell(f)) and (same_customer or f == "nerp_code") and last_fill.get(f):
+				carried[f] = last_fill[f]
+		last_fill = {f: _billing_cell_text(cell(f)) for f in ("customer_name", "bill_to_code", "nerp_code", "branch")}
+		last_fill["customer_name"] = customer or last_fill["customer_name"]
 		try:
 			total = flt(cell("total"), 2)
 			wty_start, invoice_date = _amc_cell_date(cell("wty_start")), _amc_cell_date(cell("invoice_date"))
+			wty_end = _amc_cell_date(cell("wty_end"))
 			if invoice_date:
 				last_invoice_date = invoice_date
 			elif invoice_no:
 				# only a row that has an Invoice No is a billed term; one without stays "not billed yet"
 				invoice_date = last_invoice_date
 			if not (invoice_no and invoice_date):
-				errors.append(_("Row {0}: {1} not billed yet (no Invoice No / Invoice Date), skipped").format(line, customer))
+				errors.append(_("\n\nRow {0}: {1} not billed yet (no Invoice No / Invoice Date), skipped").format(line, customer))
 				continue
 			if not wty_start:
-				errors.append(_("Row {0}: invoice {1} has no WTY Start Date, skipped").format(line, invoice_no))
+				errors.append(_("\n\nRow {0}: invoice {1} has no WTY Start Date, skipped").format(line, invoice_no))
 				continue
 			if total <= 0:
-				errors.append(_("Row {0}: invoice {1} has no positive Total, skipped").format(line, invoice_no))
+				errors.append(_("\n\nRow {0}: invoice {1} has no positive Total, skipped").format(line, invoice_no))
 				continue
 			key = (norm(customer), invoice_no, wty_start)
 			if key in seen:
-				errors.append(_("Row {0}: invoice {1} repeated for the same term, skipped").format(line, invoice_no))
+				errors.append(_("\n\nRow {0}: invoice {1} repeated for the same term, skipped").format(line, invoice_no))
 				continue
 			seen.add(key)
 
 			code = norm(cell("bill_to_code"))
-			pool = by_code.get(code) or [] if code else []
-			named = by_name.get(norm(customer), [])
+			nerp = norm(cell("nerp_code"))
+			# the system Bill To Code is checked against the NERP Bill To Code; a contract still on the
+			# old code (= Customer Bill To Code) is found too and noted on the contract
+			codes = [c for c in dict.fromkeys([nerp, code]) if c]
+			pool = list({c.name: c for k in codes for c in by_code.get(k, [])}.values())
+			named = [c for n, cs in by_name.items() if same_name(norm(customer), n) for c in cs]
 			# a contract without a bill-to code can only be matched on the customer name
-			candidates = {c.name: c for c in pool + [c for c in named if not c.bill_ship_code or not code]}.values()
-			candidates = [c for c in candidates if getdate(c.start_date) <= wty_start <= getdate(c.expiry_date)]
+			candidates = {c.name: c for c in pool + [c for c in named if not c.bill_ship_code or not codes]}.values()
+			# every contract sharing the sheet's code or customer name, used to say which fields differ
+			related = list({c.name: c for c in pool + named}.values())
+			branch = norm(cell("branch"))
+
+			def mismatches(c):
+				diff = []
+				if codes and c.bill_ship_code and norm(c.bill_ship_code) not in codes:
+					diff.append(_("Bill To Code (Excel NERP {0} / Customer {1} / contract {2})").format(
+						_billing_cell_text(cell("nerp_code")) or "-", _billing_cell_text(cell("bill_to_code")) or "-", c.bill_ship_code))
+				if not same_name(norm(customer), norm(c.customer_name)):
+					diff.append(_("Customer Name (Excel {0} / contract {1})").format(customer, c.customer_name))
+				if branch and norm(c.branch) != branch:
+					diff.append(_("Branch (Excel {0} / contract {1})").format(_billing_cell_text(cell("branch")), c.branch or "-"))
+				if not (_ym(c.start_date) <= _ym(wty_start) <= _ym(c.expiry_date)):
+					diff.append(_("WTY Start Date (Excel {0} / contract period {1} to {2})").format(wty_start, c.start_date, c.expiry_date))
+				return diff
+
+			candidates = [c for c in candidates if _ym(c.start_date) <= _ym(wty_start) <= _ym(c.expiry_date)]
 			# one customer has contracts at several locations: the sheet's Actual Branch is the
 			# contract's Branch (Zone is not compared, the system splits e.g. EAST into EAST-1 / EAST-2)
-			branch = norm(cell("branch"))
 			in_location = [c for c in candidates if not branch or norm(c.branch) == branch]
-			if candidates and not in_location:
-				errors.append(_("Row {0}: {1} has contract(s) {2} but not in branch {3}").format(
-					line, customer, ", ".join(c.name for c in candidates), _billing_cell_text(cell("branch"))))
+			if not in_location:
+				if not related:
+					errors.append(_("\n\nRow {0}: no contract found for {1} (Bill To Code {2}): neither the code nor the customer name exists on any saved contract").format(
+						line, customer, _billing_cell_text(cell("nerp_code")) or _billing_cell_text(cell("bill_to_code")) or "-"))
+				else:
+					errors.append(_("\n\nRow {0}: {1} not matched with any contract. {2}").format(
+						line, customer, "; ".join("{0}: {1}".format(c.name, ", ".join(mismatches(c))) for c in related)))
 				continue
 			candidates = in_location
-			if not candidates:
-				errors.append(_("Row {0}: no saved contract for {1} ({2}) covering WTY Start {3}").format(
-					line, customer, _billing_cell_text(cell("bill_to_code")) or "no bill-to code", wty_start))
-				continue
 
 			frequency_hint = _amc_frequency(_billing_cell_text(cell("ext_type")))
 			hits, amount_mismatch = [], []
@@ -1917,7 +2003,7 @@ def upload_amc_billing(file_url, dry_run=0):
 					[c.payment_frequency, frequency_hint, "Quarterly", "Semi-Annually", "Annually", "Monthly"]) if f]
 				fits = {(f, t) for f in frequencies
 					for t in ([c.billing_terms] if c.billing_terms else ["Advance", "Post"])
-					if wty_start in _amc_billing_dates(c.start_date, c.expiry_date, f, t)}
+					if _amc_bill_date(c.start_date, c.expiry_date, f, t, wty_start)}
 				# the invoice is one term: Total x number of terms = the contract Amount
 				# (Semi-Annually, 2 terms: Total x 2), allowing for rounding
 				amount_fits = {(f, t) for f, t in fits
@@ -1925,26 +2011,37 @@ def upload_amc_billing(file_url, dry_run=0):
 				if amount_fits:
 					hits.append((c, amount_fits, frequencies))
 				elif fits:
-					amount_mismatch.append("{0} ({1})".format(c.name, flt(c.amount)))
-			if not hits and amount_mismatch:
-				errors.append(_("Row {0}: invoice {1} Total {2} x number of terms does not match the Amount of {3}").format(
-					line, invoice_no, total, ", ".join(amount_mismatch)))
+					amount_mismatch.append((c, fits, frequencies))
+			if not hits and len(amount_mismatch) == 1:
+				# the sheet is the source of truth: the only contract on this code / branch / period takes
+				# Total x terms as its Amount (see below); the contract's own or the sheet's frequency wins
+				c, fits, frequencies = amount_mismatch[0]
+				known = {c.payment_frequency, frequency_hint}
+				hits.append((c, {ft for ft in fits if ft[0] in known} or fits, frequencies))
+			elif not hits and amount_mismatch:
+				errors.append(_("\n\nRow {0}: invoice {1} Total {2} x number of terms does not match the Amount of {3}, skipped").format(
+					line, invoice_no, total, ", ".join("{0} ({1})".format(c.name, flt(c.amount)) for c, _f, _q in amount_mismatch)))
 				continue
 			if not hits:
-				errors.append(_("Row {0}: WTY Start {1} is not a billing date (Advance or Post) of {2}").format(
+				errors.append(_("\n\nRow {0}: WTY Start {1} is not a billing date (Advance or Post) of {2}").format(
 					line, wty_start, ", ".join(c.name for c in candidates)))
 				continue
 			if len(hits) > 1:
-				errors.append(_("Row {0}: WTY Start {1} fits {2} contracts ({3}), skipped").format(
+				errors.append(_("\n\nRow {0}: WTY Start {1} fits {2} contracts ({3}), skipped").format(
 					line, wty_start, len(hits), ", ".join(h[0].name for h in hits)))
 				continue
 			contract, fits, frequencies = hits[0]
 			assigned.setdefault(contract.name, []).append((line, {
 				"wty_start": wty_start, "invoice_no": invoice_no, "invoice_date": invoice_date,
 				"total": total, "frequencies": frequencies,
+				# an invoice raised after the period ended is a Post bill, one inside it an Advance bill
+				"prefer": (("Post" if invoice_date > wty_end else "Advance") if wty_end else None),
+				# the contract still carries the old code: the Customer Bill To Code, not the NERP one
+				"old_code": bool(code and nerp and code != nerp and contract.bill_ship_code and norm(contract.bill_ship_code) == code),
+				"codes": (_billing_cell_text(cell("bill_to_code")), _billing_cell_text(cell("nerp_code"))),
 			}, fits))
 		except Exception as e:
-			errors.append(_("Row {0}: {1}").format(line, str(e)))
+			errors.append(_("\n\nRow {0}: {1}").format(line, str(e)))
 			failed.append(errors[-1])
 
 	updated = []
@@ -1962,7 +2059,17 @@ def upload_amc_billing(file_url, dry_run=0):
 					name, rows_text))
 				continue
 			order = items[0][1]["frequencies"]
-			frequency, billing_terms = min(terms_fit, key=lambda ft: (ft[1] != "Advance", order.index(ft[0]) if ft[0] in order else 9))
+			votes = [item[1]["prefer"] for item in items if item[1]["prefer"]]
+			prefer = max(("Advance", "Post"), key=votes.count) if votes else "Advance"
+			frequency, billing_terms = min(terms_fit, key=lambda ft: (ft[1] != prefer, order.index(ft[0]) if ft[0] in order else 9))
+
+			# Total x number of terms is the contract Amount; the sheet wins when they differ
+			n_terms = len(_amc_billing_dates(doc.start_date, doc.expiry_date, frequency, billing_terms))
+			expected = flt(items[0][1]["total"] * n_terms, 2)
+			old_amount = flt(doc.amount)
+			amount_changed = abs(expected - old_amount) > max(1, old_amount * 0.005)
+			if amount_changed:
+				doc.amount = expected
 
 			started = any(s.invoice_id or s.billed_date or (s.status and s.status != "Pending") for s in doc.billing_schedule)
 			if not started and (not doc.billing_schedule or doc.billing_terms != billing_terms or doc.payment_frequency != frequency):
@@ -1972,16 +2079,18 @@ def upload_amc_billing(file_url, dry_run=0):
 				doc.billing_terms, doc.payment_frequency = doc.billing_terms or billing_terms, frequency
 
 			filled = 0
+			matched = []
 			for line, term, _fits in items:
-				sched = next((s for s in doc.billing_schedule if s.billing_date and getdate(s.billing_date) == term["wty_start"]), None)
+				bill_date = _amc_bill_date(doc.start_date, doc.expiry_date, frequency, billing_terms, term["wty_start"]) or term["wty_start"]
+				sched = next((s for s in doc.billing_schedule if s.billing_date and _ym(s.billing_date) == _ym(bill_date)), None)
 				if not sched:
 					sched = doc.append("billing_schedule", {
-						"billing_date": term["wty_start"],
+						"billing_date": bill_date,
 						"billing_term": _billing_ordinal(len(doc.billing_schedule) + 1),
 						"status": "Pending",
 					})
 				if sched.invoice_id and _billing_cell_text(sched.invoice_id) != term["invoice_no"]:
-					errors.append(_("Row {0}: contract {1} term {2} already has invoice {3}, skipped").format(
+					errors.append(_("\n\nRow {0}: contract {1} term {2} already has invoice {3}, skipped").format(
 						line, name, term["wty_start"], sched.invoice_id))
 					continue
 				sched.amount = term["total"]
@@ -1990,6 +2099,8 @@ def upload_amc_billing(file_url, dry_run=0):
 				if not sched.status or sched.status == "Pending":
 					sched.status = "Invoice Raised"
 				filled += 1
+				matched.append(_("WTY Start {0} (month/year) = {1} billing date {2}, invoice {3}").format(
+					term["wty_start"], billing_terms, sched.billing_date, term["invoice_no"]))
 			if not filled:
 				continue
 			doc.billing_schedule.sort(key=lambda s: getdate(s.billing_date) if s.billing_date else datetime.date.max)
@@ -2004,6 +2115,14 @@ def upload_amc_billing(file_url, dry_run=0):
 					errors.append(_("Rows {2}: contract {0} could not save - {1}").format(name, str(e), rows_text))
 					failed.append(errors[-1])
 					continue
+				if matched:
+					doc.add_comment("Info", _("AMC billing upload matched on month and year, not the exact date: {0}.").format("; ".join(matched)))
+				if amount_changed:
+					doc.add_comment("Info", _("Contract Amount changed from {0} to {1} (Total {2} x {3} terms) as per the AMC billing upload.").format(
+						old_amount, expected, items[0][1]["total"], n_terms))
+				if any(item[1]["old_code"] for item in items):
+					old, new = next(item[1]["codes"] for item in items if item[1]["old_code"])
+					doc.add_comment("Info", _("Bill To Code {0} on this contract is the old code (same as Customer Bill To Code); NERP Bill To Code is {1}.").format(old, new))
 			updated.append("{0} ({1}, {2}, {3} term(s))".format(name, billing_terms, frequency, filled))
 		except Exception as e:
 			errors.append(_("Rows {2}: contract {0}: {1}").format(name, str(e), ", ".join(str(i[0]) for i in items)))
