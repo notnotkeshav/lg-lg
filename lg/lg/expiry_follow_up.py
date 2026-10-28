@@ -9,10 +9,14 @@ LOST_AFTER_MONTHS after expiry, an opportunity whose customer is still not inter
 is marked "Lost". This is the only rule that auto-marks a CRM Deal as Lost.
 
 Followed up: AMC CRM Contracts, and Warranty CRM Deals linked to a Project.
-At every stage each responsible user gets a CRM Task, a system notification and an email,
-but only while that stage is less than STAGE_NOTICE_DAYS old - so missed runs are caught up,
+At every stage each responsible user gets a single system notification and email (the
+assignment notifications of the CRM Task are suppressed); AM and RSM also get a CRM Task, HO
+does not. Notices go out only while that stage is less than STAGE_NOTICE_DAYS old - so missed runs are caught up,
 while a backlog of stages that started long ago (e.g. when this job was introduced) is not.
 """
+
+from contextlib import contextmanager
+from unittest.mock import patch
 
 import frappe
 from frappe.utils import add_days, add_months, formatdate, get_url_to_form, getdate, today
@@ -31,6 +35,10 @@ NOT_LOSABLE_DEAL_STATUSES = ENGAGED_DEAL_STATUSES + ["Lost", "Sales"]
 # Follow-up is over once the renewal is won or lost
 CLOSED_DEAL_STATUSES = ["Won/Award", "Lost"]
 INACTIVE_CONTRACT_STATUSES = ["Discontinue", "Rejected"]
+
+
+def get_notice_date(expiry_date):
+	return getdate(add_months(getdate(expiry_date), -NOTICE_MONTHS))
 
 
 def get_lost_date(expiry_date):
@@ -179,6 +187,17 @@ def get_follow_up_users(subject, stage):
 	return []
 
 
+@contextmanager
+def silent_task_assignment():
+	"""Creating a CRM Task assigns it, which sends Frappe's assignment notification/email and a
+	CRM notification. follow_up() sends its own notice, so those are suppressed to send just one."""
+	with (
+		patch("frappe.desk.form.assign_to.notify_assignment"),
+		patch("crm.api.todo.notify_assigned_user"),
+	):
+		yield
+
+
 def follow_up(subject, stage, due_date):
 	users = get_follow_up_users(subject, stage)
 	if not users:
@@ -192,32 +211,57 @@ def follow_up(subject, stage, due_date):
 	message = get_follow_up_message(subject, stage, due_date)
 
 	for user in users:
-		# One task and notification per document, stage and user - the job runs daily
+		# One notice per document, stage and user - the job runs daily
 		if frappe.db.exists(
-			"CRM Task",
+			"Notification Log",
 			{
-				"reference_doctype": subject.doctype,
-				"reference_docname": subject.name,
-				"title": title,
-				"assigned_to": user,
+				"document_type": subject.doctype,
+				"document_name": subject.name,
+				"subject": title,
+				"for_user": user,
 			},
 		):
 			continue
 
-		frappe.get_doc({
-			"doctype": "CRM Task",
-			"title": title,
-			"reference_doctype": subject.doctype,
-			"reference_docname": subject.name,
-			"description": message,
-			"assigned_to": user,
-			"priority": "High",
-			"status": "Todo",
-			"start_date": today(),
-			"due_date": due_date,
-		}).insert(ignore_permissions=True)
+		# HO only gets the notice, the follow-up task is for the AM and RSM
+		if stage != "HO":
+			with silent_task_assignment():
+				frappe.get_doc({
+					"doctype": "CRM Task",
+					"title": title,
+					"reference_doctype": subject.doctype,
+					"reference_docname": subject.name,
+					"description": message,
+					"assigned_to": user,
+					"priority": "High",
+					"status": "Todo",
+					"start_date": today(),
+					"due_date": due_date,
+				}).insert(ignore_permissions=True)
 
 		notify(user, subject, title, message)
+
+
+def get_user_name(user):
+	return (user and frappe.db.get_value("User", user, "full_name")) or user or "-"
+
+
+def get_responsible_details(subject):
+	"""AM / RSM names and branch / region of the subject, for the escalation messages."""
+	branch_doc = subject.branch and frappe.db.get_value(
+		"Region Branches", subject.branch, ["branch_name", "branch_head", "region"], as_dict=True
+	)
+	region = subject.region or (branch_doc and branch_doc.region)
+	region_doc = region and frappe.db.get_value(
+		"Region Master", region, ["name", "region_head"], as_dict=True
+	)
+	am_user = subject.am_user or (branch_doc and branch_doc.branch_head)
+	return frappe._dict(
+		am=get_user_name(am_user),
+		rsm=get_user_name(region_doc and region_doc.region_head),
+		branch=(branch_doc and branch_doc.branch_name) or subject.branch or "-",
+		region=region or "-",
+	)
 
 
 def get_follow_up_message(subject, stage, due_date):
@@ -240,9 +284,30 @@ def get_follow_up_message(subject, stage, due_date):
 
 	link = f"<a href='{get_url_to_form(subject.doctype, subject.name)}'>{subject.name}</a>"
 	project = f" (Project {subject.project})" if subject.project else ""
+	expiry_info = (
+		f"{subject.label} {link} for customer {subject.customer or ''}{project} expires on {expiry_text}."
+	)
+
+	if stage in ("RSM", "HO"):
+		who = get_responsible_details(subject)
+		days = (getdate(today()) - get_notice_date(subject.expiry_date)).days
+
+		if stage == "RSM":
+			return (
+				f"The following AM {who.am} (Branch: {who.branch}, Region: {who.region}) has no recent "
+				f"activity against the expiring {expiry_info}<br>"
+				f"No activity has been recorded for the last {days} days after the AM was notified. "
+				f"Please follow up until {formatdate(due_date)}. {next_step}"
+			)
+		return (
+			f"The following RSM {who.rsm} (Region: {who.region}, Branch: {who.branch}) and AM {who.am} "
+			f"(Branch: {who.branch}) have no recent activity against the expiring {expiry_info}<br>"
+			f"No activity has been recorded for the last {days} days after the AM was notified. "
+			f"Kindly follow up with the RSM regarding this contract. {next_step}"
+		)
+
 	return (
-		f"Warranty/AMC of {subject.label} {link} for customer {subject.customer or ''}{project} "
-		f"expires on {expiry_text}.<br>"
+		f"Warranty/AMC of {expiry_info}<br>"
 		f"You are responsible for following up with the customer for renewal "
 		f"until {formatdate(due_date)}. {next_step}"
 	)
