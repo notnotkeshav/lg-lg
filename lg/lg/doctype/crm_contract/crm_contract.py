@@ -1730,6 +1730,8 @@ AMC_BILLING_COLUMNS = {
 	"branch": ["actual_branch", "branch"],
 }
 AMC_BILLING_OPTIONAL = {"bill_to_code", "nerp_code", "ext_type", "wty_end", "branch"}
+# rows of these customers are ignored by Upload AMC Billing (matched on the customer name)
+AMC_BILLING_IGNORED_CUSTOMERS = ("aditya birla", "reliance retail")
 
 
 def _amc_cell_date(value):
@@ -1898,7 +1900,7 @@ def upload_amc_billing(file_url, dry_run=0):
 	contracts = frappe.get_all(
 		"CRM Contract",
 		filters={"docstatus": ["<", 2]},
-		fields=["name", "customer_name", "bill_ship_code", "start_date", "expiry_date", "payment_frequency", "billing_terms", "amount", "branch"],
+		fields=["name", "customer_name", "bill_ship_code", "start_date", "expiry_date", "payment_frequency", "billing_terms", "amount", "branch", "owner"],
 	)
 	norm = lambda v: re.sub(r"\s+", " ", _billing_cell_text(v)).strip().lower()
 	# the sheet cuts Customer Name at 40 characters: a cut name matches the start of the full one
@@ -1913,6 +1915,8 @@ def upload_amc_billing(file_url, dry_run=0):
 
 	last_invoice_date = None  # a blank Invoice Date takes the one of the row above
 	last_fill = {}
+	ignored = 0
+	deferred = []  # rows whose Total x terms fits none of several contracts: settled after the exact matches
 	errors, failed, seen, assigned = [], [], set(), {}  # assigned: contract -> [(line, term_row, {terms that fit})]
 	for line, row in enumerate(rows[1:], start=2):
 		carried = {}  # Bill To Code / Branch left blank take the one of the row above (never the Invoice No)
@@ -1929,6 +1933,9 @@ def upload_amc_billing(file_url, dry_run=0):
 				carried[f] = last_fill[f]
 		last_fill = {f: _billing_cell_text(cell(f)) for f in ("customer_name", "bill_to_code", "nerp_code", "branch")}
 		last_fill["customer_name"] = customer or last_fill["customer_name"]
+		if any(name in norm(customer) for name in AMC_BILLING_IGNORED_CUSTOMERS):
+			ignored += 1  # billed outside this sheet: neither updated nor reported as skipped
+			continue
 		try:
 			total = flt(cell("total"), 2)
 			wty_start, invoice_date = _amc_cell_date(cell("wty_start")), _amc_cell_date(cell("invoice_date"))
@@ -1985,13 +1992,24 @@ def upload_amc_billing(file_url, dry_run=0):
 			in_location = [c for c in candidates if not branch or norm(c.branch) == branch]
 			if not in_location:
 				if not related:
-					errors.append(_("\n\nRow {0}: no contract found for {1} (Bill To Code {2}): neither the code nor the customer name exists on any saved contract").format(
-						line, customer, _billing_cell_text(cell("nerp_code")) or _billing_cell_text(cell("bill_to_code")) or "-"))
+					errors.append(_("\n\nRow {0}: no contract found for {1} (Bill To Code {2}, invoice {3}): neither the code nor the customer name exists on any saved contract").format(
+						line, customer, _billing_cell_text(cell("nerp_code")) or _billing_cell_text(cell("bill_to_code")) or "-", invoice_no))
 				else:
-					errors.append(_("\n\nRow {0}: {1} not matched with any contract. {2}").format(
-						line, customer, "; ".join("{0}: {1}".format(c.name, ", ".join(mismatches(c))) for c in related)))
+					errors.append(_("\n\nRow {0}: {1} (invoice {2}) not matched with any contract. Contracts with the same code / customer name, and what differs: {3}").format(
+						line, customer, invoice_no, "; ".join("{0}: {1}".format(c.name, ", ".join(mismatches(c))) for c in related)))
 				continue
 			candidates = in_location
+
+			def term_dict(contract, frequencies=None):
+				return {
+					"wty_start": wty_start, "invoice_no": invoice_no, "invoice_date": invoice_date,
+					"total": total, "frequencies": frequencies,
+					# an invoice raised after the period ended is a Post bill, one inside it an Advance bill
+					"prefer": (("Post" if invoice_date > wty_end else "Advance") if wty_end else None),
+					# the contract still carries the old code: the Customer Bill To Code, not the NERP one
+					"old_code": bool(code and nerp and code != nerp and contract.bill_ship_code and norm(contract.bill_ship_code) == code),
+					"codes": (_billing_cell_text(cell("bill_to_code")), _billing_cell_text(cell("nerp_code"))),
+				}
 
 			frequency_hint = _amc_frequency(_billing_cell_text(cell("ext_type")))
 			hits, amount_mismatch = [], []
@@ -2019,8 +2037,8 @@ def upload_amc_billing(file_url, dry_run=0):
 				known = {c.payment_frequency, frequency_hint}
 				hits.append((c, {ft for ft in fits if ft[0] in known} or fits, frequencies))
 			elif not hits and amount_mismatch:
-				errors.append(_("\n\nRow {0}: invoice {1} Total {2} x number of terms does not match the Amount of {3}, skipped").format(
-					line, invoice_no, total, ", ".join("{0} ({1})".format(c.name, flt(c.amount)) for c, _f, _q in amount_mismatch)))
+				deferred.append((line, customer, invoice_no, total, wty_start, frequency_hint,
+					[(c, fits, frequencies, term_dict(c)) for c, fits, frequencies in amount_mismatch]))
 				continue
 			if not hits:
 				errors.append(_("\n\nRow {0}: WTY Start {1} is not a billing date (Advance or Post) of {2}").format(
@@ -2031,18 +2049,53 @@ def upload_amc_billing(file_url, dry_run=0):
 					line, wty_start, len(hits), ", ".join(h[0].name for h in hits)))
 				continue
 			contract, fits, frequencies = hits[0]
-			assigned.setdefault(contract.name, []).append((line, {
-				"wty_start": wty_start, "invoice_no": invoice_no, "invoice_date": invoice_date,
-				"total": total, "frequencies": frequencies,
-				# an invoice raised after the period ended is a Post bill, one inside it an Advance bill
-				"prefer": (("Post" if invoice_date > wty_end else "Advance") if wty_end else None),
-				# the contract still carries the old code: the Customer Bill To Code, not the NERP one
-				"old_code": bool(code and nerp and code != nerp and contract.bill_ship_code and norm(contract.bill_ship_code) == code),
-				"codes": (_billing_cell_text(cell("bill_to_code")), _billing_cell_text(cell("nerp_code"))),
-			}, fits))
+			assigned.setdefault(contract.name, []).append((line, term_dict(contract, frequencies), fits))
 		except Exception as e:
 			errors.append(_("\n\nRow {0}: {1}").format(line, str(e)))
 			failed.append(errors[-1])
+
+	# Total x terms fits none of the contracts on that code / branch / period. Settle them: leave out the
+	# contracts an exact-Amount row already took, keep those created by Administrator whose billing dates
+	# (the sheet's frequency, Advance or Post) hit the WTY Start Date; when one is left the sheet wins.
+	taken = set(assigned)
+	for line, customer, invoice_no, total, wty_start, frequency_hint, options in deferred:
+		base = _("Row {0}: {1}, invoice {2} Total {3} x number of terms does not match the Amount of {4}, skipped").format(
+			line, customer, invoice_no, total, ", ".join("{0} ({1})".format(o[0].name, flt(o[0].amount)) for o in options))
+		pool = [o for o in options if o[0].owner == "Administrator"]
+		if not pool:
+			errors.append(_("\n\n{0}. None of them was created by Administrator").format(base))
+			continue
+		free = [o for o in pool if o[0].name not in taken]
+		if not free:
+			errors.append(_("\n\n{0}. {1} already taken by another sheet row whose Total x terms equals its Amount").format(
+				base, ", ".join(o[0].name for o in pool)))
+			continue
+		found = []
+		for c, fits, frequencies, term in free:
+			same = {ft for ft in fits if not frequency_hint or ft[0] == frequency_hint}
+			if same:
+				found.append((c, same, frequencies, term))
+		if not found:
+			errors.append(_("\n\n{0}. None has a billing date (Advance / Post, {1}) on WTY Start {2}").format(
+				base, frequency_hint or _("any frequency"), wty_start))
+			continue
+		if len(found) > 1 and len({(f[0].start_date, f[0].expiry_date) for f in found}) > 1:
+			errors.append(_("\n\n{0}. {1} all fit WTY Start {2} as {3} but their Start / Expiry Dates differ, cannot tell which one, add the exact Total to one of them").format(
+				base, ", ".join(f[0].name for f in found), wty_start, frequency_hint or _("any frequency")))
+			continue
+		if len(found) > 1:
+			# the amount logic gives the same billing date on contracts with the same Start / Expiry Date: keep rows of one invoice on one contract (the one already
+			# picked by an earlier row), else the one whose Amount is nearest Total x its terms; the rest are reported
+			def distance(f):
+				n = len(_amc_billing_dates(f[0].start_date, f[0].expiry_date, *sorted(f[1])[0]))
+				return (f[0].name not in assigned, abs(flt(f[0].amount) - total * n), f[0].name)
+			found.sort(key=distance)
+			errors.append(_("\n\nRow {0}: {1}, invoice {2} found {3} contracts with the same Start / Expiry Date fitting WTY Start {4} ({5}), so {6} was updated and {7} left untouched").format(
+				line, customer, invoice_no, len(found), wty_start, ", ".join("{0} ({1})".format(f[0].name, flt(f[0].amount)) for f in found),
+				found[0][0].name, ", ".join(f[0].name for f in found[1:])))
+		c, same, frequencies, term = found[0]
+		term["frequencies"] = frequencies
+		assigned.setdefault(c.name, []).append((line, term, same))
 
 	updated = []
 	for name, items in assigned.items():
@@ -2129,18 +2182,48 @@ def upload_amc_billing(file_url, dry_run=0):
 			failed.append(errors[-1])
 
 	if not dry_run:
-		_amc_log_upload(file_url, updated, [e for e in errors if e not in failed], failed)
-	return {"updated": sorted(updated), "errors": errors, "dry_run": dry_run}
+		_amc_log_upload(file_url, updated, [e for e in errors if e not in failed], failed, ignored)
+	return {"updated": sorted(updated), "errors": errors, "ignored": ignored, "dry_run": dry_run}
 
 
-def _amc_log_upload(file_url, updated, skipped, failed):
-	"""Write the outcome of an Upload AMC Billing run to the Error Log list, one entry each for the
-	updated, the skipped and the failed rows, so they can be looked up (search "Upload AMC Billing")."""
+# (match text, Error Log title, what is missing / why the row was not updated)
+AMC_BILLING_SKIP_REASONS = (
+	("left untouched", "Same Period - One Updated", "several contracts share the same Start / Expiry Date and fit the row: one was updated (named in the row), the others were not touched, check them"),
+	("not matched with any contract", "No Contract Matched", "the contracts with this Bill To Code / customer name differ from the sheet in the fields listed (Bill To Code, Customer Name, Branch, or WTY Start Date outside the contract period)"),
+	("no contract found", "No Contract Found", "neither the Bill To Code nor the customer name exists on any saved CRM Contract"),
+	("does not match the Amount", "Amount Mismatch", "Total x number of terms is not the contract Amount"),
+	("fits ", "More Than One Contract Fits", "the same code / branch / period matches several contracts, so the row is not guessed"),
+	("already has invoice", "Term Already Billed", "the billing term already carries a different invoice number"),
+	("is not a billing date", "Not A Billing Date", "WTY Start Date is not an Advance / Post billing date of the contract"),
+	("not billed yet", "Not Billed Yet", "Invoice No / Invoice Date is blank in the sheet"),
+	("repeated for the same term", "Duplicate Row", "the same invoice and term appears twice in the sheet"),
+	("contract ", "Contract Skipped", "its WTY Start Dates do not fit one frequency with Advance / Post"),
+)
+
+
+def _amc_skip_reason(line):
+	for key, title, why in AMC_BILLING_SKIP_REASONS:
+		if key in line:
+			return title, why
+	return "Missing Data", "the row has no WTY Start Date / positive Total, or another problem (see the row)"
+
+
+def _amc_log_upload(file_url, updated, skipped, failed, ignored=0):
+	"""Write the outcome of an Upload AMC Billing run to the Error Log list (search "Upload AMC Billing"):
+	one entry for the updated, one for the failed rows, and one entry per skip reason (Amount Mismatch,
+	No Contract Found, ...), each saying what is missing / why its rows were not updated."""
 	run = "{0} by {1}".format(frappe.utils.now(), frappe.session.user)
-	for label, lines in (("Updated", updated), ("Skipped", skipped), ("Failed", failed)):
-		if lines:
-			frappe.log_error(
-				title="Upload AMC Billing - {0} ({1})".format(label, len(lines)),
-				message="File: {0}\nRun: {1}\n{2}: {3}\n\n{4}".format(
-					file_url, run, label, len(lines), "\n".join(lines)),
-			)
+	note = "\nIgnored rows (Aditya Birla / Reliance Retail): {0}".format(ignored) if ignored else ""
+	head = "File: {0}\nRun: {1}{2}\n".format(file_url, run, note)
+	if updated:
+		frappe.log_error(title="Upload AMC Billing - Updated ({0})".format(len(updated)),
+			message="{0}Updated: {1}\n\n{2}".format(head, len(updated), "\n".join(updated)))
+	groups = {}
+	for line in skipped:
+		groups.setdefault(_amc_skip_reason(line), []).append(line.strip())
+	for (title, why), lines in sorted(groups.items(), key=lambda g: -len(g[1])):
+		frappe.log_error(title="Upload AMC Billing - {0} ({1})".format(title, len(lines)),
+			message="{0}Not updated because: {1}\nRows: {2}\n\n{3}".format(head, why, len(lines), "\n".join(lines)))
+	if failed:
+		frappe.log_error(title="Upload AMC Billing - Failed ({0})".format(len(failed)),
+			message="{0}Failed: {1}\n\n{2}".format(head, len(failed), "\n".join(failed)))

@@ -95,12 +95,13 @@ function upload_amc_billing(listview) {
 				freeze: true,
 				freeze_message: dry_run ? __("Checking billing...") : __("Updating billing..."),
 				callback({ message }) {
-					const { updated, errors } = message;
+					const { updated, errors, ignored } = message;
 					const list = (items) => `<ul>${items.slice(0, 200).map(e => `<li>${frappe.utils.escape_html(e)}</li>`).join("")}</ul>`
 						+ (items.length > 200 ? `<p>${__("... and {0} more", [items.length - 200])}</p>` : "");
 					let html = `<p>${__("{0} contract(s) {1}", [updated.length, dry_run ? __("will be updated") : __("updated")])}</p>`;
 					if (updated.length) html += list(updated);
-					if (errors.length) html += `<p class="text-danger">${__("{0} row(s) skipped", [errors.length])}:</p>${list(errors)}`;
+					if (ignored) html += `<p>${__("{0} Aditya Birla / Reliance Retail row(s) ignored", [ignored])}</p>`;
+					if (errors.length) html += `<p class="text-danger">${__("{0} row(s) skipped (full reasons grouped in the Error Log: Upload AMC Billing - Skipped)", [errors.length])}:</p>${list(errors)}`;
 					if (dry_run) {
 						frappe.confirm(html + `<p><b>${__("Apply these changes?")}</b></p>`, () => run(0));
 					} else {
